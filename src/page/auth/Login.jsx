@@ -27,9 +27,7 @@ const Login = () => {
               <img src={shopImg} alt="" />
             </div>
             <div className="mt-4 mx-4 bg-white text-black p-5 rounded-2xl w-[600px]">
-              <h1 className="text-xl font-semibold mb-4">
-                Login with Password
-              </h1>
+              <h1 className="text-xl font-medium mb-4">Login with Password</h1>
               <InputField
                 placeholder="Mobile Number / Email"
                 value={email}
@@ -58,7 +56,7 @@ const Login = () => {
                   )}
                 </div>
               </div>
-              <PrimaryButton value={"Get OTP"} />
+              <PrimaryButton value={"Login"} />
               <p className="text-end py-2 pt-4 text-blue-600 cursor-pointer">
                 Reset Password?
               </p>
