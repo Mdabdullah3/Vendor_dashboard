@@ -8,34 +8,32 @@ const EmailSet = ({ onNext }) => {
   const [accountType, setAccountType] = useState("personal");
 
   return (
-    <section className="flex flex-col items-center">
-      <div className="mt-4 bg-white text-black p-3 md:p-5 rounded-2xl">
-        <h1 className="text-xl font-semibold">Set Your Email</h1>
-        <div>
-          <h1>Account Type</h1>
-          <RadioBtn
-            label="Personal"
-            value="personal"
-            checked={accountType === "personal"}
-            onChange={() => setAccountType("personal")}
-          />
-          <RadioBtn
-            label="Business"
-            value="business"
-            checked={accountType === "business"}
-            onChange={() => setAccountType("business")}
-          />
-        </div>
-        <div className="mt-5 gap-3 flex flex-col">
-          <InputField
-            type="email"
-            placeholder="Enter Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <PrimaryButton type="button" value="Next" onClick={onNext} />
-        </div>
+    <section>
+      <h1 className="text-xl font-semibold">Set Your Email</h1>
+      <div className="space-y-3 mt-3">
+        <h1>Account Type</h1>
+        <RadioBtn
+          label="Personal"
+          value="personal"
+          checked={accountType === "personal"}
+          onChange={() => setAccountType("personal")}
+        />
+        <RadioBtn
+          label="Business"
+          value="business"
+          checked={accountType === "business"}
+          onChange={() => setAccountType("business")}
+        />
+      </div>
+      <div className="mt-5 gap-3 flex flex-col">
+        <InputField
+          type="email"
+          placeholder="Enter Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <PrimaryButton type="button" value="Next" onClick={onNext} />
       </div>
     </section>
   );

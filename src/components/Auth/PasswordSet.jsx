@@ -40,56 +40,54 @@ const PasswordSet = ({ onNext }) => {
   };
 
   return (
-    <section className="flex flex-col items-center">
-      <div className="mt-4 bg-white text-black p-3 md:p-5 rounded-2xl">
-        <h1 className="text-xl font-semibold">Enter The Code</h1>
-        <p className="text-gray-600 text-[14px]">
-          Enter the 6-digit code sent to {"0123456789"} via SMS.
-        </p>
+    <section className="">
+      <h1 className="text-xl font-semibold">Enter The Code</h1>
+      <p className="text-gray-600 text-[14px]">
+        Enter the 6-digit code sent to {"0123456789"} via SMS.
+      </p>
 
-        <div className="mt-4 flex justify-center gap-2">
-          {code.map((digit, index) => (
-            <input
-              key={index}
-              ref={(el) => (inputRefs.current[index] = el)}
-              type="text"
-              maxLength="1"
-              value={digit}
-              onChange={(e) => handleChange(e, index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              onPaste={handlePaste}
-              className="w-12 h-12 text-center text-2xl border border-gray-300 rounded-lg focus:outline-none focus:border-primary"
-            />
-          ))}
-        </div>
-        <p className="text-center pt-3">
-          Didn't receive the code?{" "}
-          <span className="text-primary cursor-pointer">Resend</span>
-        </p>
-        <div className="mt-5 gap-3 flex flex-col">
-          <InputField
-            type="password"
-            placeholder="Enter Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <InputField
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-          <InputField
+      <div className="mt-4 flex justify-center gap-2">
+        {code.map((digit, index) => (
+          <input
+            key={index}
+            ref={(el) => (inputRefs.current[index] = el)}
             type="text"
-            placeholder="Enter Referal Code"
-            value={referalCode}
-            onChange={(e) => setReferalCode(e.target.value)}
-            required
+            maxLength="1"
+            value={digit}
+            onChange={(e) => handleChange(e, index)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
+            onPaste={handlePaste}
+            className="w-12 h-12 text-center text-2xl border border-gray-300 rounded-lg focus:outline-none focus:border-primary"
           />
-          <PrimaryButton type="button" value="Next" onClick={onNext} />
-        </div>
+        ))}
+      </div>
+      <p className="text-center pt-3">
+        Didn't receive the code?{" "}
+        <span className="text-primary cursor-pointer">Resend</span>
+      </p>
+      <div className="mt-5 gap-3 flex flex-col">
+        <InputField
+          type="password"
+          placeholder="Enter Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <InputField
+          type="password"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+        />
+        <InputField
+          type="text"
+          placeholder="Enter Referal Code"
+          value={referalCode}
+          onChange={(e) => setReferalCode(e.target.value)}
+          required
+        />
+        <PrimaryButton type="button" value="Next" onClick={onNext} />
       </div>
     </section>
   );
