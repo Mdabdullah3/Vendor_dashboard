@@ -13,7 +13,7 @@ const InputField = ({
   return (
     <div className="w-full">
       <label htmlFor={id} className="block text-gray-600 font-semibold mb-1">
-        {label} <span className="text-primary">{required && "*"}</span>
+        {label} <span className="text-primary">{ label && required && "*"}</span>
       </label>
       <input
         type={type}

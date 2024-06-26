@@ -3,6 +3,7 @@ import Navbar from "../../layout/Navbar";
 import shopImg from "../../assets/shop.avif";
 import flagBd from "../../assets/Flag-Bangladesh.webp";
 import PrimaryButton from "../../components/common/PrimaryButton";
+import { Link } from "react-router-dom";
 const Register = () => {
   return (
     <section>
@@ -38,7 +39,12 @@ const Register = () => {
                 />
               </div>
               <PrimaryButton value={"Get OTP"} />
-              <p className="text-end py-4 text-blue-600">Login?</p>
+              <Link
+                to={"/login"}
+                className="flex justify-end py-4 text-blue-600"
+              >
+                Login?
+              </Link>
             </div>
           </div>
         </div>
