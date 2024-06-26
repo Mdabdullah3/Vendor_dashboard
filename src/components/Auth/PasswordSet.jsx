@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import PrimaryButton from "../common/PrimaryButton";
 import InputField from "../common/InputField";
 
-const PasswordSet = () => {
+const PasswordSet = ({ onNext }) => {
   const [code, setCode] = useState(new Array(6).fill(""));
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -46,10 +46,7 @@ const PasswordSet = () => {
         <p className="text-gray-600 text-[14px]">
           Enter the 6-digit code sent to {"0123456789"} via SMS.
         </p>
-        <p>
-          Didn't receive the code?{" "}
-          <span className="text-primary cursor-pointer">Resend</span>
-        </p>
+
         <div className="mt-4 flex justify-center gap-2">
           {code.map((digit, index) => (
             <input
@@ -65,7 +62,11 @@ const PasswordSet = () => {
             />
           ))}
         </div>
-        <div className="mt-5 spcace-y-3 flex flex-col">
+        <p className="text-center pt-3">
+          Didn't receive the code?{" "}
+          <span className="text-primary cursor-pointer">Resend</span>
+        </p>
+        <div className="mt-5 gap-3 flex flex-col">
           <InputField
             type="password"
             placeholder="Enter Password"
@@ -75,7 +76,7 @@ const PasswordSet = () => {
           />
           <InputField
             type="password"
-            placeholder={"Confirm Password"}
+            placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
@@ -87,7 +88,7 @@ const PasswordSet = () => {
             onChange={(e) => setReferalCode(e.target.value)}
             required
           />
-          <PrimaryButton type="submit" value="Next" />
+          <PrimaryButton type="button" value="Next" onClick={onNext} />
         </div>
       </div>
     </section>
