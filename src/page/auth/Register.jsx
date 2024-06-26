@@ -10,7 +10,7 @@ const Register = () => {
       <div className="bg-primary text-white">
         <div className="w-10/12 mx-auto h-screen">
           <div className="flex justify-between items-start">
-            <div>
+            <div className="hidden lg:block">
               <h1 className="text-3xl font-bold pt-10">
                 Sign up as a seller and Win!
               </h1>
