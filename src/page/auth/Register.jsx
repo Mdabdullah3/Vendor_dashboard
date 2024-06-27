@@ -12,7 +12,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   const handleNextStep = () => setStep((prev) => prev + 1);
-  const handleFinalStep = () => navigate("/admin");
+  const handleFinalStep = () => navigate("/profile");
   return (
     <section>
       <Navbar />

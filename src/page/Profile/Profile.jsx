@@ -4,6 +4,7 @@ import Navbar from "../../layout/Navbar";
 import { MdArrowBackIos } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { RiBankCardLine } from "react-icons/ri";
+import Addresset from "../../components/Profile/Addresset";
 
 const Profile = () => {
   const [activeStep, setActiveStep] = useState(1);
@@ -75,7 +76,7 @@ const Profile = () => {
           </h1>
         </div>
 
-        <form className="mt-6"></form>
+        <form className="mt-6">{activeStep === 1 && <Addresset />}</form>
       </div>
     </section>
   );
