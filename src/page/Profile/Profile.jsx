@@ -42,14 +42,23 @@ const Profile = () => {
     );
   };
 
+  const handlePreviousStep = () => {
+    setActiveStep((prevStep) => (prevStep > 0 ? prevStep - 1 : prevStep));
+  };
+
   return (
     <section className="">
       <Navbar />
       <div className="p-5 w-10/12 mx-auto">
         <div>
-          <h1 className="flex items-center gap-2 mb-4">
-            <MdArrowBackIos /> Back
-          </h1>
+          {activeStep > 0 && (
+            <h1
+              className="flex items-center gap-2 mb-4 cursor-pointer"
+              onClick={handlePreviousStep}
+            >
+              <MdArrowBackIos /> Back
+            </h1>
+          )}
         </div>
         <div className="">
           <div className="mx-4 p-4">

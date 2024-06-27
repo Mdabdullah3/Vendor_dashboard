@@ -1,5 +1,6 @@
 import React from "react";
 import PrimaryButton from "../common/PrimaryButton";
+import { Link } from "react-router-dom";
 
 const ProductSet = () => {
   return (
@@ -13,7 +14,9 @@ const ProductSet = () => {
         <h1 className="text-xl font-semibold mb-4 text-center">
           Upload your first product
         </h1>
-        <PrimaryButton value="Add Product" />
+        <Link to="/admin">
+          <PrimaryButton value="Add Product" />
+        </Link>
         <p className="mt-3">
           Add descriptions, images, and other details of your first product
         </p>
