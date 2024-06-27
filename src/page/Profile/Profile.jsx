@@ -1,11 +1,12 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { FaDatabase, FaRegAddressCard } from "react-icons/fa";
-import Navbar from "../../layout/Navbar";
 import { MdArrowBackIos } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { RiBankCardLine } from "react-icons/ri";
 import Addresset from "../../components/Profile/Addresset";
 import VerifyIdBank from "../../components/Profile/VerifyIdBank";
+import ProductSet from "../../components/Profile/ProductSet";
+import Navbar from "../../layout/Navbar";
 
 const Profile = () => {
   const [activeStep, setActiveStep] = useState(1);
@@ -23,6 +24,7 @@ const Profile = () => {
   const [routingNumber, setRoutingNumber] = useState("");
   const [bankName, setBankName] = useState("");
   const [bankBranch, setBankBranch] = useState("");
+
   const menu = [
     { label: "Profile", icon: <CgProfile /> },
     { label: "Address", icon: <FaRegAddressCard /> },
@@ -32,6 +34,12 @@ const Profile = () => {
 
   const handleStepClick = (step) => {
     setActiveStep(step);
+  };
+
+  const handleNextStep = () => {
+    setActiveStep((prevStep) =>
+      prevStep + 1 < menu.length ? prevStep + 1 : prevStep
+    );
   };
 
   return (
@@ -47,9 +55,9 @@ const Profile = () => {
           <div className="mx-4 p-4">
             <div className="flex items-center">
               {menu.map((item, index) => (
-                <>
+                <React.Fragment key={index}>
                   <div
-                    className={`flex items-center  relative ${
+                    className={`flex items-center relative ${
                       activeStep === index ? "text-primary" : "text-gray-400"
                     }`}
                   >
@@ -64,7 +72,7 @@ const Profile = () => {
                       {item.icon}
                     </div>
                     <div
-                      className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase  ${
+                      className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase ${
                         activeStep === index ? "text-primary" : "text-gray-500"
                       }`}
                     >
@@ -74,13 +82,13 @@ const Profile = () => {
                   {index < menu.length - 1 && (
                     <div
                       className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
-                        activeStep === index
+                        activeStep >= index + 1
                           ? "border-primary"
                           : "border-gray-300"
                       }`}
                     ></div>
                   )}
-                </>
+                </React.Fragment>
               ))}
             </div>
           </div>
@@ -90,9 +98,10 @@ const Profile = () => {
           </h1>
         </div>
 
-        <form className="mt-6 w-8/12">
+        <form className="mt-6">
           {activeStep === 1 && (
             <Addresset
+              handleNextStep={handleNextStep}
               setSelectedCity={setSelectedCity}
               selectedDistrict={selectedDistrict}
               setSelectedDistrict={setSelectedDistrict}
@@ -104,6 +113,7 @@ const Profile = () => {
           )}
           {activeStep === 2 && (
             <VerifyIdBank
+              handleNextStep={handleNextStep}
               setSelectedIdCard={setSelectedIdCard}
               setIdCardBackSide={setIdCardBackSide}
               idCardNumber={idCardNumber}
@@ -121,6 +131,7 @@ const Profile = () => {
               setBankBranch={setBankBranch}
             />
           )}
+          {activeStep === 3 && <ProductSet />}
         </form>
       </div>
     </section>

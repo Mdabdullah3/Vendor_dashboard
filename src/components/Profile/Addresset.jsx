@@ -13,6 +13,7 @@ const Addresset = ({
   detailAddress,
   setReturnAddress,
   returnAddress,
+  handleNextStep,
 }) => {
   const [bdDistricts, setBdDistricts] = useState([]);
   const [bdCities, setBdCities] = useState([]);
@@ -99,7 +100,7 @@ const Addresset = ({
         />
       </div>
       <div className="mt-5">
-        <PrimaryButton value={"Next"} />
+        <PrimaryButton value={"Next"} onClick={handleNextStep} />
       </div>
     </section>
   );
