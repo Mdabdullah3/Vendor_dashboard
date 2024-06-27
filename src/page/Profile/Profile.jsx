@@ -5,10 +5,24 @@ import { MdArrowBackIos } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { RiBankCardLine } from "react-icons/ri";
 import Addresset from "../../components/Profile/Addresset";
+import VerifyIdBank from "../../components/Profile/VerifyIdBank";
 
 const Profile = () => {
   const [activeStep, setActiveStep] = useState(1);
-
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [detailAddress, setDetailAddress] = useState("");
+  const [returnAddress, setReturnAddress] = useState(true);
+  // verify id and Bank
+  const [idCardFrontSide, setSelectedIdCard] = useState(null);
+  const [idCardBackSide, setIdCardBackSide] = useState(null);
+  const [idCardNumber, setIdCardNumber] = useState("");
+  const [bankStatement, setBankStatement] = useState(null);
+  const [accountHolderName, setAccountHolderName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [routingNumber, setRoutingNumber] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [bankBranch, setBankBranch] = useState("");
   const menu = [
     { label: "Profile", icon: <CgProfile /> },
     { label: "Address", icon: <FaRegAddressCard /> },
@@ -76,7 +90,38 @@ const Profile = () => {
           </h1>
         </div>
 
-        <form className="mt-6">{activeStep === 1 && <Addresset />}</form>
+        <form className="mt-6 w-8/12">
+          {activeStep === 1 && (
+            <Addresset
+              setSelectedCity={setSelectedCity}
+              selectedDistrict={selectedDistrict}
+              setSelectedDistrict={setSelectedDistrict}
+              setDetailAddress={setDetailAddress}
+              detailAddress={detailAddress}
+              setReturnAddress={setReturnAddress}
+              returnAddress={returnAddress}
+            />
+          )}
+          {activeStep === 2 && (
+            <VerifyIdBank
+              setSelectedIdCard={setSelectedIdCard}
+              setIdCardBackSide={setIdCardBackSide}
+              idCardNumber={idCardNumber}
+              setIdCardNumber={setIdCardNumber}
+              setBankStatement={setBankStatement}
+              accountHolderName={accountHolderName}
+              setAccountHolderName={setAccountHolderName}
+              accountNumber={accountNumber}
+              setAccountNumber={setAccountNumber}
+              routingNumber={routingNumber}
+              setRoutingNumber={setRoutingNumber}
+              bankName={bankName}
+              setBankName={setBankName}
+              bankBranch={bankBranch}
+              setBankBranch={setBankBranch}
+            />
+          )}
+        </form>
       </div>
     </section>
   );
