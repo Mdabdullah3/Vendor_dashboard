@@ -41,7 +41,6 @@ const Profile = () => {
       prevStep + 1 < menu.length ? prevStep + 1 : prevStep
     );
   };
-
   const handlePreviousStep = () => {
     setActiveStep((prevStep) => (prevStep > 0 ? prevStep - 1 : prevStep));
   };
