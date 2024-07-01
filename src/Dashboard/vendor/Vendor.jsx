@@ -6,7 +6,6 @@ import { vendor } from "../../utils/constant";
 import VendorCard from "../../components/Dashboard/Vendor/VendorCard";
 const Vendor = () => {
   const [searchTerm, setSearchTerm] = useState("");
-
   const handleSearch = (value) => {
     setSearchTerm(value);
   };
