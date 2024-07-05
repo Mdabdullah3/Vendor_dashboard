@@ -45,7 +45,6 @@ const PasswordSet = ({ onNext }) => {
       <p className="text-gray-600 text-[14px]">
         Enter the 6-digit code sent to {"0123456789"} via SMS.
       </p>
-
       <div className="mt-4 flex justify-center gap-2">
         {code.map((digit, index) => (
           <input
