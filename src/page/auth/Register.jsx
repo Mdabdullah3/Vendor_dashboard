@@ -63,7 +63,7 @@ const Register = () => {
                   </div>
                 )}
                 {step === 2 && <PasswordSet onNext={handleNextStep} />}
-                {step === 3 && <EmailSet onNext={handleFinalStep} />}
+                {/* {step === 3 && <EmailSet onNext={handleFinalStep} />} */}
               </div>
             </div>
           </div>

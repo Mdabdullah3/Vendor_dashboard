@@ -1,12 +1,12 @@
 import React, { useState, useRef } from "react";
-import PrimaryButton from "../common/PrimaryButton";
-import InputField from "../common/InputField";
+// import PrimaryButton from "../common/PrimaryButton";
+// import InputField from "../common/InputField";
 
 const PasswordSet = ({ onNext }) => {
   const [code, setCode] = useState(new Array(6).fill(""));
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [referalCode, setReferalCode] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [confirmPassword, setConfirmPassword] = useState("");
+  // const [referalCode, setReferalCode] = useState("");
   const inputRefs = useRef([]);
 
   const handleChange = (e, index) => {
@@ -64,7 +64,7 @@ const PasswordSet = ({ onNext }) => {
         Didn't receive the code?{" "}
         <span className="text-primary cursor-pointer">Resend</span>
       </p>
-      <div className="mt-5 gap-3 flex flex-col">
+      {/* <div className="mt-5 gap-3 flex flex-col">
         <InputField
           type="password"
           placeholder="Enter Password"
@@ -87,7 +87,7 @@ const PasswordSet = ({ onNext }) => {
           required
         />
         <PrimaryButton type="button" value="Next" onClick={onNext} />
-      </div>
+      </div> */}
     </section>
   );
 };
