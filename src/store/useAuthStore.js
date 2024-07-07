@@ -1,10 +1,20 @@
 // stores/authStore.js
-import create from 'zustand';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
-const useAuthStore = create((set) => ({
-    user: null,
-    setUser: (userData) => set({ user: userData }),
-    clearUser: () => set({ user: null }),
-}));
+const useAuthStore = create(
+    persist(
+        (set) => ({
+            user: null,
+            isAuthenticated: false,
+            setUser: (user) => set({ user, isAuthenticated: true }),
+            logout: () => set({ user: null, isAuthenticated: false }),
+        }),
+        {
+            name: 'auth-storage',
+            getStorage: () => localStorage,
+        }
+    )
+);
 
 export default useAuthStore;

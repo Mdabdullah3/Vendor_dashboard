@@ -5,6 +5,8 @@ import './App.css'
 import Register from './page/auth/Register';
 import Login from './page/auth/Login';
 import Profile from './page/Profile/Profile';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const App = () => {
   return (
     <div>
@@ -14,6 +16,8 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         <Route path="admin/*" element={<Admin />} />
       </Routes>
+
+      <ToastContainer />
     </div>
   );
 };

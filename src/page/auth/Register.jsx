@@ -1,18 +1,32 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Navbar from "../../layout/Navbar";
 import shopImg from "../../assets/shop.avif";
 import flagBd from "../../assets/Flag-Bangladesh.webp";
 import PrimaryButton from "../../components/common/PrimaryButton";
 import PasswordSet from "../../components/Auth/PasswordSet";
-import EmailSet from "../../components/Auth/EmailSet";
+import axios from "axios";
+import { API_URL } from "../../config";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const [step, setStep] = useState(1);
-  const navigate = useNavigate();
-
+  const [phone, setPhone] = useState("");
+  const [otpResponse, setOtpResponse] = useState(null);
   const handleNextStep = () => setStep((prev) => prev + 1);
-  const handleFinalStep = () => navigate("/profile");
+
+  const handlePhoneSubmit = async () => {
+    try {
+      const response = await axios.post(`${API_URL}/auth/send-otp`, { phone });
+      toast.success(response.data.message);
+      setOtpResponse(response.data);
+      handleNextStep();
+    } catch (error) {
+      console.error("Failed to send OTP", error);
+      toast.error("Failed to send OTP");
+    }
+  };
+
   return (
     <section>
       <Navbar />
@@ -51,9 +65,14 @@ const Register = () => {
                       <input
                         placeholder="Enter your phone number"
                         className="md:p-4 p-3 text-gray-900 focus:outline-none bg-white border-none rounded-lg"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
                       />
                     </div>
-                    <PrimaryButton value="Get OTP" onClick={handleNextStep} />
+                    <PrimaryButton
+                      value="Get OTP"
+                      onClick={handlePhoneSubmit}
+                    />
                     <Link
                       to="/login"
                       className="flex justify-end py-4 text-blue-600"
@@ -62,7 +81,13 @@ const Register = () => {
                     </Link>
                   </div>
                 )}
-                {step === 2 && <PasswordSet onNext={handleNextStep} />}
+                {step === 2 && (
+                  <PasswordSet
+                    otpData={otpResponse}
+                    phone={phone}
+                    onNext={handleNextStep}
+                  />
+                )}
                 {/* {step === 3 && <EmailSet onNext={handleFinalStep} />} */}
               </div>
             </div>
