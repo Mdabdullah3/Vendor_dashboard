@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 
-const FileUpload = ({ label, name }) => {
+const FileUpload = ({ label, name, setFile }) => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setSelectedFile(URL.createObjectURL(file));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSelectedFile(reader.result);
+        setFile(reader.result); 
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const handleRemoveFile = () => {
     setSelectedFile(null);
+    setFile(null);
   };
 
   return (

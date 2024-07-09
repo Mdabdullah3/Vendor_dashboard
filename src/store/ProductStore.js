@@ -35,7 +35,8 @@ const useProductStore = create((set) => ({
           const response = await axios.post(`${API_URL}/products`, productData, {
             withCredentials: true,
           });
-          toast.success(response.data.message);
+          toast.success("Product added successfully");
+          console.log(response.data.data);
           set((state) => ({
             products: [...state.products, response.data.data],
             loading: false,
