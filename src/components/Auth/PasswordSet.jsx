@@ -5,7 +5,7 @@ import { API_URL } from "../../config";
 import useAuthStore from "../../store/useAuthStore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-
+axios.defaults.withCredentials = true;
 const PasswordSet = ({ phone, onNext, otpData }) => {
   const [code, setCode] = useState(new Array(4).fill(""));
   // const [password, setPassword] = useState("");
@@ -49,11 +49,15 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
     const hash = otpData?.data?.hash;
 
     try {
-      const response = await axios.post(`${API_URL}/auth/verify-otp`, {
-        phone,
-        otp,
-        hash,
-      });
+      const response = await axios.post(
+        `${API_URL}/auth/verify-otp`,
+        {
+          phone,
+          otp,
+          hash,
+        },
+        { withCredentials: true }
+      );
       const user = response.data.data;
       console.log(user);
       setUser(user);

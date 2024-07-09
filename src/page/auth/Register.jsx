@@ -8,22 +8,33 @@ import PasswordSet from "../../components/Auth/PasswordSet";
 import axios from "axios";
 import { API_URL } from "../../config";
 import { toast } from "react-toastify";
+axios.defaults.withCredentials = true;
 
 const Register = () => {
   const [step, setStep] = useState(1);
   const [phone, setPhone] = useState("");
   const [otpResponse, setOtpResponse] = useState(null);
+  const [loading, setLoading] = useState(false);
+
   const handleNextStep = () => setStep((prev) => prev + 1);
 
   const handlePhoneSubmit = async () => {
+    setLoading(true);
     try {
-      const response = await axios.post(`${API_URL}/auth/send-otp`, { phone });
-      toast.success(response.data.message);
+      const response = await axios.post(
+        `${API_URL}/auth/send-otp`,
+        { phone },
+        { withCredentials: true }
+      );
+      console.log(response.data.data.message);
+      toast.success(response.data.data.message);
       setOtpResponse(response.data);
       handleNextStep();
     } catch (error) {
       console.error("Failed to send OTP", error);
       toast.error("Failed to send OTP");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -70,8 +81,10 @@ const Register = () => {
                       />
                     </div>
                     <PrimaryButton
-                      value="Get OTP"
+                      value={loading ? "Sending..." : "Send OTP"}
                       onClick={handlePhoneSubmit}
+                      disabled={loading}
+                      loading={loading}
                     />
                     <Link
                       to="/login"
