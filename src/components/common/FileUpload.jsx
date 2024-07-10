@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const FileUpload = ({ label, name, setFile }) => {
+const FileUpload = ({ label, name, setFile,file }) => {
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFileChange = (event) => {
@@ -24,10 +24,10 @@ const FileUpload = ({ label, name, setFile }) => {
     <div>
       <div>
         <label className="block font-mono text-secondary">{label}</label>
-        {selectedFile ? (
+        {selectedFile || file ? (
           <div className="relative">
             <img
-              src={selectedFile}
+              src={file || selectedFile}
               alt="Selected"
               className="w-32 h-32 rounded-md"
             />

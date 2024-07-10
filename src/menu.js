@@ -16,6 +16,7 @@ import SingleCustomer from "./Dashboard/customer/SingleCustomer";
 import Categories from "./Dashboard/categories/Categories";
 import AddProduct from './Dashboard/products/AddProducts'
 import Products from "./Dashboard/products/Products"
+import UpdateProducts from "./Dashboard/products/UpdateProducts";
 const menu = [
     {
         name: "Dashboard",
@@ -74,6 +75,12 @@ const menu = [
         layout: "/admin",
         path: "add-product",
         component: <AddProduct />
+    },
+    {
+        name: "Update Product",
+        layout: "/admin",
+        path: "update-product/:id",
+        component: <UpdateProducts />
     },
     {
         name: "Order & Review",

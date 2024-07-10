@@ -76,6 +76,7 @@ const useProductStore = create((set) => ({
                     product._id === idOrSlug || product.slug === idOrSlug ? response.data.data : product),
                 loading: false,
             }));
+            console.log(response);
         } catch (error) {
             set({ error: error.response?.data?.message || error.message, loading: false });
         }

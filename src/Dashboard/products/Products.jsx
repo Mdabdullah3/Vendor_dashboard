@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { FiPlus, FiEdit, FiTrash } from "react-icons/fi";
+import React, { useEffect } from "react";
+import { FiPlus, FiEdit } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import InputSearch from "../../components/common/InputSearch";
 import useProductStore from "../../store/ProductStore";
 import { SERVER } from "../../config";
+import Loading from "../../components/common/Loading";
 
 const ProductAdminPanel = () => {
   const {
@@ -17,6 +18,7 @@ const ProductAdminPanel = () => {
     setLimit,
     setSearchTerm,
     setSort,
+    loading,
   } = useProductStore();
 
   useEffect(() => {
@@ -34,6 +36,7 @@ const ProductAdminPanel = () => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+  if (loading) return <Loading />;
 
   return (
     <section>
@@ -83,11 +86,15 @@ const ProductAdminPanel = () => {
                   <td className="px-4 py-2">{product.vendorId}</td>
                   <td className="px-4 py-2">${product.price}</td>
                   <td className="px-4 py-2">{formatDate(product.createdAt)}</td>
-                  <td className="px-4 py-2 items-center flex space-x-2">
-                    <button className="text-yellow-500">
-                      <FiEdit />
-                    </button>
-                    <h1>Edit</h1>
+                  <td className="px-4 py-2 ">
+                    <Link to={`/admin/update-product/${product._id}`}>
+                      <div className="flex items-center space-x-2 cursor-pointer">
+                        <button className="text-yellow-500">
+                          <FiEdit />
+                        </button>
+                        <h1>Edit</h1>
+                      </div>
+                    </Link>
                   </td>
                 </tr>
               ))}

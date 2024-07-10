@@ -9,23 +9,46 @@ import "react-quill/dist/quill.snow.css";
 import PrimaryButton from "../../components/common/PrimaryButton";
 import { toast } from "react-toastify";
 import useProductStore from "../../store/ProductStore";
+import { useParams } from "react-router-dom";
+import { SERVER } from "../../config";
 
-const AddProducts = () => {
+const dummyData = {
+  electronics: {
+    Processor: "",
+    Memory: "",
+    Ram: "",
+    DisplayType: "",
+    Model: "",
+    CameraFront: "",
+    Battery: "",
+  },
+  normal: {
+    Size: "",
+    Material: "",
+    Color: "",
+  },
+};
+
+const UpdateProducts = () => {
   const [activeVideo, setActiveVideo] = useState("file upload");
   const [activeStep, setActiveStep] = useState(0);
   const [image1, setImage1] = useState(null);
   const [image2, setImage2] = useState(null);
   const [image3, setImage3] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
-  const { addProduct } = useProductStore();
+  const { id } = useParams();
+
+  const { updateProduct, loading, product, fetchProductByIdOrSlug } =
+    useProductStore();
   const [productType, setProductType] = useState("electronics");
+
   const [form, setForm] = useState({
     videoUrl: "",
-    user: "668bd330bf220f4fa9a60c31",
+    user: "gsdsf", // Placeholder user data
     img: [image1, image2, image3].filter(Boolean),
     productName: "",
-    category: "pant",
-    brand: "niki",
+    category: "",
+    brand: "",
     coverPhoto: coverImage,
     description: "",
     price: 0,
@@ -37,36 +60,59 @@ const AddProducts = () => {
     packageDimensionLength: "",
     packageDimensionWidth: "",
     packageDimensionHeight: "",
+    ...dummyData[productType],
   });
+
+  useEffect(() => {
+    fetchProductByIdOrSlug(id);
+  }, [id, fetchProductByIdOrSlug]);
+  useEffect(() => {
+    if (product) {
+      setForm({
+        ...form,
+        img: product.images.map((img) => img.secure_url),
+        productName: product.name,
+        category: product.category,
+        brand: product.brand,
+        coverPhoto: `${SERVER}${product.coverPhoto.secure_url}`,
+        description: product.description,
+        price: product.price,
+        promoPrice: product.promoPrice,
+        quantity: product.quantity,
+        sku: product.sku,
+        warranty: product.warranty,
+        packageWeight: product.packageWeight,
+        packageDimensionLength: product.packageDimensionLength,
+        packageDimensionWidth: product.packageDimensionWidth,
+        packageDimensionHeight: product.packageDimensionHeight,
+        ...dummyData[productType],
+      });
+      setCoverImage(`${SERVER}${product?.coverPhoto.secure_url}` || null);
+      setImage1(
+        product?.images[0] ? `${SERVER}${product?.images[0].secure_url}` : null
+      );
+      setImage2(
+        product?.images[1] ? `${SERVER}${product?.images[1].secure_url}` : null
+      );
+      setImage3(
+        product?.images[2] ? `${SERVER}${product?.images[2].secure_url}` : null
+      );
+    }
+  }, [product]);
 
   useEffect(() => {
     setForm((prevForm) => ({
       ...prevForm,
-      img: [image1, image2, image3].filter(Boolean),
+      img: [image1, image2, image3],
       coverPhoto: coverImage,
     }));
   }, [image1, image2, image3, coverImage]);
 
   useEffect(() => {
-    if (productType === "electronics") {
-      setForm((prevForm) => ({
-        ...prevForm,
-        Processor: "",
-        Memory: "",
-        Ram: "",
-        DisplayType: "",
-        Model: "",
-        CameraFront: "",
-        Battery: "",
-      }));
-    } else {
-      setForm((prevForm) => ({
-        ...prevForm,
-        Size: "",
-        Material: "",
-        Color: "",
-      }));
-    }
+    setForm((prevForm) => ({
+      ...prevForm,
+      ...dummyData[productType],
+    }));
   }, [productType]);
 
   const warrantyType = [
@@ -104,39 +150,22 @@ const AddProducts = () => {
     e.preventDefault();
 
     const formData = {
-      vendorId: "12133a5f-0b0d-4d5b-9b5c-0b0d4d5b9b5c",
       user: form.user,
       name: form.productName,
-      slug: form.productName.toLowerCase().split(" ").join("-"),
       price: form.price,
       quantity: form.quantity,
       summary: form.description.slice(0, 150),
       description: form.description,
       category: form.category,
       brand: form.brand,
-      coverPhoto: form.coverPhoto,
-      images: form.img.map((file) => `${file}`),
-      video: activeVideo === "file upload" ? form.videoFile : form.videoUrl,
-      videoType: activeVideo === "file upload" ? "file" : "url",
-      ...(productType === "electronics"
-        ? {
-            Processor: form.Processor,
-            Memory: form.Memory,
-            Ram: form.Ram,
-            DisplayType: form.DisplayType,
-            Model: form.Model,
-            CameraFront: form.CameraFront,
-            Battery: form.Battery,
-          }
-        : {
-            Size: form.Size,
-            Material: form.Material,
-            Color: form.Color,
-          }),
+      size: form.size,
+      coverPhoto: coverImage,
+      images: [image1, image2, image3].filter(Boolean),
     };
 
     try {
-      await addProduct(formData);
+      await updateProduct(id, formData);
+      toast.success("Product Update successfully");
     } catch (error) {
       console.error(error);
       toast.error(error.message);
@@ -179,8 +208,8 @@ const AddProducts = () => {
             onChange={(e) => setForm({ ...form, Model: e.target.value })}
           />
           <InputField
-            label="Camera Front"
-            placeholder="Camera Front"
+            label="Camera Front (Megapixels)"
+            placeholder="Camera Front (Megapixels)"
             value={form.CameraFront}
             onChange={(e) => setForm({ ...form, CameraFront: e.target.value })}
           />
@@ -217,7 +246,7 @@ const AddProducts = () => {
       );
     }
   };
-
+  console.log(coverImage);
   return (
     <section className="mt-5 lg:grid grid-cols-5 relative">
       <form className="col-span-4 w-11/12" onSubmit={handleSubmit}>
@@ -241,15 +270,31 @@ const AddProducts = () => {
             </p>
             <div className="my-4 flex">
               <FileUpload
+                file={coverImage}
                 label="cover"
                 name="coverPhoto"
                 setFile={setCoverImage}
               />
             </div>
             <div className="flex space-x-4">
-              <FileUpload label="Image1" name="img1" setFile={setImage1} />
-              <FileUpload label="Image2" name="img2" setFile={setImage2} />
-              <FileUpload label="Image3" name="img3" setFile={setImage3} />
+              <FileUpload
+                file={image1}
+                label="Image1"
+                name="img1"
+                setFile={setImage1}
+              />
+              <FileUpload
+                file={image2}
+                label="Image2"
+                name="img2"
+                setFile={setImage2}
+              />
+              <FileUpload
+                file={image3}
+                label="Image3"
+                name="img3"
+                setFile={setImage3}
+              />
             </div>
 
             <h1 className="text-xl text-primary mt-5">Video</h1>
@@ -483,4 +528,4 @@ const AddProducts = () => {
   );
 };
 
-export default AddProducts;
+export default UpdateProducts;
