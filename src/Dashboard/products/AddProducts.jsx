@@ -17,12 +17,12 @@ const AddProducts = () => {
   const [image2, setImage2] = useState(null);
   const [image3, setImage3] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
-  const { addProduct } = useProductStore();
+  const { addProduct,  } = useProductStore();
   const [productType, setProductType] = useState("electronics");
   const [form, setForm] = useState({
     videoUrl: "",
-    user: "668bd330bf220f4fa9a60c31", // Placeholder user data
-    img: [image1, image2, image3].filter(Boolean), // Filter out null values
+    user: "668bd330bf220f4fa9a60c31",
+    img: [image1, image2, image3].filter(Boolean),
     productName: "",
     category: "pant",
     brand: "niki",
@@ -38,6 +38,7 @@ const AddProducts = () => {
     packageDimensionWidth: "",
     packageDimensionHeight: "",
   });
+ 
 
   useEffect(() => {
     setForm((prevForm) => ({

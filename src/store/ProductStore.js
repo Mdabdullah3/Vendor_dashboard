@@ -8,16 +8,33 @@ const useProductStore = create((set) => ({
     totalProducts: 0,
     loading: false,
     error: null,
+    page: 1,
+    limit: 10,
+    searchTerm: '',
+    sort: '-createdAt,price',
 
-    fetchProducts: async (query) => {
+    fetchProducts: async () => {
         set({ loading: true });
+        const { page, limit, searchTerm, sort } = useProductStore.getState();
         try {
-            const response = await axios.get(`${API_URL}/products`, { params: query });
+            const response = await axios.get(`${API_URL}/products`, {
+                params: {
+                    _page: page,
+                    _limit: limit,
+                    _search: searchTerm ? `${searchTerm},name,slug,summary,description` : '',
+                    _sort: sort,
+                },
+            });
             set({ products: response.data.data, totalProducts: response.data.total, loading: false });
         } catch (error) {
             set({ error: error.response?.data?.message || error.message, loading: false });
         }
     },
+
+    setPage: (page) => set({ page }),
+    setLimit: (limit) => set({ limit }),
+    setSearchTerm: (searchTerm) => set({ searchTerm }),
+    setSort: (sort) => set({ sort }),
 
     fetchProductByIdOrSlug: async (idOrSlug) => {
         set({ loading: true });
@@ -32,23 +49,23 @@ const useProductStore = create((set) => ({
     addProduct: async (productData) => {
         set({ loading: true });
         try {
-          const response = await axios.post(`${API_URL}/products`, productData, {
-            withCredentials: true,
-          });
-          toast.success("Product added successfully");
-          console.log(response.data.data);
-          set((state) => ({
-            products: [...state.products, response.data.data],
-            loading: false,
-          }));
+            const response = await axios.post(`${API_URL}/products`, productData, {
+                withCredentials: true,
+            });
+            toast.success("Product added successfully");
+            console.log(response.data.data);
+            set((state) => ({
+                products: [...state.products, response.data.data],
+                loading: false,
+            }));
         } catch (error) {
-          set({
-            error: error.response?.data?.message || error.message,
-            loading: false,
-          });
+            set({
+                error: error.response?.data?.message || error.message,
+                loading: false,
+            });
         }
-      },
-      
+    },
+
 
     updateProduct: async (idOrSlug, productData) => {
         set({ loading: true });
