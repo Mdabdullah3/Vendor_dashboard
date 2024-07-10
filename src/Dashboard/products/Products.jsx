@@ -93,21 +93,26 @@ const ProductAdminPanel = () => {
               ))}
             </tbody>
           </table>
-          <div className="mt-4">
-            <button
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-              className="bg-gray-300 px-4 py-2 rounded mr-2"
-            >
-              Previous
-            </button>
-            <button
-              onClick={() => setPage(page + 1)}
-              disabled={page * limit >= totalProducts}
-              className="bg-gray-300 px-4 py-2 rounded"
-            >
-              Next
-            </button>
+          <div className="mt-8 flex justify-center">
+            <div>
+              <button
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
+                className="bg-gray-300 px-4 py-2 rounded"
+              >
+                Previous
+              </button>
+              <span className="mx-2 px-4 py-2 border-gray-400 border rounded-lg ">
+                {page}
+              </span>
+              <button
+                onClick={() => setPage(page + 1)}
+                disabled={page * limit >= totalProducts}
+                className="bg-gray-300 px-4 py-2 rounded"
+              >
+                Next
+              </button>
+            </div>
           </div>
         </main>
       </div>
