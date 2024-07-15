@@ -1,71 +1,83 @@
 import React, { useRef, useState, useEffect } from "react";
 import FileUpload from "../../components/common/FileUpload";
-import VideoUpload from "../../components/common/VideoUpload";
 import InputField from "../../components/common/InputField";
 import SelectField from "../../components/common/SelectField";
-import { category } from "../../utils/constant";
+import { toast } from "react-toastify";
+import useProductStore from "../../store/ProductStore";
+import useCategoryStore from "../../store/categoryStore";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import PrimaryButton from "../../components/common/PrimaryButton";
-import { toast } from "react-toastify";
-import useProductStore from "../../store/ProductStore";
+import useUserStore from "../../store/AuthStore";
 import { useParams } from "react-router-dom";
 import { SERVER } from "../../config";
 
-const dummyData = {
-  electronics: {
-    Processor: "",
-    Memory: "",
-    Ram: "",
-    DisplayType: "",
-    Model: "",
-    CameraFront: "",
-    Battery: "",
-  },
-  normal: {
-    Size: "",
-    Material: "",
-    Color: "",
-  },
-};
-
 const UpdateProducts = () => {
-  const [activeVideo, setActiveVideo] = useState("file upload");
+  const { id } = useParams();
   const [activeStep, setActiveStep] = useState(0);
+  const [video, setVideo] = useState(null);
   const [image1, setImage1] = useState(null);
   const [image2, setImage2] = useState(null);
   const [image3, setImage3] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
-  const { id } = useParams();
-
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [subCategories, setSubCategories] = useState([]);
+  const { user, fetchUser } = useUserStore();
   const { updateProduct, loading, product, fetchProductByIdOrSlug } =
     useProductStore();
-  const [productType, setProductType] = useState("electronics");
+  const { categories, fetchCategories } = useCategoryStore();
+  const genderOption = ["Men", "Women", "Baby", "Unisex"];
+  const sizeOptions = ["S", "M", "L", "XL", "XXL"];
+  useEffect(() => {
+    fetchCategories();
+    fetchUser();
+    fetchProductByIdOrSlug(id);
+  }, [fetchCategories, fetchUser, fetchProductByIdOrSlug, id]);
+
+  useEffect(() => {
+    if (selectedCategory) {
+      const category = categories.find((cat) => cat.id === selectedCategory);
+      setSubCategories(category?.subCategories || []);
+    }
+  }, [selectedCategory, categories]);
 
   const [form, setForm] = useState({
-    videoUrl: "",
-    user: "gsdsf", // Placeholder user data
+    video: video,
+    user: user?._id,
     img: [image1, image2, image3].filter(Boolean),
     productName: "",
+    summary: "",
     category: "",
-    brand: "",
+    subCategory: "",
+    brand: "niki",
     coverPhoto: coverImage,
     description: "",
     price: 0,
     promoPrice: 0,
     quantity: 0,
-    sku: "",
     warranty: "",
+    screenSize: "",
+    batteryLife: "",
+    cameraResolution: "",
+    storageCapacity: "",
+    os: "",
+    size: "",
+    gender: "",
+    material: "",
     packageWeight: "",
     packageDimensionLength: "",
     packageDimensionWidth: "",
     packageDimensionHeight: "",
-    ...dummyData[productType],
   });
 
   useEffect(() => {
-    fetchProductByIdOrSlug(id);
-  }, [id, fetchProductByIdOrSlug]);
+    setForm((prevForm) => ({
+      ...prevForm,
+      img: [image1, image2, image3].filter(Boolean),
+      coverPhoto: coverImage,
+      video: video,
+    }));
+  }, [image1, image2, image3, coverImage, video]);
   useEffect(() => {
     if (product) {
       setForm({
@@ -76,16 +88,20 @@ const UpdateProducts = () => {
         brand: product.brand,
         coverPhoto: `${SERVER}${product.coverPhoto.secure_url}`,
         description: product.description,
+        summary: product?.summary,
         price: product.price,
         promoPrice: product.promoPrice,
         quantity: product.quantity,
-        sku: product.sku,
-        warranty: product.warranty,
-        packageWeight: product.packageWeight,
-        packageDimensionLength: product.packageDimensionLength,
-        packageDimensionWidth: product.packageDimensionWidth,
-        packageDimensionHeight: product.packageDimensionHeight,
-        ...dummyData[productType],
+        specifications: {
+          screenSize: product?.screenSize,
+          batteryLife: product?.batteryLife,
+          cameraResolution: product?.cameraResolution,
+          storageCapacity: product?.storageCapacity,
+          os: product?.os,
+          size: product?.size,
+          gender: product?.gender,
+          material: product?.material,
+        },
       });
       setCoverImage(`${SERVER}${product?.coverPhoto.secure_url}` || null);
       setImage1(
@@ -97,24 +113,9 @@ const UpdateProducts = () => {
       setImage3(
         product?.images[2] ? `${SERVER}${product?.images[2].secure_url}` : null
       );
+      setVideo(product?.video ? `${SERVER}${product?.video.secure_url}` : null);
     }
   }, [product]);
-
-  useEffect(() => {
-    setForm((prevForm) => ({
-      ...prevForm,
-      img: [image1, image2, image3],
-      coverPhoto: coverImage,
-    }));
-  }, [image1, image2, image3, coverImage]);
-
-  useEffect(() => {
-    setForm((prevForm) => ({
-      ...prevForm,
-      ...dummyData[productType],
-    }));
-  }, [productType]);
-
   const warrantyType = [
     {
       id: 1,
@@ -128,11 +129,7 @@ const UpdateProducts = () => {
       value: "Brand Warranty",
       duration: "1 Year",
     },
-    {
-      id: 3,
-      label: "No Warranty",
-      value: "No Warranty",
-    },
+    { id: 3, label: "No Warranty", value: "No Warranty" },
   ];
 
   const formRefs = {
@@ -146,107 +143,57 @@ const UpdateProducts = () => {
     sectionRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
+  const handleImageUpload = (file, setFile) => {
+    if (!(file instanceof Blob)) {
+      console.error("Invalid file type. Expected a Blob or File.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result.split(",")[1];
+      const imageType = file.type;
+      setFile(`data:${imageType};base64,${base64String}`);
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const formData = {
+      vendorId: "",
       user: form.user,
+      video: form.video,
       name: form.productName,
+      slug: form.productName.toLowerCase().split(" ").join("-"),
       price: form.price,
       quantity: form.quantity,
-      summary: form.description.slice(0, 150),
+      summary: form.summary,
       description: form.description,
-      category: form.category,
+      category: `${form.category}/${form.subCategory}`,
       brand: form.brand,
-      size: form.size,
-      coverPhoto: coverImage,
-      images: [image1, image2, image3].filter(Boolean),
+      coverPhoto: form.coverPhoto,
+      images: form.img.map((file) => `${file}`),
+      specifications: {
+        screenSize: form?.screenSize,
+        batteryLife: form?.batteryLife,
+        cameraResolution: form?.cameraResolution,
+        storageCapacity: form?.storageCapacity,
+        os: form?.os,
+        size: form?.size,
+        gender: form?.gender,
+        material: form?.material,
+      },
     };
 
     try {
       await updateProduct(id, formData);
-      toast.success("Product Update successfully");
     } catch (error) {
-      console.error(error);
       toast.error(error.message);
     }
   };
-  console.log(form);
+  console.log(product);
 
-  const renderAdditionalFields = () => {
-    if (productType === "electronics") {
-      return (
-        <>
-          <InputField
-            label="Processor"
-            placeholder="Processor"
-            value={form.Processor}
-            onChange={(e) => setForm({ ...form, Processor: e.target.value })}
-          />
-          <InputField
-            label="Memory"
-            placeholder="Memory"
-            value={form.Memory}
-            onChange={(e) => setForm({ ...form, Memory: e.target.value })}
-          />
-          <InputField
-            label="RAM"
-            placeholder="RAM"
-            value={form.Ram}
-            onChange={(e) => setForm({ ...form, Ram: e.target.value })}
-          />
-          <InputField
-            label="Display Type"
-            placeholder="Display Type"
-            value={form.DisplayType}
-            onChange={(e) => setForm({ ...form, DisplayType: e.target.value })}
-          />
-          <InputField
-            label="Model"
-            placeholder="Model"
-            value={form.Model}
-            onChange={(e) => setForm({ ...form, Model: e.target.value })}
-          />
-          <InputField
-            label="Camera Front (Megapixels)"
-            placeholder="Camera Front (Megapixels)"
-            value={form.CameraFront}
-            onChange={(e) => setForm({ ...form, CameraFront: e.target.value })}
-          />
-          <InputField
-            label="Battery"
-            placeholder="Battery"
-            value={form.Battery}
-            onChange={(e) => setForm({ ...form, Battery: e.target.value })}
-          />
-        </>
-      );
-    } else {
-      return (
-        <>
-          <InputField
-            label="Size"
-            placeholder="Size"
-            value={form.Size}
-            onChange={(e) => setForm({ ...form, Size: e.target.value })}
-          />
-          <InputField
-            label="Material"
-            placeholder="Material"
-            value={form.Material}
-            onChange={(e) => setForm({ ...form, Material: e.target.value })}
-          />
-          <InputField
-            label="Color"
-            placeholder="Color"
-            value={form.Color}
-            onChange={(e) => setForm({ ...form, Color: e.target.value })}
-          />
-        </>
-      );
-    }
-  };
-  console.log(coverImage);
   return (
     <section className="mt-5 lg:grid grid-cols-5 relative">
       <form className="col-span-4 w-11/12" onSubmit={handleSubmit}>
@@ -255,15 +202,6 @@ const UpdateProducts = () => {
             Basic Information
           </h1>
           <div className="mt-5">
-            <SelectField
-              label="Product Type"
-              options={[
-                { label: "Electronics", value: "electronics" },
-                { label: "Normal", value: "normal" },
-              ]}
-              value={productType}
-              onChange={(e) => setProductType(e.target.value)}
-            />
             <h1 className="text-xl text-primary">Product Image</h1>
             <p className="text-gray-500">
               Your product image is the first thing customers will see.
@@ -271,9 +209,9 @@ const UpdateProducts = () => {
             <div className="my-4 flex">
               <FileUpload
                 file={coverImage}
-                label="cover"
+                label="Cover Photo "
                 name="coverPhoto"
-                setFile={setCoverImage}
+                setFile={(file) => handleImageUpload(file, setCoverImage)}
               />
             </div>
             <div className="flex space-x-4">
@@ -281,70 +219,31 @@ const UpdateProducts = () => {
                 file={image1}
                 label="Image1"
                 name="img1"
-                setFile={setImage1}
+                setFile={(file) => handleImageUpload(file, setImage1)}
               />
               <FileUpload
-                file={image2}
                 label="Image2"
+                file={image2}
                 name="img2"
-                setFile={setImage2}
+                setFile={(file) => handleImageUpload(file, setImage2)}
               />
               <FileUpload
-                file={image3}
                 label="Image3"
+                file={image3}
                 name="img3"
-                setFile={setImage3}
+                setFile={(file) => handleImageUpload(file, setImage3)}
               />
             </div>
-
-            <h1 className="text-xl text-primary mt-5">Video</h1>
+            <h1 className="text-xl mt-5">Video</h1>
+            <p className="text-[13px] text-primary">Video Size Max 100 MB </p>
             <div className="flex items-center gap-10 mt-2">
-              <div className="flex items-center gap-3">
-                <input
-                  id="video"
-                  type="radio"
-                  name="radio-2"
-                  className="radio radio-primary"
-                  checked={activeVideo === "file upload"}
-                  onChange={() => setActiveVideo("file upload")}
-                />
-                <label
-                  htmlFor="video"
-                  onClick={() => setActiveVideo("file upload")}
-                >
-                  Video Upload
-                </label>
-              </div>
-              <div className="flex items-center gap-3">
-                <input
-                  id="videoUrl"
-                  type="radio"
-                  name="radio-2"
-                  className="radio radio-primary"
-                  checked={activeVideo === "url"}
-                  onChange={() => setActiveVideo("url")}
-                />
-                <label htmlFor="videoUrl" onClick={() => setActiveVideo("url")}>
-                  Video Url
-                </label>
-              </div>
-            </div>
-            <div className="flex mt-5">
-              {activeVideo === "file upload" ? (
-                <VideoUpload
-                  label="Upload Your Product Video"
-                  name="productVideo"
-                />
-              ) : (
-                <InputField
-                  label="Product Video Url"
-                  value={form.videoUrl}
-                  onChange={(e) =>
-                    setForm({ ...form, videoUrl: e.target.value })
-                  }
-                  placeholder="Product Video Url"
-                />
-              )}
+              <FileUpload
+                file={video}
+                label="Product Video"
+                acceptType="video"
+                name="video"
+                setFile={(file) => handleImageUpload(file, setVideo)}
+              />
             </div>
           </div>
           <section className="mt-10">
@@ -354,7 +253,7 @@ const UpdateProducts = () => {
             <p className="text-sm text-gray-500 mt-2">
               Enter the basic details about your product
             </p>
-            <div className="grid grid-cols-2 gap-5 mt-5">
+            <div className="mt-2">
               <InputField
                 label="Product Name"
                 placeholder="Product Name"
@@ -363,17 +262,44 @@ const UpdateProducts = () => {
                   setForm({ ...form, productName: e.target.value })
                 }
               />
-              <SelectField
-                label="Category"
-                options={category}
-                value={form.category}
-                onChange={(e) => setForm({ ...form, category: e.target.value })}
-              />
+              <div className="grid grid-cols-2 gap-4 mt-2">
+                <SelectField
+                  label="Category"
+                  options={categories.map((cat) => ({
+                    id: cat._id,
+                    label: cat.name,
+                    value: cat.name,
+                  }))}
+                  value={form.category}
+                  onChange={(e) => {
+                    setForm({ ...form, category: e.target.value });
+                    setSelectedCategory(e.target.value);
+                  }}
+                />
+                <SelectField
+                  label="Sub-Category"
+                  options={subCategories.map((sub) => ({
+                    key: sub._id,
+                    label: sub.name,
+                    value: sub.id,
+                  }))}
+                  value={form.subCategory}
+                  onChange={(e) =>
+                    setForm({ ...form, subCategory: e.target.value })
+                  }
+                />
+                <InputField
+                  label="Brand"
+                  placeholder="Brand"
+                  value={form.brand}
+                  onChange={(e) => setForm({ ...form, brand: e.target.value })}
+                />
+              </div>
               <InputField
-                label="Brand"
-                placeholder="Brand"
-                value={form.brand}
-                onChange={(e) => setForm({ ...form, brand: e.target.value })}
+                label="Product Summary"
+                placeholder="Product Summary"
+                value={form.summary}
+                onChange={(e) => setForm({ ...form, summary: e.target.value })}
               />
             </div>
           </section>
@@ -393,7 +319,6 @@ const UpdateProducts = () => {
             <h1 className="text-2xl font-bold tracking-wider pt-10">
               Price & Variants
             </h1>
-
             <div className="grid grid-cols-3 gap-5 mt-5">
               <InputField
                 label="Quantity"
@@ -401,12 +326,6 @@ const UpdateProducts = () => {
                 placeholder="Quantity"
                 value={form.quantity}
                 onChange={(e) => setForm({ ...form, quantity: e.target.value })}
-              />
-              <InputField
-                label="SKU"
-                placeholder="SKU"
-                value={form.sku}
-                onChange={(e) => setForm({ ...form, sku: e.target.value })}
               />
               <InputField
                 label="Price"
@@ -424,64 +343,148 @@ const UpdateProducts = () => {
                   setForm({ ...form, promoPrice: e.target.value })
                 }
               />
+              <SelectField
+                label="Size"
+                placeholder="Size"
+                options={sizeOptions?.map((size) => ({
+                  key: size,
+                  label: size,
+                  value: size,
+                }))}
+                value={form.size}
+                onChange={(e) => setForm({ ...form, size: e.target.value })}
+              />
+              <InputField
+                label="Material"
+                placeholder="Material"
+                value={form.material}
+                on
+                Change={(e) => setForm({ ...form, material: e.target.value })}
+              />
+              <SelectField
+                options={genderOption?.map((gender) => ({
+                  key: gender,
+                  label: gender,
+                  value: gender,
+                }))}
+                label="Gender"
+                placeholder="Gender"
+                value={form.gender}
+                onChange={(e) => setForm({ ...form, gender: e.target.value })}
+              />
             </div>
-            {renderAdditionalFields()}
+            <h1 className="my-4 font-semibold text-lg">
+              Electronics Product Specification
+            </h1>
+            <div className="grid grid-cols-2 gap-5">
+              <InputField
+                label="Display Size"
+                placeholder="Display Size"
+                value={form.screenSize}
+                onChange={(e) =>
+                  setForm({ ...form, screenSize: e.target.value })
+                }
+              />
+              <InputField
+                label="Battery Capacity"
+                placeholder="Battery Capacity"
+                value={form.batteryLife}
+                onChange={(e) =>
+                  setForm({ ...form, batteryLife: e.target.value })
+                }
+              />
+              {/* <InputField
+                label="RAM"
+                placeholder="RAM"
+                value={form.Ram}
+                onChange={(e) => setForm({ ...form, Ram: e.target.value })}
+              /> */}
+              {/* <InputField
+                label="Display Type"
+                placeholder="Display Type"
+                value={form.DisplayType}
+                onChange={(e) =>
+                  setForm({ ...form, DisplayType: e.target.value })
+                }
+              /> */}
+              <InputField
+                label="Storage"
+                placeholder="Storage"
+                value={form.storageCapacity}
+                onChange={(e) =>
+                  setForm({ ...form, storageCapacity: e.target.value })
+                }
+              />
+              <InputField
+                label="Camera Resolution"
+                placeholder="Camera Resolution"
+                value={form.cameraResolution}
+                onChange={(e) =>
+                  setForm({ ...form, cameraResolution: e.target.value })
+                }
+              />
+              <InputField
+                label="Os"
+                placeholder="Os"
+                value={form.os}
+                onChange={(e) => setForm({ ...form, os: e.target.value })}
+              />
+            </div>
           </section>
-        </div>
-
-        <section ref={formRefs.serviceWarranty}>
-          <h1 className="text-2xl font-bold tracking-wider mt-10">
-            Service & Warranty
-          </h1>
-          <SelectField
-            label="Warranty Type"
-            options={warrantyType}
-            value={form.warranty}
-            onChange={(e) => setForm({ ...form, warranty: e.target.value })}
-          />
-          <div className="grid grid-cols-3 gap-5 mt-5">
-            <InputField
-              label="Package Weight (kg)"
-              placeholder="Package Weight"
-              value={form.packageWeight}
-              onChange={(e) =>
-                setForm({ ...form, packageWeight: e.target.value })
-              }
-            />
-            <InputField
-              label="Length (cm)"
-              placeholder="Length"
-              value={form.packageDimensionLength}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  packageDimensionLength: e.target.value,
-                })
-              }
-            />
-            <InputField
-              label="Width (cm)"
-              placeholder="Width"
-              value={form.packageDimensionWidth}
-              onChange={(e) =>
-                setForm({ ...form, packageDimensionWidth: e.target.value })
-              }
-            />
-            <InputField
-              label="Height (cm)"
-              placeholder="Height"
-              value={form.packageDimensionHeight}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  packageDimensionHeight: e.target.value,
-                })
-              }
-            />
+          <section ref={formRefs.serviceWarranty}>
+            <h1 className="text-2xl font-bold tracking-wider mt-10">
+              Service & Warranty
+            </h1>
+            <div className="mt-4">
+              <SelectField
+                label="Warranty"
+                options={warrantyType.map((warranty) => ({
+                  key: warranty.label,
+                  label: warranty.label,
+                  value: warranty.value,
+                }))}
+                value={form.warranty}
+                onChange={(e) => setForm({ ...form, warranty: e.target.value })}
+              />
+            </div>
+            <div className="grid grid-cols-3 gap-5">
+              <InputField
+                label="Package Weight"
+                placeholder="Package Weight"
+                value={form.packageWeight}
+                onChange={(e) =>
+                  setForm({ ...form, packageWeight: e.target.value })
+                }
+              />
+              <InputField
+                label="Package Dimension Length"
+                placeholder="Package Dimension Length"
+                value={form.packageDimensionLength}
+                onChange={(e) =>
+                  setForm({ ...form, packageDimensionLength: e.target.value })
+                }
+              />
+              <InputField
+                label="Package Dimension Width"
+                placeholder="Package Dimension Width"
+                value={form.packageDimensionWidth}
+                onChange={(e) =>
+                  setForm({ ...form, packageDimensionWidth: e.target.value })
+                }
+              />
+              <InputField
+                label="Package Dimension Height"
+                placeholder="Package Dimension Height"
+                value={form.packageDimensionHeight}
+                onChange={(e) =>
+                  setForm({ ...form, packageDimensionHeight: e.target.value })
+                }
+              />
+            </div>
+          </section>
+          <div className="my-10">
+            <PrimaryButton value="Submit" onClick={handleSubmit} />
           </div>
-        </section>
-        <div className="mt-4">
-          <PrimaryButton type="submit" value="Add Product" />
         </div>
       </form>
       <section className="sticky top-24 h-72 cursor-pointer hidden lg:block">

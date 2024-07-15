@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 
-const FileUpload = ({ label, name, setFile,file }) => {
-  const [selectedFile, setSelectedFile] = useState(null);
+const FileUpload = ({ label, name, acceptType, setFile, file }) => {
+  const [selectedFile, setSelectedFile] = useState(file);
+
+  const accept = acceptType === "video" ? "video/*" : "image/*";
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -9,7 +11,7 @@ const FileUpload = ({ label, name, setFile,file }) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setSelectedFile(reader.result);
-        setFile(reader.result); 
+        setFile(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -24,13 +26,21 @@ const FileUpload = ({ label, name, setFile,file }) => {
     <div>
       <div>
         <label className="block font-mono text-secondary">{label}</label>
-        {selectedFile || file ? (
+        {selectedFile ? (
           <div className="relative">
-            <img
-              src={file || selectedFile}
-              alt="Selected"
-              className="w-32 h-32 rounded-md"
-            />
+            {accept === "image/*" ? (
+              <img
+                src={selectedFile}
+                alt="Selected"
+                className="w-32 h-32 rounded-md"
+              />
+            ) : accept === "video/*" ? (
+              <video
+                src={selectedFile}
+                controls
+                className="w-32 h-32 rounded-md"
+              />
+            ) : null}
             <button
               className="absolute top-0 right-0 m-2 text-red-600 font-bold rounded-full p-1"
               onClick={handleRemoveFile}
@@ -62,7 +72,7 @@ const FileUpload = ({ label, name, setFile,file }) => {
                     id="file-upload"
                     name={name}
                     type="file"
-                    accept="image/*"
+                    accept={accept}
                     onChange={handleFileChange}
                     className="sr-only"
                   />
