@@ -7,9 +7,10 @@ import Addresset from "../../components/Profile/Addresset";
 import VerifyIdBank from "../../components/Profile/VerifyIdBank";
 import ProductSet from "../../components/Profile/ProductSet";
 import Navbar from "../../layout/Navbar";
+import PersonalDetails from "../../components/Profile/PersonalDetails";
 
 const Profile = () => {
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(0);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [selectedCity, setSelectedCity] = useState(null);
   const [detailAddress, setDetailAddress] = useState("");
@@ -24,7 +25,14 @@ const Profile = () => {
   const [routingNumber, setRoutingNumber] = useState("");
   const [bankName, setBankName] = useState("");
   const [bankBranch, setBankBranch] = useState("");
-
+  // handle vendor Personal Information
+  const [avatar, setAvatar] = useState(null);
+  const [coverPhoto, setCoverPhoto] = useState(null);
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+  const [phone, setPhone] = useState();
+  const [password, setPassword] = useState();
+  const [confirmPassword, setConfirmPassword] = useState();
   const menu = [
     { label: "Profile", icon: <CgProfile /> },
     { label: "Address", icon: <FaRegAddressCard /> },
@@ -107,6 +115,23 @@ const Profile = () => {
         </div>
 
         <form className="mt-6">
+          {activeStep === 0 && (
+            <PersonalDetails
+              setPhone={setPhone}
+              phone={phone}
+              setEmail={setEmail}
+              email={email}
+              password={password}
+              confirmPassword={confirmPassword}
+              name={name}
+              setPassword={setPassword}
+              setConfirmPassword={setConfirmPassword}
+              setName={setName}
+              setAvatar={setAvatar}
+              setCoverPhoto={setCoverPhoto}
+              handleNextStep={handleNextStep}
+            />
+          )}
           {activeStep === 1 && (
             <Addresset
               handleNextStep={handleNextStep}

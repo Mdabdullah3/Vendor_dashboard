@@ -25,7 +25,7 @@ const InputFileUpload = ({ setSelectedFile, label, image = null }) => {
 
   return (
     <section>
-      <label htmlFor="dropzone" className="text-gray-600">
+      <label htmlFor="dropzone" className="font-medium">
         {label}
       </label>
       <div className="flex items-start gap-4 mt-2">

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FiPlus, FiEdit } from "react-icons/fi";
+import { FiEdit } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import InputSearch from "../../components/common/InputSearch";
 import useProductStore from "../../store/ProductStore";
@@ -44,13 +44,6 @@ const ProductAdminPanel = () => {
         <main className="flex-1 p-6">
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold mb-6">Products</h1>
-            <Link
-              to="/admin/add-product"
-              className="bg-blue-600 text-white px-4 py-2 rounded mb-6 flex items-center"
-            >
-              <FiPlus className="mr-2" />
-              Add Product
-            </Link>
           </div>
           <div className="flex-1 mb-4">
             <InputSearch

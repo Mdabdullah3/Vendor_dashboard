@@ -749,3 +749,16 @@ export const categoriesData = [
         status: "active",
     }
 ]
+
+export const financeData = [
+    {
+        id: 1,
+        orderCost: 14500,
+        phone: "01723243243",
+        email: "NwYkA@example.com",
+        paymentRecive: 402,
+        paymentPending: 13,
+        brand: "Samsung",
+        date: "2023-05-01",
+    },
+]

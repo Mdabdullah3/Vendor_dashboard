@@ -22,11 +22,11 @@ const SelectField = ({
         name={name}
         value={value}
         onChange={onChange}
-        placeholder={options[0].label}
+        placeholder={placeholder}
         required={required}
       >
         <option className=" bg-transparent w-full" value="">
-          {placeholder || options[0].label}
+          {placeholder}
         </option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
