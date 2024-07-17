@@ -9,6 +9,9 @@ import Products from "./Dashboard/products/Products"
 import OrderReview from "./Dashboard/Order/OrderReview";
 import Finance from "./Dashboard/Finance/index";
 import AdManager from "./Dashboard/AdManager/AdManager";
+import VoucherAdminPanel from "./Dashboard/Voucher/index";
+import AddNewVoucher from "./Dashboard/Voucher/AddVoucher";
+import EditVoucher from "./Dashboard/Voucher/EditVoucher";
 const menu = [
     {
         name: "Profile",
@@ -57,6 +60,19 @@ const menu = [
         path: "vouchers",
         navMenu: true,
         icon: <BsTicketDetailed className="h-6 w-6" />,
+        component: <VoucherAdminPanel />
+    },
+    {
+        name: "Create Voucher",
+        layout: "/admin",
+        path: "add-voucher",
+        component: <AddNewVoucher />
+    },
+    {
+        name: "Edit Voucher",
+        layout: "/admin",
+        path: "edit-voucher/:id",
+        component: <EditVoucher />
     },
     {
         name: "Event Manager",
