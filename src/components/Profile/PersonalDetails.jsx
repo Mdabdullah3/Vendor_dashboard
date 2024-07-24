@@ -36,32 +36,32 @@ const PersonalDetails = ({
         <InputField
           label={"Brand Name"}
           value={name}
-          onChange={setName}
+          onChange={(e) => setName(e.target.value)}
           placeholder="Enter Your Brand Name"
         />
         <InputField
           label={"Email Address"}
           value={email}
-          onChange={setEmail}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder="Enter Your Email"
         />
         <InputField
           label={"Phone Number"}
           value={phone}
-          onChange={setPhone}
+          onChange={(e) => setPhone(e.target.value)}
           placeholder="Enter Your Phone"
         />
         <InputField
           label={"Password"}
           value={password}
-          onChange={setPassword}
+          onChange={(e) => setPassword(e.target.value)}
           placeholder="Enter Your Password"
           type="password"
         />
         <InputField
           label={"Confirm Password"}
           value={confirmPassword}
-          onChange={setConfirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
           placeholder="Enter Your Confirm Password"
           type="password"
         />

@@ -52,6 +52,16 @@ const Profile = () => {
   const handlePreviousStep = () => {
     setActiveStep((prevStep) => (prevStep > 0 ? prevStep - 1 : prevStep));
   };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const form = {
+      name: name,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+    };
+    console.log(form);
+  };
 
   return (
     <section className="">
@@ -146,7 +156,7 @@ const Profile = () => {
           )}
           {activeStep === 2 && (
             <VerifyIdBank
-              handleNextStep={handleNextStep}
+              handleSubmit={handleSubmit}
               setSelectedIdCard={setSelectedIdCard}
               setIdCardBackSide={setIdCardBackSide}
               idCardNumber={idCardNumber}

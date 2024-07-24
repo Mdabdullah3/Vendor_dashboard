@@ -22,7 +22,7 @@ const VerifyIdBank = ({
   setBankName,
   bankBranch,
   setBankBranch,
-  handleNextStep,
+  handleSubmit,
 }) => {
   const [bankOption, setBankOption] = useState([]);
   useEffect(() => {
@@ -101,7 +101,7 @@ const VerifyIdBank = ({
           />
         </div>
         <div className="mt-5">
-          <PrimaryButton value={"Next"} onClick={handleNextStep} />
+          <PrimaryButton value={"Submit"} onClick={handleSubmit} />
         </div>
       </div>
     </section>
