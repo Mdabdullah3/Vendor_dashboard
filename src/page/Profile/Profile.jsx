@@ -60,7 +60,6 @@ const Profile = () => {
       password: password,
       confirmPassword: confirmPassword,
     };
-    console.log(form);
   };
 
   return (
