@@ -12,6 +12,7 @@ import AdManager from "./Dashboard/AdManager/AdManager";
 import VoucherAdminPanel from "./Dashboard/Voucher/index";
 import AddNewVoucher from "./Dashboard/Voucher/AddVoucher";
 import EditVoucher from "./Dashboard/Voucher/EditVoucher";
+import GetPlan from "./Dashboard/AdManager/GetPlan";
 const menu = [
     {
         name: "Profile",
@@ -53,6 +54,12 @@ const menu = [
         navMenu: true,
         icon: <IoIosRocket className="h-6 w-6" />,
         component: <AdManager />
+    },
+    {
+        name: "Get Ads",
+        layout: "/admin",
+        path: "ads-manager/:id",
+        component: <GetPlan />
     },
     {
         name: "Vouchers",

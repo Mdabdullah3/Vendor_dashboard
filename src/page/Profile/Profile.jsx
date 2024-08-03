@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaDatabase, FaRegAddressCard } from "react-icons/fa";
 import { MdArrowBackIos } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
@@ -8,31 +8,57 @@ import VerifyIdBank from "../../components/Profile/VerifyIdBank";
 import ProductSet from "../../components/Profile/ProductSet";
 import Navbar from "../../layout/Navbar";
 import PersonalDetails from "../../components/Profile/PersonalDetails";
+import useAuthStore from "../../store/useAuthStore";
 
 const Profile = () => {
+  const { user } = useAuthStore();
   const [activeStep, setActiveStep] = useState(0);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
-  const [selectedCity, setSelectedCity] = useState(null);
-  const [detailAddress, setDetailAddress] = useState("");
-  const [returnAddress, setReturnAddress] = useState(true);
-  // verify id and Bank
-  const [idCardFrontSide, setSelectedIdCard] = useState(null);
-  const [idCardBackSide, setIdCardBackSide] = useState(null);
-  const [idCardNumber, setIdCardNumber] = useState("");
-  const [bankStatement, setBankStatement] = useState(null);
-  const [accountHolderName, setAccountHolderName] = useState("");
-  const [accountNumber, setAccountNumber] = useState("");
-  const [routingNumber, setRoutingNumber] = useState("");
-  const [bankName, setBankName] = useState("");
-  const [bankBranch, setBankBranch] = useState("");
-  // handle vendor Personal Information
-  const [avatar, setAvatar] = useState(null);
-  const [coverPhoto, setCoverPhoto] = useState(null);
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [phone, setPhone] = useState();
-  const [password, setPassword] = useState();
-  const [confirmPassword, setConfirmPassword] = useState();
+  const [formData, setFormData] = useState({
+    selectedDistrict: null,
+    selectedCity: null,
+    detailAddress: "",
+    returnAddress: true,
+    idCardFrontSide: null,
+    idCardBackSide: null,
+    idCardNumber: "",
+    bankStatement: null,
+    accountHolderName: "",
+    accountNumber: "",
+    routingNumber: "",
+    bankName: "",
+    bankBranch: "",
+    avatar: null,
+    coverPhoto: null,
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const userData = user?._doc;
+  useEffect(() => {
+    if (userData) {
+      setFormData({
+        ...formData,
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone,
+        avatar: userData.avatar,
+        coverPhoto: userData.coverPhoto,
+        selectedDistrict: userData.location.state,
+        selectedCity: userData.location.city,
+        detailAddress: userData.location.address1,
+        idCardNumber: userData.idCardNumber,
+        accountHolderName: userData.accountHolderName,
+        accountNumber: userData.accountNumber,
+        routingNumber: userData.routingNumber,
+        bankName: userData.bankName,
+        bankBranch: userData.bankBranch,
+      });
+    }
+  }, [userData]);
+
   const menu = [
     { label: "Profile", icon: <CgProfile /> },
     { label: "Address", icon: <FaRegAddressCard /> },
@@ -40,26 +66,18 @@ const Profile = () => {
     { label: "Add Product", icon: <FaDatabase /> },
   ];
 
-  const handleStepClick = (step) => {
-    setActiveStep(step);
-  };
-
-  const handleNextStep = () => {
+  const handleStepClick = (step) => setActiveStep(step);
+  const handleNextStep = () =>
     setActiveStep((prevStep) =>
       prevStep + 1 < menu.length ? prevStep + 1 : prevStep
     );
-  };
-  const handlePreviousStep = () => {
+  const handlePreviousStep = () =>
     setActiveStep((prevStep) => (prevStep > 0 ? prevStep - 1 : prevStep));
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const form = {
-      name: name,
-      email: email,
-      password: password,
-      confirmPassword: confirmPassword,
-    };
+  const handleChange = (field, value) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
   };
 
   return (
@@ -76,105 +94,70 @@ const Profile = () => {
             </h1>
           )}
         </div>
-        <div className="">
-          <div className="mx-4 p-4">
-            <div className="flex items-center">
-              {menu.map((item, index) => (
-                <React.Fragment key={index}>
+        <div className="mx-4 p-4">
+          <div className="flex items-center">
+            {menu.map((item, index) => (
+              <React.Fragment key={index}>
+                <div
+                  className={`flex items-center relative ${
+                    activeStep === index ? "text-primary" : "text-gray-400"
+                  }`}
+                >
                   <div
-                    className={`flex items-center relative ${
-                      activeStep === index ? "text-primary" : "text-gray-400"
+                    className={`rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 flex justify-center cursor-pointer ${
+                      activeStep === index
+                        ? "border-primary bg-primary text-white"
+                        : "border-gray-400"
+                    }`}
+                    onClick={() => handleStepClick(index)}
+                  >
+                    {item.icon}
+                  </div>
+                  <div
+                    className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase ${
+                      activeStep === index ? "text-primary" : "text-gray-500"
                     }`}
                   >
-                    <div
-                      className={`rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 flex justify-center cursor-pointer ${
-                        activeStep === index
-                          ? "border-primary bg-primary text-white"
-                          : "border-gray-400"
-                      }`}
-                      onClick={() => handleStepClick(index)}
-                    >
-                      {item.icon}
-                    </div>
-                    <div
-                      className={`absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium uppercase ${
-                        activeStep === index ? "text-primary" : "text-gray-500"
-                      }`}
-                    >
-                      {item.label}
-                    </div>
+                    {item.label}
                   </div>
-                  {index < menu.length - 1 && (
-                    <div
-                      className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
-                        activeStep >= index + 1
-                          ? "border-primary"
-                          : "border-gray-300"
-                      }`}
-                    ></div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
+                </div>
+                {index < menu.length - 1 && (
+                  <div
+                    className={`flex-auto border-t-2 transition duration-500 ease-in-out ${
+                      activeStep >= index + 1
+                        ? "border-primary"
+                        : "border-gray-300"
+                    }`}
+                  ></div>
+                )}
+              </React.Fragment>
+            ))}
           </div>
           <h1 className="mt-10">
             Please complete the todo as soon as possible, then start your
             business journey.
           </h1>
         </div>
-
-        <form className="mt-6">
+        <section className="mt-6">
           {activeStep === 0 && (
             <PersonalDetails
-              setPhone={setPhone}
-              phone={phone}
-              setEmail={setEmail}
-              email={email}
-              password={password}
-              confirmPassword={confirmPassword}
-              name={name}
-              setPassword={setPassword}
-              setConfirmPassword={setConfirmPassword}
-              setName={setName}
-              setAvatar={setAvatar}
-              setCoverPhoto={setCoverPhoto}
+              formData={formData}
+              handleChange={handleChange}
               handleNextStep={handleNextStep}
             />
           )}
           {activeStep === 1 && (
             <Addresset
+              formData={formData}
+              handleChange={handleChange}
               handleNextStep={handleNextStep}
-              setSelectedCity={setSelectedCity}
-              selectedDistrict={selectedDistrict}
-              setSelectedDistrict={setSelectedDistrict}
-              setDetailAddress={setDetailAddress}
-              detailAddress={detailAddress}
-              setReturnAddress={setReturnAddress}
-              returnAddress={returnAddress}
             />
           )}
           {activeStep === 2 && (
-            <VerifyIdBank
-              handleSubmit={handleSubmit}
-              setSelectedIdCard={setSelectedIdCard}
-              setIdCardBackSide={setIdCardBackSide}
-              idCardNumber={idCardNumber}
-              setIdCardNumber={setIdCardNumber}
-              setBankStatement={setBankStatement}
-              accountHolderName={accountHolderName}
-              setAccountHolderName={setAccountHolderName}
-              accountNumber={accountNumber}
-              setAccountNumber={setAccountNumber}
-              routingNumber={routingNumber}
-              setRoutingNumber={setRoutingNumber}
-              bankName={bankName}
-              setBankName={setBankName}
-              bankBranch={bankBranch}
-              setBankBranch={setBankBranch}
-            />
+            <VerifyIdBank formData={formData} handleChange={handleChange} />
           )}
           {activeStep === 3 && <ProductSet />}
-        </form>
+        </section>
       </div>
     </section>
   );

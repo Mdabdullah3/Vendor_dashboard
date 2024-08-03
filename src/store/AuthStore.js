@@ -18,23 +18,12 @@ const useUserStore = create((set, get) => ({
         }
     },
 
-    updateUser: async (userData) => {
-        set({ loading: true, error: null });
-        try {
-            const response = await axios.patch(`${API_URL}/users/me`, userData, {
-                withCredentials: true,
-            });
-            set({ user: response.data.data, loading: false });
-        } catch (error) {
-            set({ error: error.message, loading: false });
-        }
-    },
-
     logout: async () => {
         set({ loading: true, error: null });
         try {
             await axios.post(`${API_URL}/auth/logout`, {}, { withCredentials: true });
             set({ user: null, loading: false });
+            toast.success('Logout successful');
         } catch (error) {
             set({ error: error.message, loading: false });
         }
@@ -47,7 +36,7 @@ const useUserStore = create((set, get) => ({
             if (response.status === 200) {
                 await get().fetchUser();
                 toast.success('Login successful');
-                router('/admin');
+                router('/profile');
                 console.log(response)
             } else {
                 toast.error('Login failed. Please try again.');
@@ -58,6 +47,20 @@ const useUserStore = create((set, get) => ({
             set({ loading: false });
         }
     },
+    updateUser: async (userData) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await axios.patch(`${API_URL}/users/me`, userData, {
+                withCredentials: true,
+            });
+            toast.success("Profile Update Successfully")
+            console.log(response);
+            set({ user: response.data.data, loading: false });
+        } catch (error) {
+            set({ error: error.message, loading: false });
+        }
+    },
+
 
 }));
 

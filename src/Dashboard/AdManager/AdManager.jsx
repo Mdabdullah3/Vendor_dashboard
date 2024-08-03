@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 const AdManager = () => {
   const AdManager = [
     {
@@ -30,8 +31,9 @@ const AdManager = () => {
     "Action",
   ];
 
+  const navigate = useNavigate();
   const handleEditPackage = (id) => {
-    // Edit voucher logic
+    navigate(`/admin/ads-manager/${id}`);
   };
 
   // const handleDeletePackage = (id) => {};

@@ -6,8 +6,8 @@ import flagBd from "../../assets/Flag-Bangladesh.webp";
 import PrimaryButton from "../../components/common/PrimaryButton";
 import PasswordSet from "../../components/Auth/PasswordSet";
 import axios from "axios";
-import { API_URL } from "../../config";
 import { toast } from "react-toastify";
+import { API_URL } from "../../config";
 axios.defaults.withCredentials = true;
 
 const Register = () => {
@@ -19,6 +19,11 @@ const Register = () => {
   const handleNextStep = () => setStep((prev) => prev + 1);
 
   const handlePhoneSubmit = async () => {
+    const phoneRegex = /^01[3-9]\d{8}$/;
+    if (!phoneRegex.test(phone)) {
+      toast.error("Invalid Phone Number");
+      return;
+    }
     setLoading(true);
     try {
       const response = await axios.post(
@@ -74,7 +79,7 @@ const Register = () => {
                         <h1>+880</h1>
                       </div>
                       <input
-                        placeholder="Enter your phone number"
+                        placeholder="017XXXXXXXX"
                         className="md:p-4 p-3 text-gray-900 focus:outline-none bg-white border-none rounded-lg"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}

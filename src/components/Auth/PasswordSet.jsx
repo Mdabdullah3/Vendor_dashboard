@@ -62,7 +62,7 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
       console.log(user);
       setUser(user);
       toast.success(response.data.message);
-      navigate("/admin");
+      navigate("/profile");
     } catch (error) {
       toast.error(error.response.data.message);
     }

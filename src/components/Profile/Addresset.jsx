@@ -4,17 +4,7 @@ import InputField from "../common/InputField";
 import PrimaryButton from "../common/PrimaryButton";
 import InputToggle from "../common/InputToggle";
 
-const Addresset = ({
-  setSelectedCity,
-  setSelectedDistrict,
-  selectedDistrict,
-  selectedCity,
-  setDetailAddress,
-  detailAddress,
-  setReturnAddress,
-  returnAddress,
-  handleNextStep,
-}) => {
+const Addresset = ({ formData, handleChange, handleNextStep }) => {
   const [bdDistricts, setBdDistricts] = useState([]);
   const [bdCities, setBdCities] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
@@ -37,69 +27,47 @@ const Addresset = ({
   }, []);
 
   useEffect(() => {
-    if (selectedDistrict) {
+    if (formData.selectedDistrict) {
       const filteredCities = bdCities.filter(
-        (city) => city.district_id === selectedDistrict.value
+        (city) => city.district_id === formData.selectedDistrict.value
       );
       setCityOptions(
         filteredCities.map((city) => ({ value: city.id, label: city.name }))
       );
     }
-  }, [selectedDistrict, bdCities]);
-
-  const handleDistrictChange = (selectedOption) => {
-    setSelectedDistrict(selectedOption);
-    setCityOptions([]);
-  };
+  }, [formData.selectedDistrict, bdCities]);
 
   return (
     <section>
-      <h1 className="font-semibold text-xl">Address Information</h1>
-      <p className="text-gray-500 font-medium">Store Address</p>
-      <div className="my-4">
-        <label htmlFor="district" className="pb-2 font-medium">
-          District <span className="text-red-500">*</span>
-        </label>
+      <h1 className="text-xl font-semibold my-2">Update Your Address</h1>
+      <div className="space-y-3">
+        <h1>Update Your District & City</h1>
         <Select
-          id="district"
           options={bdDistricts.map((district) => ({
             value: district.id,
             label: district.name,
           }))}
-          value={selectedDistrict}
-          onChange={handleDistrictChange}
-          placeholder="Select District"
+          value={formData.selectedDistrict}
+          onChange={(value) => handleChange("selectedDistrict", value)}
+          placeholder={"Select Your District"}
         />
-      </div>
-      <div className="my-4">
-        <label htmlFor="city" className="pb-2 font-medium">
-          City <span className="text-red-500">*</span>
-        </label>
         <Select
-          id="city"
           options={cityOptions}
-          placeholder="Select City"
-          isDisabled={!selectedDistrict}
-          onChange={(selectedOption) => setSelectedCity(selectedOption)}
+          value={formData.selectedCity}
+          onChange={(value) => handleChange("selectedCity", value)}
+          placeholder={"Select Your City"}
         />
-      </div>
-      <div className="mt-3">
         <InputField
-          label="Detail Address"
-          onChange={(e) => setDetailAddress(e.target.value)}
-          value={detailAddress}
-          required
-          placeholder="Detail Address"
+          label={"Detail Address"}
+          value={formData.detailAddress}
+          onChange={(e) => handleChange("detailAddress", e.target.value)}
+          placeholder="Enter Your Detail Address"
         />
-      </div>
-      <div className="mt-3">
         <InputToggle
-          label="Return Address"
-          value={returnAddress}
-          onChange={() => setReturnAddress(!returnAddress)}
+          label={"Is Return Address"}
+          checked={formData.returnAddress}
+          onChange={(e) => handleChange("returnAddress", e.target.checked)}
         />
-      </div>
-      <div className="mt-5">
         <PrimaryButton value={"Next"} onClick={handleNextStep} />
       </div>
     </section>

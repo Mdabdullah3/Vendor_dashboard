@@ -1,7 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const InputFileUpload = ({ setSelectedFile, label, image = null }) => {
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(image);
+
+  // Update previewUrl when the image prop changes
+  useEffect(() => {
+    if (image) {
+      // Handle file URL creation if image is a Blob or File
+      setPreviewUrl(image);
+    } else {
+      setPreviewUrl(null);
+    }
+  }, [image]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -65,16 +75,18 @@ const InputFileUpload = ({ setSelectedFile, label, image = null }) => {
                 className="mx-auto max-h-36"
               />
               <button
-                className="px-2  bg-white text-red-500 text-lg rounded-full absolute top-0 -right-2 border border-red-500"
+                className="px-2 bg-white text-red-500 text-lg rounded-full absolute top-0 -right-2 border border-red-500"
                 onClick={handleRemoveFile}
               >
                 x
               </button>
             </div>
           ) : (
-            <div>
-              <img src={image} alt="" className="mx-auto max-h-36" />
-            </div>
+            image && (
+              <div>
+                <img src={image} alt="" className="mx-auto max-h-36" />
+              </div>
+            )
           )}
         </div>
       </div>
