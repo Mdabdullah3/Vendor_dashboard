@@ -46,8 +46,8 @@ const Profile = () => {
         phone: userData.phone,
         avatar: userData.avatar,
         coverPhoto: userData.coverPhoto,
-        selectedDistrict: userData.location.state,
-        selectedCity: userData.location.city,
+        selectedDistrict: userData.location.state.label,
+        selectedCity: userData.location.city.label,
         detailAddress: userData.location.address1,
         idCardNumber: userData.idCardNumber,
         accountHolderName: userData.accountHolderName,
@@ -55,6 +55,9 @@ const Profile = () => {
         routingNumber: userData.routingNumber,
         bankName: userData.bankName,
         bankBranch: userData.bankBranch,
+        idCardFrontPageImage: userData.idCardFrontPageImage,
+        idCardBackPageImage: userData.idCardBackPageImage,
+        bankStatementImage: userData.bankStatementImage,
       });
     }
   }, [userData]);
@@ -79,6 +82,7 @@ const Profile = () => {
       [field]: value,
     }));
   };
+  console.log(formData);
 
   return (
     <section className="">

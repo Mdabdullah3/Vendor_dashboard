@@ -1,23 +1,54 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import InputFileUpload from "../common/InputFileUpload";
 import InputField from "../common/InputField";
 import PrimaryButton from "../common/PrimaryButton";
 import axios from "axios";
 import { API_URL } from "../../config";
 import { toast } from "react-toastify";
+import Select from "react-select";
 
 const VerifyIdBank = ({ formData, handleChange }) => {
+  const [selectedBank, setSelectedBank] = useState(null);
+  const [bankOption, setBankOption] = useState([]);
+  useEffect(() => {
+    const fetchBanks = async () => {
+      const response = await fetch("bankData.json");
+      const data = await response.json();
+      setBankOption(data);
+    };
+    fetchBanks();
+  }, []);
   const getImagePreviewUrl = (file) => {
     if (file && (file instanceof File || file instanceof Blob)) {
       return URL.createObjectURL(file);
     }
     return null;
   };
+  const getBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
   const handleSubmit = async (e) => {
+   
     console.log(formData);
     e.preventDefault();
+    const idCardFrontBase64 = await getBase64(formData.idCardFrontSide);
+    const idCardBackBase64 = await getBase64(formData.idCardBackSide);
+    const bankStatementBase64 = await getBase64(formData.bankStatement);
+    const avatarBase64 = await getBase64(formData.avatar);
+    const payload = {
+      ...formData,
+      idCardFrontSide: idCardFrontBase64,
+      idCardBackSide: idCardBackBase64,
+      bankStatement: bankStatementBase64,
+      avatar: avatarBase64,
+    };
     try {
-      const response = await axios.patch(`${API_URL}/users/me`, formData, {
+      const response = await axios.patch(`${API_URL}/users/me`, payload, {
         withCredentials: true,
       });
       toast.success("Profile Update Successfully");
@@ -25,6 +56,12 @@ const VerifyIdBank = ({ formData, handleChange }) => {
     } catch (error) {
       toast.error(error.response?.data?.message);
     }
+    console.log(payload);
+  };
+
+  const handleBankChange = (bank) => {
+    setSelectedBank(bank);
+    handleChange("bankName", bank.label);
   };
   return (
     <section>
@@ -72,11 +109,15 @@ const VerifyIdBank = ({ formData, handleChange }) => {
           onChange={(e) => handleChange("routingNumber", e.target.value)}
           placeholder="Enter Your Routing Number"
         />
-        <InputField
-          label={"Bank Name"}
-          value={formData.bankName}
-          onChange={(e) => handleChange("bankName", e.target.value)}
-          placeholder="Enter Your Bank Name"
+        <Select
+          id="bankName"
+          options={bankOption?.map((bank) => ({
+            value: bank.BankName,
+            label: bank.BankName,
+          }))}
+          value={selectedBank}
+          onChange={handleBankChange}
+          placeholder="Select Bank"
         />
         <InputField
           label={"Bank Branch"}

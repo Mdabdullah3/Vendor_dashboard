@@ -8,6 +8,8 @@ const Addresset = ({ formData, handleChange, handleNextStep }) => {
   const [bdDistricts, setBdDistricts] = useState([]);
   const [bdCities, setBdCities] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
+  const [selectedDistrictObj, setSelectedDistrictObj] = useState(null); // Store full district object
+  const [selectedCityObj, setSelectedCityObj] = useState(null); // Store full city object
 
   useEffect(() => {
     const fetchDistricts = async () => {
@@ -27,15 +29,26 @@ const Addresset = ({ formData, handleChange, handleNextStep }) => {
   }, []);
 
   useEffect(() => {
-    if (formData.selectedDistrict) {
+    if (selectedDistrictObj) {
       const filteredCities = bdCities.filter(
-        (city) => city.district_id === formData.selectedDistrict.value
+        (city) => city.district_id === selectedDistrictObj.value
       );
       setCityOptions(
         filteredCities.map((city) => ({ value: city.id, label: city.name }))
       );
     }
-  }, [formData.selectedDistrict, bdCities]);
+  }, [selectedDistrictObj, bdCities]);
+
+  const handleDistrictChange = (district) => {
+    setSelectedDistrictObj(district); // Store full district object
+    handleChange("selectedDistrict", district.label); // Store only the label in formData
+    setSelectedCityObj(null); // Clear city selection when district changes
+  };
+
+  const handleCityChange = (city) => {
+    setSelectedCityObj(city); // Store full city object
+    handleChange("selectedCity", city.label); // Store only the label in formData
+  };
 
   return (
     <section>
@@ -47,15 +60,16 @@ const Addresset = ({ formData, handleChange, handleNextStep }) => {
             value: district.id,
             label: district.name,
           }))}
-          value={formData.selectedDistrict}
-          onChange={(value) => handleChange("selectedDistrict", value)}
+          value={selectedDistrictObj} // Bind to full object
+          onChange={handleDistrictChange} // Update both full object and label
           placeholder={"Select Your District"}
         />
         <Select
           options={cityOptions}
-          value={formData.selectedCity}
-          onChange={(value) => handleChange("selectedCity", value)}
+          value={selectedCityObj} // Bind to full object
+          onChange={handleCityChange} // Update both full object and label
           placeholder={"Select Your City"}
+          isDisabled={!selectedDistrictObj} // Disable until district is selected
         />
         <InputField
           label={"Detail Address"}
