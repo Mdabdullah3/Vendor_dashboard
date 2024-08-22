@@ -41,6 +41,7 @@ const Profile = () => {
     if (userData) {
       setFormData({
         ...formData,
+        role: "vendor",
         name: userData.name,
         email: userData.email,
         phone: userData.phone,
