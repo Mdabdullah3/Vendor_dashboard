@@ -33,18 +33,17 @@ const VerifyIdBank = ({ formData, handleChange }) => {
     });
   };
   const handleSubmit = async (e) => {
-   
     console.log(formData);
     e.preventDefault();
-    const idCardFrontBase64 = await getBase64(formData.idCardFrontSide);
-    const idCardBackBase64 = await getBase64(formData.idCardBackSide);
-    const bankStatementBase64 = await getBase64(formData.bankStatement);
+    const idCardFrontBase64 = await getBase64(formData.idCardFrontPageImage);
+    const idCardBackBase64 = await getBase64(formData.idCardBackPageImage);
+    const bankStatementBase64 = await getBase64(formData.bankStatementImage);
     const avatarBase64 = await getBase64(formData.avatar);
     const payload = {
       ...formData,
-      idCardFrontSide: idCardFrontBase64,
-      idCardBackSide: idCardBackBase64,
-      bankStatement: bankStatementBase64,
+      idCardFrontPageImage: idCardFrontBase64,
+      idCardBackPageImage: idCardBackBase64,
+      bankStatementImage: bankStatementBase64,
       avatar: avatarBase64,
     };
     try {
@@ -75,21 +74,21 @@ const VerifyIdBank = ({ formData, handleChange }) => {
         />
         <h1>Upload ID Card Front Side</h1>
         <InputFileUpload
-          setSelectedFile={(file) => handleChange("idCardFrontSide", file)}
+          setSelectedFile={(file) => handleChange("idCardFrontPageImage", file)}
           label={"ID Card Front Side"}
-          image={getImagePreviewUrl(formData.idCardFrontSide)}
+          image={getImagePreviewUrl(formData.idCardFrontPageImage)}
         />
         <h1>Upload ID Card Back Side</h1>
         <InputFileUpload
-          setSelectedFile={(file) => handleChange("idCardBackSide", file)}
+          setSelectedFile={(file) => handleChange("idCardBackPageImage", file)}
           label={"ID Card Back Side"}
-          image={getImagePreviewUrl(formData.idCardBackSide)}
+          image={getImagePreviewUrl(formData.idCardBackPageImage)}
         />
         <h1>Bank Information</h1>
         <InputFileUpload
-          setSelectedFile={(file) => handleChange("bankStatement", file)}
+          setSelectedFile={(file) => handleChange("bankStatementImage", file)}
           label={"Bank Statement"}
-          image={getImagePreviewUrl(formData.bankStatement)}
+          image={getImagePreviewUrl(formData.bankStatementImage)}
         />
         <InputField
           label={"Account Holder Name"}

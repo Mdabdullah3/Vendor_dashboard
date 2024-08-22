@@ -25,12 +25,12 @@ const PersonalDetails = ({ formData, handleChange, handleNextStep }) => {
           image={getImagePreviewUrl(formData.avatar)}
         />
 
-        <h2 className="my-2">Upload Your Brand Cover Photo</h2>
+        {/* <h2 className="my-2">Upload Your Brand Cover Photo</h2>
         <InputFileUpload
           setSelectedFile={(file) => handleChange("coverPhoto", file)}
           label={"Brand Cover Photo"}
           image={getImagePreviewUrl(formData.coverPhoto)}
-        />
+        /> */}
       </div>
       <div className="w-10/12 mt-4 space-y-3">
         <InputField
