@@ -8,9 +8,7 @@ import { useNavigate } from "react-router-dom";
 axios.defaults.withCredentials = true;
 const PasswordSet = ({ phone, onNext, otpData }) => {
   const [code, setCode] = useState(new Array(4).fill(""));
-  // const [password, setPassword] = useState("");
-  // const [confirmPassword, setConfirmPassword] = useState("");
-  // const [referalCode, setReferalCode] = useState("");
+  console.log(otpData);
   const inputRefs = useRef([]);
   const setUser = useAuthStore((state) => state.setUser);
   console.log(otpData);
@@ -59,7 +57,6 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
         { withCredentials: true }
       );
       const user = response.data.data;
-      console.log(user);
       setUser(user);
       toast.success(response.data.message);
       navigate("/profile");
@@ -68,6 +65,20 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
     }
   };
 
+  const handleResendOTP = async () => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/auth/send-otp`,
+        { phone },
+        { withCredentials: true }
+      );
+      toast.success("OTP resent successfully!");
+      console.log(response.data);
+    } catch (error) {
+      toast.error("Failed to resend OTP. Please try again.");
+      console.error("Failed to resend OTP", error);
+    }
+  };
   return (
     <section className="">
       <h1 className="text-xl font-semibold">Enter The Code</h1>
@@ -91,7 +102,9 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
       </div>
       <p className="text-center pt-3">
         Didn't receive the code?{" "}
-        <span className="text-primary cursor-pointer">Resend</span>
+        <span onClick={handleResendOTP} className="text-primary cursor-pointer">
+          Resend
+        </span>
       </p>
       <div className="mt-5 gap-3 flex flex-col">
         {/* <InputField
