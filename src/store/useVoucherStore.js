@@ -1,6 +1,7 @@
 import create from "zustand";
 import axios from "axios";
 import { API_URL } from "../config";
+import { toast } from "react-toastify";
 
 const useVoucherStore = create((set) => ({
     vouchers: [],
@@ -15,6 +16,15 @@ const useVoucherStore = create((set) => ({
             set({ vouchers: response.data.data, loading: false });
         } catch (error) {
             set({ error: error.response?.data?.message || "An error occurred", loading: false });
+        }
+    },
+    fetchVoucherMe: async () => {
+        set({ loading: true, error: null });
+        try {
+            const response = await axios?.get(`${API_URL}/users/me/vouchers`, { withCredentials: true });
+            set({ vouchers: response.data.data, loading: false });
+        } catch (error) {
+            set({ error: error.message, loading: false });
         }
     },
     fetchVoucherById: async (id) => {
@@ -37,8 +47,10 @@ const useVoucherStore = create((set) => ({
                 vouchers: [...state.vouchers, response.data.data],
                 loading: false,
             }));
+            toast.success("Voucher added successfully");
         } catch (error) {
             set({ error: error.response?.data?.message || "An error occurred", loading: false });
+            toast.error(error.response.data.message);
         }
     },
 
@@ -50,8 +62,10 @@ const useVoucherStore = create((set) => ({
                 vouchers: state.vouchers.filter((voucher) => voucher._id !== id),
                 loading: false,
             }));
+            toast.success("Voucher deleted successfully");
         } catch (error) {
             set({ error: error.response?.data?.message || "An error occurred", loading: false });
+            toast.error(error.response.data.message);
         }
     },
 
@@ -68,8 +82,10 @@ const useVoucherStore = create((set) => ({
                 loading: false,
                 selectedVoucher: null,
             }));
+            toast.success("Voucher updated successfully");
         } catch (error) {
             set({ error: error.response?.data?.message || "An error occurred", loading: false });
+            toast.error(error.response.data.message);
         }
     },
 }));

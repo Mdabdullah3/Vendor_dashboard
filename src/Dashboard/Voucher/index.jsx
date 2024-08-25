@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 import useVoucherStore from "../../store/useVoucherStore";
 
 const VoucherAdminPanel = () => {
-  const { vouchers, fetchVouchers } = useVoucherStore();
+  const { vouchers, fetchVoucherMe } = useVoucherStore();
   useEffect(() => {
-    fetchVouchers();
-  }, [fetchVouchers]);
+    fetchVoucherMe();
+  }, [fetchVoucherMe]);
   console.log(vouchers);
   const header = [
     "Code",
@@ -44,22 +44,33 @@ const VoucherAdminPanel = () => {
             </tr>
           </thead>
           <tbody>
-            {vouchers.map((voucher) => (
-              <tr key={voucher._id} className="border-b border-gray-200">
-                <td className="py-4 px-6">{voucher.voucherCode}</td>
-                <td className="py-4 px-6">{voucher.discount}</td>
-                <td className="py-4 px-6">{voucher.startDate}</td>
-                <td className="py-4 px-6">{voucher.endDate}</td>
-                <td className="py-4 px-6">{voucher.status}</td>
-                <td className="py-4 px-6 flex space-x-2">
-                  <Link to={`/admin/edit-voucher/${voucher._id}`}>
-                    <button className="flex items-center px-3 py-1 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
-                      <FiEdit className="mr-1" /> Edit
-                    </button>
-                  </Link>
+            {vouchers.length > 0 ? (
+              vouchers.map((voucher) => (
+                <tr key={voucher?._id} className="border-b border-gray-200">
+                  <td className="py-4 px-6">{voucher?.redeemCode}</td>
+                  <td className="py-4 px-6">{voucher?.discount}</td>
+                  <td className="py-4 px-6">{voucher?.startDate}</td>
+                  <td className="py-4 px-6">{voucher?.endDate}</td>
+                  <td className="py-4 px-6">{voucher?.status}</td>
+                  <td className="py-4 px-6 flex space-x-2">
+                    <Link to={`/admin/edit-voucher/${voucher?._id}`}>
+                      <button className="flex items-center px-3 py-1 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600">
+                        <FiEdit className="mr-1" /> Edit
+                      </button>
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={7}
+                  className="text-center text-xl font-semibold text-red-600 py-4"
+                >
+                  No Vouchers found
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

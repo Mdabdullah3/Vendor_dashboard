@@ -29,15 +29,14 @@ const EditProducts = () => {
   const genderOption = ["Men", "Women", "Baby", "Unisex"];
   const sizeOptions = ["S", "M", "L", "XL", "XXL"];
 
-  console.log(product);
   useEffect(() => {
     fetchCategories();
     fetchProductByIdOrSlug(id);
-  }, [fetchCategories, fetchProductByIdOrSlug, id]);
+  }, [fetchCategories, fetchProductByIdOrSlug, product, id]);
 
   useEffect(() => {
     if (selectedCategory) {
-      const category = categories.find((cat) => cat.id === selectedCategory);
+      const category = categories.find((cat) => cat._id === selectedCategory);
       setSubCategories(category?.subCategories || []);
     }
   }, [selectedCategory, categories]);
@@ -66,10 +65,10 @@ const EditProducts = () => {
     size: "",
     gender: "",
     material: "",
-    packageWeight: "",
-    packageDimensionLength: "",
-    packageDimensionWidth: "",
-    packageDimensionHeight: "",
+    weight: "",
+    height: "",
+    width: "",
+    dimension: "",
   });
 
   useEffect(() => {
@@ -87,23 +86,27 @@ const EditProducts = () => {
         img: product.images.map((img) => img.secure_url),
         productName: product.name,
         category: product.category,
+        subCategory: product.subCategory,
         brand: product.brand,
         coverPhoto: `${SERVER}${product.coverPhoto.secure_url}`,
         description: product.description,
         summary: product?.summary,
-        price: product.price,
-        promoPrice: product.discount,
-        quantity: product.quantity,
-        specifications: {
-          screenSize: product?.screenSize,
-          batteryLife: product?.batteryLife,
-          cameraResolution: product?.cameraResolution,
-          storageCapacity: product?.storageCapacity,
-          os: product?.os,
-          size: product?.size,
-          gender: product?.gender,
-          material: product?.material,
-        },
+        price: product?.price,
+        promoPrice: product?.discount,
+        quantity: product?.quantity,
+        screenSize: product?.specifications?.screenSize,
+        batteryLife: product?.specifications?.batteryLife,
+        cameraResolution: product?.specifications?.cameraResolution,
+        storageCapacity: product?.specifications?.storageCapacity,
+        os: product?.specifications?.os,
+        size: product?.specifications?.size,
+        gender: product?.specifications?.gender,
+        material: product?.specifications?.material,
+        warranty: product?.warranty,
+        weight: product?.packaging?.weight,
+        height: product?.packaging?.height,
+        width: product?.packaging?.width,
+        dimension: product?.packaging?.dimension,
       });
       if (product?.coverPhoto?.secure_url) {
         const coverImageUrl = `${SERVER}${product?.coverPhoto.secure_url}`;
@@ -195,7 +198,8 @@ const EditProducts = () => {
       quantity: form.quantity,
       summary: form.summary,
       description: form.description,
-      category: `${form.category}/${form.subCategory}`,
+      category: form.category,
+      subCategory: form.subCategory,
       brand: form.brand,
       coverPhoto: form.coverPhoto,
       images: form.img.map((file) => `${file}`),
@@ -208,6 +212,14 @@ const EditProducts = () => {
         size: form?.size,
         gender: form?.gender,
         material: form?.material,
+      },
+      warranty: form?.warranty,
+      discount: form?.promoPrice,
+      packaging: {
+        weight: form?.weight,
+        height: form?.height,
+        width: form?.width,
+        dimension: form?.dimension,
       },
     };
     console.log(formData);
@@ -292,7 +304,7 @@ const EditProducts = () => {
                   options={categories.map((cat) => ({
                     id: cat._id,
                     label: cat.name,
-                    value: cat.name,
+                    value: cat._id,
                   }))}
                   value={form.category}
                   onChange={(e) => {
@@ -305,7 +317,7 @@ const EditProducts = () => {
                   options={subCategories.map((sub) => ({
                     key: sub._id,
                     label: sub.name,
-                    value: sub.id,
+                    value: sub._id,
                   }))}
                   value={form.subCategory}
                   onChange={(e) =>
@@ -474,40 +486,37 @@ const EditProducts = () => {
             <div className="grid grid-cols-3 gap-5">
               <InputField
                 label="Package Weight"
-                placeholder="Package Weight"
-                value={form.packageWeight}
-                onChange={(e) =>
-                  setForm({ ...form, packageWeight: e.target.value })
-                }
+                placeholder="10 pounds"
+                value={form.weight}
+                onChange={(e) => setForm({ ...form, weight: e.target.value })}
               />
               <InputField
                 label="Package Dimension Length"
-                placeholder="Package Dimension Length"
-                value={form.packageDimensionLength}
-                onChange={(e) =>
-                  setForm({ ...form, packageDimensionLength: e.target.value })
-                }
+                placeholder="34 inches"
+                value={form.height}
+                onChange={(e) => setForm({ ...form, height: e.target.value })}
               />
               <InputField
                 label="Package Dimension Width"
-                placeholder="Package Dimension Width"
-                value={form.packageDimensionWidth}
-                onChange={(e) =>
-                  setForm({ ...form, packageDimensionWidth: e.target.value })
-                }
+                placeholder="23 inches"
+                value={form.width}
+                onChange={(e) => setForm({ ...form, width: e.target.value })}
               />
               <InputField
                 label="Package Dimension Height"
-                placeholder="Package Dimension Height"
-                value={form.packageDimensionHeight}
+                placeholder="48 inches"
+                value={form.dimension}
                 onChange={(e) =>
-                  setForm({ ...form, packageDimensionHeight: e.target.value })
+                  setForm({ ...form, dimension: e.target.value })
                 }
               />
             </div>
           </section>
           <div className="my-10">
-            <PrimaryButton value="Submit" onClick={handleSubmit} />
+            <PrimaryButton
+              value={`${loading}` ? "Submit" : "Submiting..."}
+              onClick={handleSubmit}
+            />
           </div>
         </div>
       </form>

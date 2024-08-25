@@ -13,6 +13,8 @@ import VoucherAdminPanel from "./Dashboard/Voucher/index";
 import AddNewVoucher from "./Dashboard/Voucher/AddVoucher";
 import EditVoucher from "./Dashboard/Voucher/EditVoucher";
 import GetPlan from "./Dashboard/AdManager/GetPlan";
+import AddProducts from "./Dashboard/products/AddProducts";
+import EditProducts from "./Dashboard/products/EditProducts";
 const menu = [
     {
         name: "Profile",
@@ -31,6 +33,19 @@ const menu = [
         component: <Products />
     },
 
+    {
+        name: "Add Product",
+        layout: "/admin",
+        path: "add-product",
+        component: <AddProducts />
+
+    },
+    {
+        name: "Edit Product",
+        layout: "/admin",
+        path: "edit-product/:id",
+        component: <EditProducts />
+    },
     {
         name: "Order & Review",
         layout: "/admin",

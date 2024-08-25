@@ -1,7 +1,10 @@
-import React, { useState } from "react";
-
-const FileUpload = ({ label, name, acceptType, setFile, file }) => {
+import React, { useState, useEffect } from "react";
+const FileUpload = ({ label, name, acceptType = "image/*", setFile, file }) => {
   const [selectedFile, setSelectedFile] = useState(file);
+
+  useEffect(() => {
+    setSelectedFile(file);
+  }, [file]);
 
   const accept = acceptType === "video" ? "video/*" : "image/*";
 
@@ -24,66 +27,53 @@ const FileUpload = ({ label, name, acceptType, setFile, file }) => {
 
   return (
     <div>
-      <div>
-        <label className="block font-mono text-secondary">{label}</label>
-        {selectedFile ? (
-          <div className="relative">
-            {accept === "image/*" ? (
-              <img
-                src={selectedFile}
-                alt="Selected"
-                className="w-32 h-32 rounded-md"
-              />
-            ) : accept === "video/*" ? (
-              <video
-                src={selectedFile}
-                controls
-                className="w-32 h-32 rounded-md"
-              />
-            ) : null}
-            <button
-              className="absolute top-0 right-0 m-2 text-red-600 font-bold rounded-full p-1"
-              onClick={handleRemoveFile}
+      <label className="block font-semibold mb-2 text-secondary">{label}</label>
+      {selectedFile ? (
+        <div className="relative">
+          {accept === "image/*" ? (
+            <img
+              src={selectedFile}
+              alt="Selected"
+              className="w-32 h-32 rounded-md"
+            />
+          ) : (
+            <video
+              src={selectedFile}
+              controls
+              className="w-32 h-32 rounded-md"
+            />
+          )}
+          <button
+            className="absolute -top-7 text-xl left-28 m-2 text-red-600 font-bold rounded-full p-1"
+            onClick={handleRemoveFile}
+          >
+            ×
+          </button>
+        </div>
+      ) : (
+        <div className="flex w-full  items-center justify-center ">
+          <label className="w-64 flex flex-col items-center px-4 py-6 bg-white text-blue-500 rounded-lg shadow-lg tracking-wide uppercase border border-blue-500 cursor-pointer hover:bg-blue-500 hover:text-white">
+            <svg
+              className="w-8 h-8"
+              fill="currentColor"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
             >
-              ×
-            </button>
-          </div>
-        ) : (
-          <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-primary border-dashed rounded-md">
-            <div className="space-y-1 text-center">
-              <svg
-                className="mx-auto h-12 w-12 text-secondary"
-                stroke="currentColor"
-                fill="none"
-                viewBox="0 0 48 48"
-                aria-hidden="true"
-              >
-                <path
-                  d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <div className="flex">
-                <label className="relative cursor-pointer border-2 border-primary rounded-md px-2 py-2">
-                  <span className="text-secondary text-sm">Upload a file</span>
-                  <input
-                    id="file-upload"
-                    name={name}
-                    type="file"
-                    accept={accept}
-                    onChange={handleFileChange}
-                    className="sr-only"
-                  />
-                </label>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
+              <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+            </svg>
+            <span className="mt-2 text-base leading-normal">Select a file</span>
+            <input
+              id="file-upload"
+              name={name}
+              type="file"
+              accept={accept}
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </label>
+        </div>
+      )}
     </div>
   );
 };
-
 export default FileUpload;

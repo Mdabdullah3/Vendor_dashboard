@@ -31,10 +31,7 @@ const useProductStore = create((set) => ({
         }
     },
 
-    setPage: (page) => set({ page }),
-    setLimit: (limit) => set({ limit }),
-    setSearchTerm: (searchTerm) => set({ searchTerm }),
-    setSort: (sort) => set({ sort }),
+
 
     fetchProductByIdOrSlug: async (idOrSlug) => {
         set({ loading: true });
@@ -83,9 +80,17 @@ const useProductStore = create((set) => ({
     },
     fetchProductByIdForUser: async (userId) => {
         set({ loading: true });
+        const { page, limit, searchTerm, sort } = useProductStore.getState();
         try {
-            const response = await axios.get(`${API_URL}/users/${userId}/products`);
-            set({ product: response.data.data, loading: false });
+            const response = await axios.get(`${API_URL}/users/${userId}/products`, {
+                params: {
+                    _page: page,
+                    _limit: limit,
+                    _search: searchTerm ? `${searchTerm},name,slug,summary,description` : '',
+                    _sort: sort,
+                },
+            });
+            set({ products: response.data.data, totalProducts: response.data.total, loading: false });
         } catch (error) {
             set({ error: error.response?.data?.message || error.message, loading: false });
         }
@@ -103,6 +108,11 @@ const useProductStore = create((set) => ({
             set({ error: error.response?.data?.message || error.message, loading: false });
         }
     },
+
+    setPage: (page) => set({ page }),
+    setLimit: (limit) => set({ limit }),
+    setSearchTerm: (searchTerm) => set({ searchTerm }),
+    setSort: (sort) => set({ sort }),
 }));
 
 export default useProductStore;

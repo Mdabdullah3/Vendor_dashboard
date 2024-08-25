@@ -37,7 +37,7 @@ const AddProducts = () => {
     summary: "",
     category: "",
     subCategory: "",
-    brand: "niki",
+    brand: "",
     coverPhoto: coverImage,
     description: "",
     price: 0,
@@ -134,6 +134,7 @@ const AddProducts = () => {
       await addProduct(formData);
     } catch (error) {
       toast.error(error.message);
+      console.log(error);
     }
   };
   const categoryOptions = categories.map((category) => ({
@@ -145,7 +146,6 @@ const AddProducts = () => {
     })),
   }));
 
-  console.log(selectedCategory, selectedSubCategory);
   return (
     <section className="mt-5 lg:grid grid-cols-5 relative">
       <form className="col-span-4 w-11/12" onSubmit={handleSubmit}>
