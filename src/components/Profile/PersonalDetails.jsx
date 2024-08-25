@@ -50,6 +50,7 @@ const PersonalDetails = ({ formData, handleChange, handleNextStep }) => {
         <InputField
           label={"Phone Number"}
           required
+          disabled
           value={formData.phone}
           onChange={(e) => handleChange("phone", e.target.value)}
           placeholder="Enter Your Phone"

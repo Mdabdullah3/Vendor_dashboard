@@ -7,7 +7,7 @@ import { API_URL } from "../../config";
 import { toast } from "react-toastify";
 import Select from "react-select";
 
-const VerifyIdBank = ({ formData, handleChange }) => {
+const VerifyIdBank = ({ formData, handleChange, handleNextStep }) => {
   const [selectedBank, setSelectedBank] = useState(null);
   const [bankOption, setBankOption] = useState([]);
   useEffect(() => {
@@ -26,36 +26,57 @@ const VerifyIdBank = ({ formData, handleChange }) => {
   };
   const getBase64 = (file) => {
     return new Promise((resolve, reject) => {
+      if (!(file instanceof File || file instanceof Blob)) {
+        return reject(new Error("Invalid file"));
+      }
+
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result);
       reader.onerror = (error) => reject(error);
     });
   };
+
   const handleSubmit = async (e) => {
-    console.log(formData);
     e.preventDefault();
-    const idCardFrontBase64 = await getBase64(formData.idCardFrontPageImage);
-    const idCardBackBase64 = await getBase64(formData.idCardBackPageImage);
-    const bankStatementBase64 = await getBase64(formData.bankStatementImage);
-    const avatarBase64 = await getBase64(formData.avatar);
-    const payload = {
-      ...formData,
-      idCardFrontPageImage: idCardFrontBase64,
-      idCardBackPageImage: idCardBackBase64,
-      bankStatementImage: bankStatementBase64,
-      avatar: avatarBase64,
-    };
+
     try {
+      const idCardFrontBase64 = formData.idCardFrontPageImage
+        ? await getBase64(formData.idCardFrontPageImage)
+        : null;
+      const idCardBackBase64 = formData.idCardBackPageImage
+        ? await getBase64(formData.idCardBackPageImage)
+        : null;
+      const bankStatementBase64 = formData.bankStatementImage
+        ? await getBase64(formData.bankStatementImage)
+        : null;
+      const avatarBase64 = formData.avatar
+        ? await getBase64(formData.avatar)
+        : null;
+
+      const payload = {
+        ...formData,
+        location: {
+          state: formData.selectedDistrict,
+          city: formData.selectedCity,
+          address1: formData.detailAddress,
+        },
+        idCardFrontPageImage: idCardFrontBase64,
+        idCardBackPageImage: idCardBackBase64,
+        bankStatementImage: bankStatementBase64,
+        avatar: avatarBase64,
+      };
+
       const response = await axios.patch(`${API_URL}/users/me`, payload, {
         withCredentials: true,
       });
+      handleNextStep();
       toast.success("Profile Update Successfully");
       console.log(response);
     } catch (error) {
-      toast.error(error.response?.data?.message);
+      toast.error(error.message || "An error occurred while uploading files.");
+      console.log(error);
     }
-    console.log(payload);
   };
 
   const handleBankChange = (bank) => {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import InputField from "../common/InputField";
 import PrimaryButton from "../common/PrimaryButton";
-import InputToggle from "../common/InputToggle";
+// import InputToggle from "../common/InputToggle";
 
 const Addresset = ({ formData, handleChange, handleNextStep }) => {
   const [bdDistricts, setBdDistricts] = useState([]);
@@ -77,11 +77,11 @@ const Addresset = ({ formData, handleChange, handleNextStep }) => {
           onChange={(e) => handleChange("detailAddress", e.target.value)}
           placeholder="Enter Your Detail Address"
         />
-        <InputToggle
+        {/* <InputToggle
           label={"Is Return Address"}
           checked={formData.returnAddress}
           onChange={(e) => handleChange("returnAddress", e.target.checked)}
-        />
+        /> */}
         <PrimaryButton value={"Next"} onClick={handleNextStep} />
       </div>
     </section>

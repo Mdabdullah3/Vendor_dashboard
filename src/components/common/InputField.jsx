@@ -3,6 +3,7 @@ import React from "react";
 const InputField = ({
   label,
   id,
+  disabled,
   name,
   value,
   onChange,
@@ -16,6 +17,7 @@ const InputField = ({
         {label} <span className="text-primary">{label && required && "*"}</span>
       </label>
       <input
+        disabled={disabled}
         type={type}
         id={id}
         name={name}

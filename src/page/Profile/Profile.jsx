@@ -17,7 +17,6 @@ const Profile = () => {
     selectedDistrict: null,
     selectedCity: null,
     detailAddress: "",
-    returnAddress: true,
     idCardFrontPageImage: null,
     idCardBackPageImage: null,
     idCardNumber: "",
@@ -36,32 +35,31 @@ const Profile = () => {
     confirmPassword: "",
   });
 
-  const userData = user?._doc;
   useEffect(() => {
-    if (userData) {
+    if (user) {
       setFormData({
         ...formData,
         role: "vendor",
-        name: userData.name,
-        email: userData.email,
-        phone: userData.phone,
-        avatar: userData.avatar,
+        name: user?.name,
+        email: user?.email,
+        phone: user?.phone,
+        avatar: user?.avatar,
         // coverPhoto: userData.coverPhoto,
-        selectedDistrict: userData.location.state.label,
-        selectedCity: userData.location.city.label,
-        detailAddress: userData.location.address1,
-        idCardNumber: userData.idCardNumber,
-        accountHolderName: userData.accountHolderName,
-        accountNumber: userData.accountNumber,
-        routingNumber: userData.routingNumber,
-        bankName: userData.bankName,
-        bankBranch: userData.bankBranch,
-        idCardFrontPageImage: userData.idCardFrontPageImage,
-        idCardBackPageImage: userData.idCardBackPageImage,
-        bankStatementImage: userData.bankStatementImage,
+        selectedDistrict: user?.location.state.label,
+        selectedCity: user?.location.city.label,
+        detailAddress: user?.location.address1,
+        idCardNumber: user?.idCardNumber,
+        accountHolderName: user?.accountHolderName,
+        accountNumber: user?.accountNumber,
+        routingNumber: user?.routingNumber,
+        bankName: user?.bankName,
+        bankBranch: user?.bankBranch,
+        idCardFrontPageImage: user?.idCardFrontPageImage,
+        idCardBackPageImage: user?.idCardBackPageImage,
+        bankStatementImage: user?.bankStatementImage,
       });
     }
-  }, [userData]);
+  }, [user]);
 
   const menu = [
     { label: "Profile", icon: <CgProfile /> },
@@ -83,7 +81,7 @@ const Profile = () => {
       [field]: value,
     }));
   };
-  console.log(formData);
+  console.log(user);
 
   return (
     <section className="">
@@ -159,7 +157,7 @@ const Profile = () => {
             />
           )}
           {activeStep === 2 && (
-            <VerifyIdBank formData={formData} handleChange={handleChange} />
+            <VerifyIdBank formData={formData} handleChange={handleChange} handleNextStep={handleNextStep} />
           )}
           {activeStep === 3 && <ProductSet />}
         </section>
