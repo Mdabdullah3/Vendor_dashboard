@@ -15,6 +15,7 @@ import EditVoucher from "./Dashboard/Voucher/EditVoucher";
 import GetPlan from "./Dashboard/AdManager/GetPlan";
 import AddProducts from "./Dashboard/products/AddProducts";
 import EditProducts from "./Dashboard/products/EditProducts";
+import EventManager from "./Dashboard/Events/RecentEvent";
 const menu = [
     {
         name: "Profile",
@@ -102,6 +103,7 @@ const menu = [
         path: "event-manager",
         navMenu: true,
         icon: <BsFillHandIndexFill className="h-6 w-6" />,
+        component: <EventManager />
     },
     {
         name: "Message Center",

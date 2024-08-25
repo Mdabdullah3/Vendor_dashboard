@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { FiPlus, FiInfo, FiEdit } from "react-icons/fi";
+import { FiInfo, FiEdit } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import useEventStore from "../../store/EventStore";
 import { SERVER } from "../../config";
 import { FaTrash } from "react-icons/fa";
 const EventManager = () => {
-  const { events, fetchEvents, deleteEvent } = useEventStore();
+  const { events, fetchEvents } = useEventStore();
 
   const navigate = useNavigate();
 
@@ -36,19 +36,11 @@ const EventManager = () => {
     "Action",
   ];
 
-  const handleDeleteEvent = (id) => {
-    deleteEvent(id);
-  };
   return (
     <div className="flex h-screen p-10 bg-gray-100">
       <div className="flex-1">
         <div className="flex justify-between items-center mb-10">
           <h1 className="text-3xl font-bold text-gray-800">Event Manager</h1>
-          <Link to="/admin/create-event">
-            <button className="flex items-center px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary/60">
-              <FiPlus className="mr-2" /> Add New Event
-            </button>
-          </Link>
         </div>
         <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
           <thead>
@@ -103,19 +95,12 @@ const EventManager = () => {
                   >
                     <FiEdit className="mr-1" /> Edit
                   </Link>
-                  {isExpired(event?.endDate) ? (
+                  {isExpired(event?.endDate) && (
                     <button
                       onClick={() => handleManageProducts(event.id)}
                       className="flex items-center px-3 py-1 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                     >
                       <FiInfo className="mr-1" /> Join
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleDeleteEvent(event.id)}
-                      className="flex items-center px-3 py-1 bg-red-500 text-white rounded-lg hover:bg-red-600"
-                    >
-                      <FaTrash className="mr-1" /> Delete
                     </button>
                   )}
                 </td>
