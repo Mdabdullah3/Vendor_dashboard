@@ -10,7 +10,7 @@ const JoinEvents = () => {
   const { id } = useParams();
   const { fetchEventById, event } = useEventStore();
   const { user, fetchUser } = useUserStore();
-  const { product, fetchProductByIdForUser } = useProductStore();
+  const { products, fetchProductByIdForUser } = useProductStore();
   const {
     fetchEventProducts,
     createEventProduct,
@@ -46,7 +46,7 @@ const JoinEvents = () => {
   const isProductAdded = (productId) => {
     return eventProducts?.some((ep) => ep.product === productId);
   };
-  console.log(isProductAdded);
+  console.log(event);
   return (
     <div className="flex flex-col items-center p-10 bg-gray-100 min-h-screen">
       <h1 className="text-2xl font-bold mb-6">
@@ -56,7 +56,7 @@ const JoinEvents = () => {
       <div className="w-full max-w-3xl bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Available Products</h2>
         <div className="">
-          {product?.map((product) => (
+          {products?.map((product) => (
             <div
               key={product.id}
               className="flex gap-2  items-center bg-gray-100 p-4 rounded-lg shadow-sm justify-between"

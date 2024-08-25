@@ -4,12 +4,27 @@ import shopImg from "../../assets/shop.avif";
 import PrimaryButton from "../../components/common/PrimaryButton";
 import InputField from "../../components/common/InputField";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useUserStore from "../../store/AuthStore";
+import { toast } from "react-toastify";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
+  const { login, loading } = useUserStore();
+  const router = useNavigate();
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      toast.error("Please fill in both fields");
+      return;
+    }
+    try {
+      await login(email, password, router);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
   return (
     <section>
       <Navbar />
@@ -26,7 +41,10 @@ const Login = () => {
               </h2>
               <img src={shopImg} alt="" />
             </div>
-            <div className="mt-4 mx-4 bg-white text-black p-5 rounded-2xl w-[600px]">
+            <form
+              onSubmit={handleLogin}
+              className="mt-4 mx-4 bg-white text-black p-5 rounded-2xl w-[600px]"
+            >
               <h1 className="text-xl font-medium mb-4">Login with Password</h1>
               <InputField
                 placeholder="Mobile Number / Email"
@@ -56,17 +74,21 @@ const Login = () => {
                   )}
                 </div>
               </div>
-              <PrimaryButton value={"Login"} />
-              <p className="text-end py-2 pt-4 text-blue-600 cursor-pointer">
+              <PrimaryButton
+                value={`${loading ? "Loading..." : "Login"}`}
+                type="submit"
+                disabled={loading}
+              />
+              {/* <p className="text-end py-2 pt-4 text-blue-600 cursor-pointer">
                 Reset Password?
-              </p>
+              </p> */}
               <Link
                 to={"/"}
                 className="flex justify-end  text-blue-600 cursor-pointer"
               >
                 Register?
               </Link>
-            </div>
+            </form>
           </div>
         </div>
       </div>

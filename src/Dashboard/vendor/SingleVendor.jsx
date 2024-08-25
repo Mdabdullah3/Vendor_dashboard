@@ -1,102 +1,124 @@
+import React, { useEffect } from "react";
 import PrimaryButton from "../../components/common/PrimaryButton";
+import useUserStore from "../../store/AuthStore";
+import { SERVER } from "../../config";
 
-import { vendor } from "../../utils/constant";
 const SingleVendor = () => {
-  const vendorDetails = {
-    address: {
-      address1: "Dhaka, Bangladesh",
-      address2: "Mirpur, Dhaka",
-      city: "Mirpur",
-      state: "Dhaka",
-      country: "Bangladesh",
-    },
-    phone: "017561231",
-    personalInfo: {
-      idCardForntImage: "image",
-      idCardBackSideImage: "image",
-      idCardNumber: "12489891824124",
-    },
-    bankInfo: {
-      bankStatementImage: "image",
-      accountHolderName: "Md Kasem",
-      accountNumber: "12313412",
-      routingNumber: "2142124",
-      bank: "Islami Bank Bangladesh",
-      bankBranch: "Mirpur, Dhaka",
-    },
-  };
+  const { user, fetchUser } = useUserStore();
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
   return (
     <section className="w-11/12 mx-auto my-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-4">
         <h1 className="text-3xl text-gray-700 font-bold">Vendor</h1>
-        <h2 className="text-xl font-bold">#509290323523</h2>
       </div>
-      <div className="flex items-center justify-center gap-4">
-        <img
-          src={vendor[0].img}
-          alt="vendor"
-          className="w-40 px-4 py-4 shadow-lg rounded-lg border border-gray-300"
-        />
-        <h1 className="text-xl font-bold">{vendor[0].name}</h1>
-        <PrimaryButton value="Deactive" />
-        <button className="bg-blue-500 hover:bg-blue-500/70  text-white font-bold py-3 px-4 rounded-lg transition duration-300">
-          Verified
-        </button>
-      </div>
-      <section className="mt-16 flex justify-between">
-        <div>
-          <h1 className="font-semibold text-lg">Personal Info</h1>
-          <h2 className="my-2 mt-4">
-            <span className="font-semibold">City</span> :{" "}
-            {vendorDetails.address.city}
-          </h2>
-          <h2 className="my-2">
-            <span className="font-semibold">State</span> :{" "}
-            {vendorDetails.address.state}
-          </h2>
-          <h2 className="my-2">
-            <span className="font-semibold">Country</span> :{" "}
-            {vendorDetails.address.country}
-          </h2>
-          <h2 className="my-2">
-            {" "}
-            <span className="font-semibold">Address</span> :{" "}
-            {vendorDetails.address.address1}
-          </h2>
-          <h2 className="my-2">
-            {" "}
-            <span className="font-semibold">Phone</span> : {vendorDetails.phone}
-          </h2>
-          <h2 className="my-2">
-            {" "}
-            <span className="font-semibold">Id Card Number</span> :{" "}
-            {vendorDetails.personalInfo.idCardNumber}
-          </h2>
-        </div>
-        <div>
-          <h1 className="text-lg font-semibold">Bank Info</h1>
-          <h2 className="my-2 mt-4">
-            <span className="font-semibold"> Bank Name</span> :{" "}
-            {vendorDetails.bankInfo.bank}
-          </h2>
-          <h2 className="my-2">
-            <span className="font-semibold">Account Holder Name</span> :{" "}
-            {vendorDetails.bankInfo.accountHolderName}
-          </h2>
-          <h2 className="my-2">
-            <span className="font-semibold">Account Number</span> :{" "}
-            {vendorDetails.bankInfo.accountNumber}
-          </h2>
-          <h2 className="my-2">
-            <span className="font-semibold">Routing Number</span> :{" "}
-            {vendorDetails.bankInfo.routingNumber}
-          </h2>
-          <h2 className="my-2">
-            <span className="font-semibold">Bank Branch</span> :{" "}
-            {vendorDetails.bankInfo.bankBranch}
-          </h2>
-        </div>
-      </section>
+      {user ? (
+        <>
+          <div className="flex items-center justify-between bg-white shadow-md p-6 rounded-lg">
+            <div className="flex items-center gap-4 ">
+              <img
+                src={`${SERVER}${user?.avatar?.secure_url}`}
+                alt="vendor"
+                className="w-40 h-40 object-cover rounded-full border-4 border-gray-200"
+              />
+              <div className="flex flex-col">
+                <h1 className="text-2xl font-bold">{user?.name}</h1>
+                <div className="mt-2">
+                  {user?.status === "approved" ? (
+                    <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-sm font-semibold">
+                      Verified
+                    </span>
+                  ) : (
+                    <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full text-sm font-semibold">
+                      Not Verified
+                    </span>
+                  )}
+                </div>
+                {/* <PrimaryButton value="Deactivate" className="mt-4" /> */}
+              </div>
+            </div>
+            <button className="bg-blue-500 hover:bg-blue-500/70 text-white font-bold py-2 px-4 rounded-lg mt-2">
+              Update Profile
+            </button>
+          </div>
+          <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+              <h1 className="text-lg font-semibold">Personal Info</h1>
+              <div className="mt-4 space-y-2">
+                <p>
+                  <span className="font-semibold">City:</span>{" "}
+                  {user?.location?.city}
+                </p>
+                <p>
+                  <span className="font-semibold">State:</span>{" "}
+                  {user?.location?.state}
+                </p>
+                <p>
+                  <span className="font-semibold">Country:</span>{" "}
+                  {user?.location?.country}
+                </p>
+                <p>
+                  <span className="font-semibold">Address:</span>{" "}
+                  {user?.location?.address1}
+                </p>
+                <p>
+                  <span className="font-semibold">Phone:</span> {user?.phone}
+                </p>
+                <p>
+                  <span className="font-semibold">ID Card Number:</span>{" "}
+                  {user?.idCardNumber}
+                </p>
+
+                <div className="flex gap-4">
+                  <img
+                    src={`${SERVER}${user?.idCardFrontPageImage?.secure_url}`}
+                    alt="ID Card Front"
+                    className="w-32 h-20 object-cover border border-gray-300 rounded"
+                  />
+                  <img
+                    src={`${SERVER}${user?.idCardBackPageImage?.secure_url}`}
+                    alt="ID Card Back"
+                    className="w-32 h-20 object-cover border border-gray-300 rounded"
+                  />
+                </div>
+              </div>
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold">Bank Info</h1>
+              <div className="mt-4 space-y-2">
+                <p>
+                  <span className="font-semibold">Bank Name:</span>{" "}
+                  {user?.bankName}
+                </p>
+                <p>
+                  <span className="font-semibold">Account Holder Name:</span>{" "}
+                  {user?.accountHolderName}
+                </p>
+                <p>
+                  <span className="font-semibold">Account Number:</span>{" "}
+                  {user?.accountNumber}
+                </p>
+                <p>
+                  <span className="font-semibold">Routing Number:</span>{" "}
+                  {user?.routingNumber}
+                </p>
+                <p>
+                  <span className="font-semibold">Bank Branch:</span>{" "}
+                  {user?.bankBranch}
+                </p>
+                <img
+                  src={`${SERVER}${user?.bankStatementImage?.secure_url}`}
+                  alt="Bank Statement"
+                  className="w-32 h-20 object-cover border border-gray-300 rounded"
+                />
+              </div>
+            </div>
+          </section>
+        </>
+      ) : (
+        <h1 className="text-center">No Data Found</h1>
+      )}
     </section>
   );
 };

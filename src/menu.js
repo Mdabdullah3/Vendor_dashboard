@@ -16,6 +16,7 @@ import GetPlan from "./Dashboard/AdManager/GetPlan";
 import AddProducts from "./Dashboard/products/AddProducts";
 import EditProducts from "./Dashboard/products/EditProducts";
 import EventManager from "./Dashboard/Events/RecentEvent";
+import JoinEvents from "./Dashboard/Events/JoinEvents";
 const menu = [
     {
         name: "Profile",
@@ -104,6 +105,12 @@ const menu = [
         navMenu: true,
         icon: <BsFillHandIndexFill className="h-6 w-6" />,
         component: <EventManager />
+    },
+    {
+        name: "Join Event",
+        layout: "/admin",
+        path: "join-event/:id",
+        component: <JoinEvents />
     },
     {
         name: "Message Center",

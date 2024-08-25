@@ -8,10 +8,13 @@ import VerifyIdBank from "../../components/Profile/VerifyIdBank";
 import ProductSet from "../../components/Profile/ProductSet";
 import Navbar from "../../layout/Navbar";
 import PersonalDetails from "../../components/Profile/PersonalDetails";
-import useAuthStore from "../../store/useAuthStore";
-
+import useAuthStore from "../../store/AuthStore";
+import { SERVER } from "../../config";
 const Profile = () => {
-  const { user } = useAuthStore();
+  const { user, fetchUser } = useAuthStore();
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
     selectedDistrict: null,
@@ -43,10 +46,10 @@ const Profile = () => {
         name: user?.name,
         email: user?.email,
         phone: user?.phone,
-        avatar: user?.avatar,
+        avatar: `${SERVER}${user?.avatar?.secure_url}`,
         // coverPhoto: userData.coverPhoto,
-        selectedDistrict: user?.location.state.label,
-        selectedCity: user?.location.city.label,
+        selectedDistrict: user?.location.state,
+        selectedCity: user?.location.city,
         detailAddress: user?.location.address1,
         idCardNumber: user?.idCardNumber,
         accountHolderName: user?.accountHolderName,
@@ -57,10 +60,12 @@ const Profile = () => {
         idCardFrontPageImage: user?.idCardFrontPageImage,
         idCardBackPageImage: user?.idCardBackPageImage,
         bankStatementImage: user?.bankStatementImage,
+        password: user?.password,
       });
     }
   }, [user]);
 
+  console.log(formData);
   const menu = [
     { label: "Profile", icon: <CgProfile /> },
     { label: "Address", icon: <FaRegAddressCard /> },
@@ -81,7 +86,7 @@ const Profile = () => {
       [field]: value,
     }));
   };
-  console.log(user);
+  console.log(formData);
 
   return (
     <section className="">
@@ -157,7 +162,11 @@ const Profile = () => {
             />
           )}
           {activeStep === 2 && (
-            <VerifyIdBank formData={formData} handleChange={handleChange} handleNextStep={handleNextStep} />
+            <VerifyIdBank
+              formData={formData}
+              handleChange={handleChange}
+              handleNextStep={handleNextStep}
+            />
           )}
           {activeStep === 3 && <ProductSet />}
         </section>

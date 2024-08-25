@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
-import { FiInfo, FiEdit } from "react-icons/fi";
-import { Link, useNavigate } from "react-router-dom";
+import { FiInfo } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import useEventStore from "../../store/EventStore";
 import { SERVER } from "../../config";
-import { FaTrash } from "react-icons/fa";
 const EventManager = () => {
   const { events, fetchEvents } = useEventStore();
 
@@ -89,12 +88,6 @@ const EventManager = () => {
                   {isExpired(event?.endDate) ? "Active" : "Expired"}
                 </td>
                 <td className="py-4 px-6 flex space-x-2">
-                  <Link
-                    to={`/admin/edit-event/${event.id}`}
-                    className="flex items-center px-3 py-1 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
-                  >
-                    <FiEdit className="mr-1" /> Edit
-                  </Link>
                   {isExpired(event?.endDate) && (
                     <button
                       onClick={() => handleManageProducts(event.id)}

@@ -2,6 +2,7 @@ import React from "react";
 import InputFileUpload from "../common/InputFileUpload";
 import InputField from "../common/InputField";
 import PrimaryButton from "../common/PrimaryButton";
+import { toast } from "react-toastify";
 
 const PersonalDetails = ({ formData, handleChange, handleNextStep }) => {
   // Function to get Object URL if valid File or Blob
@@ -12,6 +13,13 @@ const PersonalDetails = ({ formData, handleChange, handleNextStep }) => {
     return null;
   };
 
+  const handleNextStepMove = () => {
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+    } else {
+      handleNextStep();
+    }
+  };
   return (
     <section>
       <h1 className="text-xl font-semibold my-2">
@@ -71,7 +79,7 @@ const PersonalDetails = ({ formData, handleChange, handleNextStep }) => {
           placeholder="Enter Your Confirm Password"
           type="password"
         />
-        <PrimaryButton value={"Next"} onClick={handleNextStep} />
+        <PrimaryButton value={"Next"} onClick={handleNextStepMove} />
       </div>
     </section>
   );

@@ -70,9 +70,10 @@ const VerifyIdBank = ({ formData, handleChange, handleNextStep }) => {
       const response = await axios.patch(`${API_URL}/users/me`, payload, {
         withCredentials: true,
       });
+
       handleNextStep();
       toast.success("Profile Update Successfully");
-      console.log(response);
+      console.log(response, payload);
     } catch (error) {
       toast.error(error.message || "An error occurred while uploading files.");
       console.log(error);
