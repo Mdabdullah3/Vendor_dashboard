@@ -17,6 +17,7 @@ import AddProducts from "./Dashboard/products/AddProducts";
 import EditProducts from "./Dashboard/products/EditProducts";
 import EventManager from "./Dashboard/Events/RecentEvent";
 import JoinEvents from "./Dashboard/Events/JoinEvents";
+import ProfileUpdate from "./page/Profile/ProfileUpdate";
 const menu = [
     {
         name: "Profile",
@@ -25,6 +26,12 @@ const menu = [
         icon: <FaUser className="h-6 w-6" />,
         navMenu: true,
         component: <SingleVendor />
+    },
+    {
+        name: "Update Profile",
+        layout: "/admin",
+        path: "update-profile",
+        component: <ProfileUpdate />
     },
     {
         name: "Products",

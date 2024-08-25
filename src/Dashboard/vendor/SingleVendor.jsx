@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import PrimaryButton from "../../components/common/PrimaryButton";
 import useUserStore from "../../store/AuthStore";
 import { SERVER } from "../../config";
+import { Link } from "react-router-dom";
 
 const SingleVendor = () => {
   const { user, fetchUser } = useUserStore();
@@ -38,9 +39,11 @@ const SingleVendor = () => {
                 {/* <PrimaryButton value="Deactivate" className="mt-4" /> */}
               </div>
             </div>
-            <button className="bg-blue-500 hover:bg-blue-500/70 text-white font-bold py-2 px-4 rounded-lg mt-2">
-              Update Profile
-            </button>
+            <Link to="/admin/update-profile">
+              <button className="bg-blue-500 hover:bg-blue-500/70 text-white font-bold py-2 px-4 rounded-lg mt-2">
+                Update Profile
+              </button>
+            </Link>
           </div>
           <section className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
