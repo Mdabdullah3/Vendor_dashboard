@@ -10,7 +10,6 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
   const [code, setCode] = useState(new Array(4).fill(""));
   console.log(otpData);
   const inputRefs = useRef([]);
-  const setUser = useAuthStore((state) => state.setUser);
   console.log(otpData);
   const navigate = useNavigate();
   const handleChange = (e, index) => {
@@ -56,8 +55,7 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
         },
         { withCredentials: true }
       );
-      const user = response.data.data;
-      setUser(user);
+      console.log(response);
       toast.success(response.data.message);
       navigate("/profile");
     } catch (error) {

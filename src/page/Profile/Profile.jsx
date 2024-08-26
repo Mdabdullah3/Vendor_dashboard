@@ -12,6 +12,7 @@ import useAuthStore from "../../store/AuthStore";
 import { SERVER } from "../../config";
 const Profile = () => {
   const { user, fetchUser } = useAuthStore();
+  console.log(user);
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
