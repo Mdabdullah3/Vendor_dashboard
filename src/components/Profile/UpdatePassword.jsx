@@ -78,7 +78,7 @@ const UpdatePassword = ({ handleNextStepMove }) => {
           placeholder="Confirm Your New Password"
           type="password"
         />
-        <PrimaryButton value={"Next"} type="submit" />
+        <PrimaryButton value="Submit" type="submit" />
       </form>
     </div>
   );

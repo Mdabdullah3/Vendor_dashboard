@@ -63,22 +63,6 @@ const PersonalDetails = ({ formData, handleChange, handleNextStep }) => {
           onChange={(e) => handleChange("phone", e.target.value)}
           placeholder="Enter Your Phone"
         />
-        <InputField
-          label={"Password"}
-          required
-          value={formData.password}
-          onChange={(e) => handleChange("password", e.target.value)}
-          placeholder="Enter Your Password"
-          type="password"
-        />
-        <InputField
-          label={"Confirm Password"}
-          required
-          value={formData.confirmPassword}
-          onChange={(e) => handleChange("confirmPassword", e.target.value)}
-          placeholder="Enter Your Confirm Password"
-          type="password"
-        />
         <PrimaryButton value={"Next"} onClick={handleNextStepMove} />
       </div>
     </section>

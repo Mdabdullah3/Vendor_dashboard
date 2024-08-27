@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FaDatabase, FaRegAddressCard } from "react-icons/fa";
+import { FaRegAddressCard } from "react-icons/fa";
 import { MdArrowBackIos } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { RiBankCardLine, RiLockPasswordFill } from "react-icons/ri";
 import Addresset from "../../components/Profile/Addresset";
 import VerifyIdBank from "../../components/Profile/VerifyIdBank";
-import ProductSet from "../../components/Profile/ProductSet";
+// import ProductSet from "../../components/Profile/ProductSet";
 import Navbar from "../../layout/Navbar";
 import PersonalDetails from "../../components/Profile/PersonalDetails";
 import useAuthStore from "../../store/AuthStore";
@@ -36,8 +36,6 @@ const Profile = () => {
     name: "",
     email: "",
     phone: "",
-    password: "",
-    confirmPassword: "",
   });
 
   useEffect(() => {
@@ -62,7 +60,6 @@ const Profile = () => {
         idCardFrontPageImage: user?.idCardFrontPageImage,
         idCardBackPageImage: user?.idCardBackPageImage,
         bankStatementImage: user?.bankStatementImage,
-        password: user?.password,
       });
     }
   }, [user]);
