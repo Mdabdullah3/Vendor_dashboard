@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FaDatabase, FaRegAddressCard } from "react-icons/fa";
 import { MdArrowBackIos } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
-import { RiBankCardLine } from "react-icons/ri";
+import { RiBankCardLine, RiLockPasswordFill } from "react-icons/ri";
 import Addresset from "../../components/Profile/Addresset";
 import VerifyIdBank from "../../components/Profile/VerifyIdBank";
 import ProductSet from "../../components/Profile/ProductSet";
@@ -10,6 +10,7 @@ import Navbar from "../../layout/Navbar";
 import PersonalDetails from "../../components/Profile/PersonalDetails";
 import useAuthStore from "../../store/AuthStore";
 import { SERVER } from "../../config";
+import UpdatePassword from "../../components/Profile/UpdatePassword";
 const Profile = () => {
   const { user, fetchUser } = useAuthStore();
   console.log(user);
@@ -68,10 +69,10 @@ const Profile = () => {
 
   console.log(formData);
   const menu = [
+    { label: "Password", icon: <RiLockPasswordFill /> },
     { label: "Profile", icon: <CgProfile /> },
     { label: "Address", icon: <FaRegAddressCard /> },
     { label: "Verify ID & Bank", icon: <RiBankCardLine /> },
-    { label: "Add Product", icon: <FaDatabase /> },
   ];
 
   const handleStepClick = (step) => setActiveStep(step);
@@ -142,34 +143,35 @@ const Profile = () => {
               </React.Fragment>
             ))}
           </div>
-          <h1 className="mt-10">
+          {/* <h1 className="mt-10">
             Please complete the todo as soon as possible, then start your
             business journey.
-          </h1>
+          </h1> */}
         </div>
         <section className="mt-6">
-          {activeStep === 0 && (
+          {activeStep === 0 && <UpdatePassword />}
+          {activeStep === 1 && (
             <PersonalDetails
               formData={formData}
               handleChange={handleChange}
               handleNextStep={handleNextStep}
             />
           )}
-          {activeStep === 1 && (
+          {activeStep === 2 && (
             <Addresset
               formData={formData}
               handleChange={handleChange}
               handleNextStep={handleNextStep}
             />
           )}
-          {activeStep === 2 && (
+          {activeStep === 3 && (
             <VerifyIdBank
               formData={formData}
               handleChange={handleChange}
               handleNextStep={handleNextStep}
             />
           )}
-          {activeStep === 3 && <ProductSet />}
+          {/* {activeStep === 3 && <ProductSet />} */}
         </section>
       </div>
     </section>

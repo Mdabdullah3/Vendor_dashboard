@@ -37,6 +37,7 @@ const useUserStore = create((set, get) => ({
                 await get().fetchUser();
                 toast.success('Login successful');
                 router('/profile');
+                set({ user: response.data.data, loading: false });
                 console.log(response)
             } else {
                 toast.error('Login failed. Please try again.');
