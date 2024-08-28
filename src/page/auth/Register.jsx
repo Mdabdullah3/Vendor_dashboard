@@ -59,7 +59,7 @@ const Register = () => {
               </h2>
               <img src={shopImg} alt="Shop" />
             </div>
-            <div className="col-span-2">
+            <div className="col-span-2 ">
               <div className="mt-4 bg-white text-black p-3 md:p-5 rounded-2xl ">
                 {step === 1 && (
                   <div>
@@ -92,7 +92,7 @@ const Register = () => {
                       loading={loading}
                     />
                     <Link
-                      to="/login"
+                      to="/"
                       className="flex justify-end py-4 text-blue-600"
                     >
                       Login?

@@ -1,16 +1,19 @@
 import React, { useState } from "react";
 import InputField from "../common/InputField";
 import PrimaryButton from "../common/PrimaryButton";
-import useAuthStore from "../../store/useAuthStore";
+import useUserStore from "../../store/AuthStore";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { API_URL } from "../../config";
 
-const UpdatePassword = ({ handleNextStepMove }) => {
-  const { user } = useAuthStore();
-  console.log(user);
+const UpdatePassword = ({ handleNextStepMove, setIsPasswordUpdated }) => {
+  const storedUser = useUserStore((state) => state.storedUser);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  console.log(storedUser);
   const [formData, setFormData] = useState({
-    currentPassword: user?.password,
+    currentPassword: storedUser?.password,
     password: "",
     confirmPassword: "",
   });
@@ -23,25 +26,35 @@ const UpdatePassword = ({ handleNextStepMove }) => {
   };
 
   const handleUpdatePassword = async (e) => {
-    console.log(formData);
     e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
     try {
-      const response = await axios.patch(`${API_URL}/auth/update-password`, {
-        currentPassword: user?.password,
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-      });
+      const response = await axios.patch(
+        `${API_URL}/auth/update-password`,
+        {
+          withcredentials: true,
+        },
+        {
+          currentPassword: storedUser?.password,
+          password: formData.password,
+          confirmPassword: formData.confirmPassword,
+        }
+      );
 
-      console.log(response);
       if (response.status === 200) {
         toast.success(response.data.message);
-        // handleNextStepMove(); // Move to the next step
+        handleNextStepMove(); // Move to the next step
+        setIsPasswordUpdated(true);
       } else {
         toast.error(response.data.message || "Error updating password.");
         console.error("Error updating password:", response.data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      // toast.error(error.response.data.message);
+      console.log(error);
     }
   };
 
@@ -53,22 +66,19 @@ const UpdatePassword = ({ handleNextStepMove }) => {
         to ensure you can access your account. Without a password, login won’t
         be possible. Protect your account today.
       </p>
-      <form className="mt-10 space-y-4" onSubmit={handleUpdatePassword}>
-        {/* <InputField
-          label={"Current Password"}
-          required
-          value={formData.currentPassword}
-          onChange={(e) => handleChange("currentPassword", e.target.value)}
-          placeholder="Enter Your Current Password"
-          type="password"
-        /> */}
+      <form
+        className="mt-10 space-y-4  w-10/12"
+        onSubmit={handleUpdatePassword}
+      >
         <InputField
           label={"Password"}
           required
           value={formData.password}
           onChange={(e) => handleChange("password", e.target.value)}
           placeholder="Enter Your New Password"
-          type="password"
+          type={showPassword ? "text" : "password"}
+          showPassword={showPassword}
+          toggleShowPassword={() => setShowPassword(!showPassword)}
         />
         <InputField
           label={"Confirm Password"}
@@ -76,7 +86,11 @@ const UpdatePassword = ({ handleNextStepMove }) => {
           value={formData.confirmPassword}
           onChange={(e) => handleChange("confirmPassword", e.target.value)}
           placeholder="Confirm Your New Password"
-          type="password"
+          type={showConfirmPassword ? "text" : "password"}
+          showPassword={showConfirmPassword}
+          toggleShowPassword={() =>
+            setShowConfirmPassword(!showConfirmPassword)
+          }
         />
         <PrimaryButton value="Submit" type="submit" />
       </form>

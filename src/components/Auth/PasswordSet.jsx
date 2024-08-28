@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import PrimaryButton from "../common/PrimaryButton";
 import axios from "axios";
 import { API_URL } from "../../config";
-import useAuthStore from "../../store/useAuthStore";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 axios.defaults.withCredentials = true;
@@ -44,7 +43,6 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
   const handleSubmit = async () => {
     const otp = code.join("");
     const hash = otpData?.data?.hash;
-
     try {
       const response = await axios.post(
         `${API_URL}/auth/verify-otp`,
@@ -55,7 +53,7 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
         },
         { withCredentials: true }
       );
-      console.log(response);
+      localStorage.setItem("user", JSON.stringify(response.data.data));
       toast.success(response.data.message);
       navigate("/profile");
     } catch (error) {

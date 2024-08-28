@@ -5,19 +5,21 @@ import { CgProfile } from "react-icons/cg";
 import { RiBankCardLine, RiLockPasswordFill } from "react-icons/ri";
 import Addresset from "../../components/Profile/Addresset";
 import VerifyIdBank from "../../components/Profile/VerifyIdBank";
-// import ProductSet from "../../components/Profile/ProductSet";
 import Navbar from "../../layout/Navbar";
 import PersonalDetails from "../../components/Profile/PersonalDetails";
 import useAuthStore from "../../store/AuthStore";
 import { SERVER } from "../../config";
 import UpdatePassword from "../../components/Profile/UpdatePassword";
+import { toast } from "react-toastify";
+
 const Profile = () => {
   const { user, fetchUser } = useAuthStore();
-  console.log(user);
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
+
   const [activeStep, setActiveStep] = useState(0);
+  const [isPasswordUpdated, setIsPasswordUpdated] = useState(false);
   const [formData, setFormData] = useState({
     selectedDistrict: null,
     selectedCity: null,
@@ -32,7 +34,6 @@ const Profile = () => {
     bankName: "",
     bankBranch: "",
     avatar: null,
-    // coverPhoto: null,
     name: "",
     email: "",
     phone: "",
@@ -47,7 +48,6 @@ const Profile = () => {
         email: user?.email,
         phone: user?.phone,
         avatar: `${SERVER}${user?.avatar?.secure_url}`,
-        // coverPhoto: userData.coverPhoto,
         selectedDistrict: user?.location.state,
         selectedCity: user?.location.city,
         detailAddress: user?.location.address1,
@@ -64,7 +64,6 @@ const Profile = () => {
     }
   }, [user]);
 
-  console.log(formData);
   const menu = [
     { label: "Password", icon: <RiLockPasswordFill /> },
     { label: "Profile", icon: <CgProfile /> },
@@ -72,20 +71,33 @@ const Profile = () => {
     { label: "Verify ID & Bank", icon: <RiBankCardLine /> },
   ];
 
-  const handleStepClick = (step) => setActiveStep(step);
-  const handleNextStep = () =>
+  const handleStepClick = (step) => {
+    if (!isPasswordUpdated && step > 0) {
+      toast.error("Please update your password first!");
+      return;
+    }
+    setActiveStep(step);
+  };
+
+  const handleNextStep = () => {
+    if (!isPasswordUpdated && activeStep === 0) {
+      toast.error("Please update your password first!");
+      return;
+    }
     setActiveStep((prevStep) =>
       prevStep + 1 < menu.length ? prevStep + 1 : prevStep
     );
+  };
+
   const handlePreviousStep = () =>
     setActiveStep((prevStep) => (prevStep > 0 ? prevStep - 1 : prevStep));
+
   const handleChange = (field, value) => {
     setFormData((prevState) => ({
       ...prevState,
       [field]: value,
     }));
   };
-  console.log(formData);
 
   return (
     <section className="">
@@ -140,13 +152,14 @@ const Profile = () => {
               </React.Fragment>
             ))}
           </div>
-          {/* <h1 className="mt-10">
-            Please complete the todo as soon as possible, then start your
-            business journey.
-          </h1> */}
         </div>
         <section className="mt-6">
-          {activeStep === 0 && <UpdatePassword />}
+          {activeStep === 0 && (
+            <UpdatePassword
+              handleNextStep={handleNextStep}
+              setIsPasswordUpdated={setIsPasswordUpdated}
+            />
+          )}
           {activeStep === 1 && (
             <PersonalDetails
               formData={formData}
@@ -168,7 +181,6 @@ const Profile = () => {
               handleNextStep={handleNextStep}
             />
           )}
-          {/* {activeStep === 3 && <ProductSet />} */}
         </section>
       </div>
     </section>

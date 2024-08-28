@@ -79,11 +79,11 @@ const Login = () => {
                 type="submit"
                 disabled={loading}
               />
-              {/* <p className="text-end py-2 pt-4 text-blue-600 cursor-pointer">
+              <p className="text-end py-2 pt-4 text-blue-600 cursor-pointer">
                 Reset Password?
-              </p> */}
+              </p>
               <Link
-                to={"/"}
+                to={"/register"}
                 className="flex justify-end  text-blue-600 cursor-pointer"
               >
                 Register?

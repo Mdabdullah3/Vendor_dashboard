@@ -7,7 +7,7 @@ const useUserStore = create((set, get) => ({
     user: null,
     loading: false,
     error: null,
-
+    storedUser: null,
     fetchUser: async () => {
         set({ loading: true, error: null });
         try {
@@ -38,7 +38,7 @@ const useUserStore = create((set, get) => ({
                 toast.success('Login successful');
                 router('/profile');
                 set({ user: response.data.data, loading: false });
-                console.log(response)
+                localStorage.setItem('user', JSON.stringify(response.data.data));
             } else {
                 toast.error('Login failed. Please try again.');
                 set({ loading: false });
@@ -61,8 +61,6 @@ const useUserStore = create((set, get) => ({
             set({ error: error.message, loading: false });
         }
     },
-
-
 }));
 
 export default useUserStore;
