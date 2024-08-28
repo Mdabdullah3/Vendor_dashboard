@@ -6,12 +6,11 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { API_URL } from "../../config";
 
-const UpdatePassword = ({ handleNextStepMove, setIsPasswordUpdated }) => {
-  const storedUser = useUserStore((state) => state.storedUser);
+const UpdatePassword = ({ handleNextStep, setIsPasswordUpdated }) => {
+  const { storedUser, updatePassword } = useUserStore();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  console.log(storedUser);
   const [formData, setFormData] = useState({
     currentPassword: storedUser?.password,
     password: "",
@@ -24,36 +23,26 @@ const UpdatePassword = ({ handleNextStepMove, setIsPasswordUpdated }) => {
       [key]: value,
     }));
   };
+  console.log(formData);
 
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
+
     if (formData.password !== formData.confirmPassword) {
       toast.error("Passwords do not match");
       return;
     }
-    try {
-      const response = await axios.patch(
-        `${API_URL}/auth/update-password`,
-        {
-          withcredentials: true,
-        },
-        {
-          currentPassword: storedUser?.password,
-          password: formData.password,
-          confirmPassword: formData.confirmPassword,
-        }
-      );
 
-      if (response.status === 200) {
-        toast.success(response.data.message);
-        handleNextStepMove(); // Move to the next step
-        setIsPasswordUpdated(true);
-      } else {
-        toast.error(response.data.message || "Error updating password.");
-        console.error("Error updating password:", response.data.message);
-      }
+    try {
+      updatePassword(
+        formData.currentPassword,
+        formData.password,
+        formData.confirmPassword
+      );
+      setIsPasswordUpdated(true);
+
+      handleNextStep();
     } catch (error) {
-      // toast.error(error.response.data.message);
       console.log(error);
     }
   };

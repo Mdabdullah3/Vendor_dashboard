@@ -7,7 +7,7 @@ const useUserStore = create((set, get) => ({
     user: null,
     loading: false,
     error: null,
-    storedUser: null,
+    storedUser: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
     fetchUser: async () => {
         set({ loading: true, error: null });
         try {
@@ -61,6 +61,25 @@ const useUserStore = create((set, get) => ({
             set({ error: error.message, loading: false });
         }
     },
+    updatePassword: async (currentPassword, password, confirmPassword) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await axios.patch(
+                `${API_URL}/auth/update-password`,
+                { currentPassword, password, confirmPassword }, // This is the request body
+                {
+                    withCredentials: true, // These are the request options
+                }
+            );
+            console.log(response);
+            toast.success("Password Updated Successfully");
+            set({ user: response.data.data, loading: false });
+        } catch (error) {
+            toast.error(error.response?.data?.message);
+            set({ error: error.message, loading: false });
+        }
+    }
+
 }));
 
 export default useUserStore;
