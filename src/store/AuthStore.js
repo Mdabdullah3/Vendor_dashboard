@@ -35,7 +35,7 @@ const useUserStore = create((set, get) => ({
             if (response.status === 200) {
                 await get().fetchUser();
                 toast.success('Login successful');
-                router('/profile');
+                router('/admin');
                 set({ user: response.data.data, loading: false });
                 localStorage.setItem('user', JSON.stringify(response.data.data));
             } else {
