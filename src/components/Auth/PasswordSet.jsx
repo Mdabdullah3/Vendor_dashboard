@@ -4,13 +4,16 @@ import axios from "axios";
 import { API_URL } from "../../config";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+
 axios.defaults.withCredentials = true;
+
 const PasswordSet = ({ phone, onNext, otpData }) => {
   const [code, setCode] = useState(new Array(4).fill(""));
-  console.log(otpData);
+  const [hash, setHash] = useState(otpData?.data?.hash);
   const inputRefs = useRef([]);
-  console.log(otpData);
   const navigate = useNavigate();
+
+  console.log(hash);
   const handleChange = (e, index) => {
     const { value } = e.target;
     if (isNaN(value)) return;
@@ -42,7 +45,6 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
 
   const handleSubmit = async () => {
     const otp = code.join("");
-    const hash = otpData?.data?.hash;
     try {
       const response = await axios.post(
         `${API_URL}/auth/verify-otp`,
@@ -70,11 +72,13 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
       );
       toast.success("OTP resent successfully!");
       console.log(response.data);
+      setHash(response?.data?.data?.hash);
     } catch (error) {
       toast.error("Failed to resend OTP. Please try again.");
       console.error("Failed to resend OTP", error);
     }
   };
+
   return (
     <section className="">
       <h1 className="text-xl font-semibold">Enter The Code</h1>
@@ -103,27 +107,6 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
         </span>
       </p>
       <div className="mt-5 gap-3 flex flex-col">
-        {/* <InputField
-          type="password"
-          placeholder="Enter Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <InputField
-          type="password"
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-        />
-        <InputField
-          type="text"
-          placeholder="Enter Referal Code"
-          value={referalCode}
-          onChange={(e) => setReferalCode(e.target.value)}
-          required
-        /> */}
         <PrimaryButton type="button" value="Next" onClick={handleSubmit} />
       </div>
     </section>

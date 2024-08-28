@@ -2,17 +2,20 @@ import React, { useState } from "react";
 import InputField from "../common/InputField";
 import PrimaryButton from "../common/PrimaryButton";
 import useUserStore from "../../store/AuthStore";
-import axios from "axios";
 import { toast } from "react-toastify";
-import { API_URL } from "../../config";
 
-const UpdatePassword = ({ handleNextStep, setIsPasswordUpdated }) => {
-  const { storedUser, updatePassword } = useUserStore();
+const UpdatePassword = ({
+  handleNextStep,
+}) => {
+  const userItem = localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : null;
+  const { updatePassword } = useUserStore();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [formData, setFormData] = useState({
-    currentPassword: storedUser?.password,
+    currentPassword: userItem?.password,
     password: "",
     confirmPassword: "",
   });
@@ -23,7 +26,6 @@ const UpdatePassword = ({ handleNextStep, setIsPasswordUpdated }) => {
       [key]: value,
     }));
   };
-  console.log(formData);
 
   const handleUpdatePassword = async (e) => {
     e.preventDefault();
@@ -39,8 +41,6 @@ const UpdatePassword = ({ handleNextStep, setIsPasswordUpdated }) => {
         formData.password,
         formData.confirmPassword
       );
-      setIsPasswordUpdated(true);
-
       handleNextStep();
     } catch (error) {
       console.log(error);
