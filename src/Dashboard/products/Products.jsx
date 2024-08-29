@@ -15,10 +15,8 @@ const ProductAdminPanel = () => {
     limit,
     searchTerm,
     setPage,
-    setLimit,
     setSearchTerm,
     setSort,
-    loading,
   } = useProductStore();
 
   useEffect(() => {

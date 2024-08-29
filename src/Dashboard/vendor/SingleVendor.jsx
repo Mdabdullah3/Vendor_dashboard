@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import PrimaryButton from "../../components/common/PrimaryButton";
 import useUserStore from "../../store/AuthStore";
 import { SERVER } from "../../config";
 import { Link } from "react-router-dom";

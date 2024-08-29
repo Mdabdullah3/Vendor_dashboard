@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FiPlus, FiEdit } from "react-icons/fi";
+import {  FiEdit } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import useVoucherStore from "../../store/useVoucherStore";
 
