@@ -23,11 +23,11 @@ const VoucherAdminPanel = () => {
       <div className="flex-1 p-10">
         <div className="flex justify-between items-center mb-10">
           <h1 className="text-3xl font-bold">Vouchers</h1>
-          <Link to="/admin/add-voucher">
+          {/* <Link to="/admin/add-voucher">
             <button className="flex items-center px-4 py-2 bg-primary text-white rounded-lg shadow-md hover:bg-primary/60">
               <FiPlus className="mr-2" /> Add Voucher
             </button>
-          </Link>
+          </Link> */}
         </div>
 
         <table className="min-w-full bg-white border border-gray-200">

@@ -85,23 +85,23 @@ const ProductAdminPanel = () => {
               <tbody>
                 {products?.length > 0 ? (
                   products?.map((product) => (
-                    <tr key={product._id} className="border-b">
+                    <tr key={product?._id} className="border-b">
                       <td className="px-4 py-2">
                         <img
-                          src={`${SERVER}${product?.coverPhoto.secure_url}`}
+                          src={`${SERVER}${product?.coverPhoto?.secure_url}`}
                           alt={product.name}
                           className="w-12 h-12 rounded"
                         />
                       </td>
-                      <td className="px-4 py-2">{product.name}</td>
-                      <td className="px-4 py-2">{product.quantity}</td>
-                      <td className="px-4 py-2">{product.vendorId}</td>
-                      <td className="px-4 py-2">${product.price}</td>
+                      <td className="px-4 py-2">{product?.name}</td>
+                      <td className="px-4 py-2">{product?.quantity}</td>
+                      <td className="px-4 py-2">{product?.vendorId}</td>
+                      <td className="px-4 py-2">${product?.price}</td>
                       <td className="px-4 py-2">
-                        {formatDate(product.createdAt)}
+                        {formatDate(product?.createdAt)}
                       </td>
                       <td className="px-4 py-2 ">
-                        <Link to={`/admin/edit-product/${product._id}`}>
+                        <Link to={`/admin/edit-product/${product?._id}`}>
                           <div className="flex items-center space-x-2 cursor-pointer">
                             <button className="text-yellow-500">
                               <FiEdit />

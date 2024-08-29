@@ -10,7 +10,7 @@ import OrderReview from "./Dashboard/Order/OrderReview";
 import Finance from "./Dashboard/Finance/index";
 import AdManager from "./Dashboard/AdManager/AdManager";
 import VoucherAdminPanel from "./Dashboard/Voucher/index";
-import AddNewVoucher from "./Dashboard/Voucher/AddVoucher";
+// import AddNewVoucher from "./Dashboard/Voucher/AddVoucher";
 import EditVoucher from "./Dashboard/Voucher/EditVoucher";
 import GetPlan from "./Dashboard/AdManager/GetPlan";
 import AddProducts from "./Dashboard/products/AddProducts";
@@ -18,6 +18,7 @@ import EditProducts from "./Dashboard/products/EditProducts";
 import EventManager from "./Dashboard/Events/RecentEvent";
 import JoinEvents from "./Dashboard/Events/JoinEvents";
 import ProfileUpdate from "./page/Profile/ProfileUpdate";
+import Supports from "./Dashboard/Support/Supports";
 const menu = [
     {
         name: "Profile",
@@ -93,12 +94,12 @@ const menu = [
         icon: <BsTicketDetailed className="h-6 w-6" />,
         component: <VoucherAdminPanel />
     },
-    {
-        name: "Create Voucher",
-        layout: "/admin",
-        path: "add-voucher",
-        component: <AddNewVoucher />
-    },
+    // {
+    //     name: "Create Voucher",
+    //     layout: "/admin",
+    //     path: "add-voucher",
+    //     component: <AddNewVoucher />
+    // },
     {
         name: "Edit Voucher",
         layout: "/admin",
@@ -130,8 +131,9 @@ const menu = [
         name: "Support",
         layout: "/admin",
         icon: <BiSupport className="h-6 w-6" />,
-        path: "message-center",
+        path: "support",
         navMenu: true,
+        component: <Supports />
     },
 
 ];

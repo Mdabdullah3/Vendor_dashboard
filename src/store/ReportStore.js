@@ -12,8 +12,8 @@ const useReportStore = create((set, get) => ({
     fetchReports: async () => {
         set({ loading: true, error: null });
         try {
-            const response = await axios.get(`${API_URL}/reports`);
-            set({ reports: response.data, loading: false });
+            const response = await axios.get(`${API_URL}/reports?_limit=10000`);
+            set({ reports: response?.data?.data, loading: false });
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to fetch reports');
             set({ loading: false });
@@ -24,7 +24,7 @@ const useReportStore = create((set, get) => ({
         set({ loading: true, error: null });
         try {
             const response = await axios.get(`${API_URL}/reports/${reportId}`);
-            set({ report: response.data, loading: false });
+            set({ report: response?.data?.data, loading: false });
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to fetch report');
             set({ loading: false });

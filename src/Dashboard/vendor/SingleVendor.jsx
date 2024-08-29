@@ -73,12 +73,18 @@ const SingleVendor = () => {
                   {user?.idCardNumber}
                 </p>
 
-                <div className="flex gap-4">
+                <div className=" space-y-3">
+                  <h1 className=" font-semibold">
+                    ID Card Front Side Image
+                  </h1>
                   <img
                     src={`${SERVER}${user?.idCardFrontPageImage?.secure_url}`}
                     alt="ID Card Front"
                     className="w-32 h-20 object-cover border border-gray-300 rounded"
                   />
+                  <h1 className="font-semibold">
+                    ID Card Back Side Image
+                  </h1>
                   <img
                     src={`${SERVER}${user?.idCardBackPageImage?.secure_url}`}
                     alt="ID Card Back"
@@ -110,6 +116,9 @@ const SingleVendor = () => {
                   <span className="font-semibold">Bank Branch:</span>{" "}
                   {user?.bankBranch}
                 </p>
+                <h1 className="font-semibold my-2">
+                  Bank Statement Image
+                </h1>
                 <img
                   src={`${SERVER}${user?.bankStatementImage?.secure_url}`}
                   alt="Bank Statement"

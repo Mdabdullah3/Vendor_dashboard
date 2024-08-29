@@ -108,6 +108,15 @@ const useProductStore = create((set) => ({
             set({ error: error.response?.data?.message || error.message, loading: false });
         }
     },
+    fetchAllProducts: async () => {
+        set({ loading: true });
+        try {
+            const response = await axios.get(`${API_URL}/products?_limit=2000&_fields=_id,user`);
+            set({ products: response.data.data, loading: false });
+        } catch (error) {
+            set({ error: error.response?.data?.message || error.message, loading: false });
+        }
+    },
 
     setPage: (page) => set({ page }),
     setLimit: (limit) => set({ limit }),
