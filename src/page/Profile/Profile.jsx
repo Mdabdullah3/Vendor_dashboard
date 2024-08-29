@@ -50,7 +50,7 @@ const Profile = () => {
         // coverPhoto: userData.coverPhoto,
         selectedDistrict: user?.location.state,
         selectedCity: user?.location.city,
-        detailAddress: user?.location.address1,
+        detailAddress: "",
         idCardNumber: user?.idCardNumber,
         accountHolderName: user?.accountHolderName,
         accountNumber: user?.accountNumber,

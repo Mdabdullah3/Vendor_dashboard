@@ -6,10 +6,13 @@ import axios from "axios";
 import { API_URL } from "../../config";
 import { toast } from "react-toastify";
 import Select from "react-select";
+import { useNavigate } from "react-router-dom";
 
-const VerifyIdBank = ({ formData, handleChange, handleNextStep }) => {
+const VerifyIdBank = ({ formData, handleChange }) => {
   const [selectedBank, setSelectedBank] = useState(null);
   const [bankOption, setBankOption] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchBanks = async () => {
       const response = await fetch("bankData.json");
@@ -40,6 +43,7 @@ const VerifyIdBank = ({ formData, handleChange, handleNextStep }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
     try {
       const idCardFrontBase64 = formData.idCardFrontPageImage
         ? await getBase64(formData.idCardFrontPageImage)
@@ -70,10 +74,11 @@ const VerifyIdBank = ({ formData, handleChange, handleNextStep }) => {
       const response = await axios.patch(`${API_URL}/users/me`, payload, {
         withCredentials: true,
       });
-
-      handleNextStep();
-      toast.success("Profile Update Successfully");
-      console.log(response, payload);
+      if (response.status === 200) {
+        navigate("/admin");
+        toast.success("Profile Update Successfully");
+      }
+      setLoading(false);
     } catch (error) {
       toast.error(error.message || "An error occurred while uploading files.");
       console.log(error);
@@ -146,7 +151,11 @@ const VerifyIdBank = ({ formData, handleChange, handleNextStep }) => {
           onChange={(e) => handleChange("bankBranch", e.target.value)}
           placeholder="Enter Your Bank Branch"
         />
-        <PrimaryButton value={"Submit"} onClick={handleSubmit} />
+        <PrimaryButton
+          value={loading ? "Loading..." : "Submit"}
+          disabled={loading}
+          onClick={handleSubmit}
+        />
       </div>
     </section>
   );

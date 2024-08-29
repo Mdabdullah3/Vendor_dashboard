@@ -81,7 +81,7 @@ const Login = () => {
               />
               <Link to={"/forget-password"}>
                 <p className="text-end py-2 pt-4 text-blue-600 cursor-pointer">
-                  Reset Password?
+                  Forget Password?
                 </p>
               </Link>
               <Link

@@ -11,6 +11,7 @@ const InputField = ({
   required = false,
   error = "",
   showPassword = false,
+  disabled = false,
   toggleShowPassword = null,
 }) => {
   return (
@@ -19,6 +20,7 @@ const InputField = ({
         {label} <span className="text-primary">{required && label && "*"}</span>
       </label>
       <input
+        disabled={disabled}
         type={type}
         id={id}
         name={name}
