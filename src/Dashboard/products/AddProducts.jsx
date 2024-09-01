@@ -10,9 +10,15 @@ import "react-quill/dist/quill.snow.css";
 import PrimaryButton from "../../components/common/PrimaryButton";
 import useUserStore from "../../store/AuthStore";
 import Select from "react-select";
+import axios from "axios";
+import { API_URL, SERVER } from "../../config";
+import { FaBangladeshiTakaSign } from "react-icons/fa6";
+import { toDataURL } from "../../utils/DataUrl";
 const AddProducts = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [video, setVideo] = useState(null);
+  const [variants, setVariants] = useState([]);
+  const [variantImage, setVariantImage] = useState(null);
   const [image1, setImage1] = useState(null);
   const [image2, setImage2] = useState(null);
   const [image3, setImage3] = useState(null);
@@ -22,15 +28,21 @@ const AddProducts = () => {
   const { user, fetchUser } = useUserStore();
   const { addProduct } = useProductStore();
   const { categories, fetchCategories } = useCategoryStore();
-  const genderOption = ["Men", "Women", "Baby", "Unisex"];
-  const sizeOptions = ["s", "M", "L", "XL", "XXL"];
+  const genderOption = ["men", "women", "baby", "unisex"];
+  const sizeOptions = ["s", "m", "l", "xl", "xxl"];
+  const colorOptions = ["red", "blue", "green", "yellow", "black", "white"];
+  const [loading, setLoading] = useState(false);
+  const [editingVariant, setEditingVariant] = useState(null);
+
   useEffect(() => {
     fetchCategories();
     fetchUser();
   }, [fetchCategories, fetchUser]);
 
+  console.log(variants);
   const [form, setForm] = useState({
     video: video,
+    productVariants: variants.map((item) => item._id),
     user: user?._id,
     img: [image1, image2, image3].filter(Boolean),
     productName: "",
@@ -40,32 +52,40 @@ const AddProducts = () => {
     brand: "",
     coverPhoto: coverImage,
     description: "",
-    price: 0,
-    discount: 0,
-    quantity: 0,
     warranty: "",
     screenSize: "",
     batteryLife: "",
     cameraResolution: "",
     storageCapacity: "",
     os: "",
-    size: "",
-    gender: "",
-    material: "",
     packageWeight: "",
     packageDimensionLength: "",
     packageDimensionWidth: "",
     packageDimensionHeight: "",
+    color: "",
+  });
+
+  const [variantForm, setVariantForm] = useState({
+    price: 0,
+    discount: 0,
+    quantity: 0,
+    color: "",
+    size: "",
+    image: variantImage,
+    gender: "",
+    material: "",
   });
 
   useEffect(() => {
     setForm((prevForm) => ({
       ...prevForm,
+      user: user?._id,
       img: [image1, image2, image3].filter(Boolean),
       coverPhoto: coverImage,
       video: video,
+      productVariants: variants.map((item) => item._id),
     }));
-  }, [image1, image2, image3, coverImage, video]);
+  }, [image1, image2, user, image3, coverImage, video, variants]);
 
   const warrantyType = [
     {
@@ -82,7 +102,6 @@ const AddProducts = () => {
     },
     { id: 3, label: "No Warranty", value: "No Warranty" },
   ];
-  console.log(form);
 
   const formRefs = {
     basicInfo: useRef(null),
@@ -95,16 +114,60 @@ const AddProducts = () => {
     sectionRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
+  console.log(form);
+  const handleAddVariant = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const variantData = {
+      user: user?._id,
+      name: variantForm.productName,
+      price: variantForm.price,
+      discount: variantForm.discount,
+      quantity: variantForm.quantity,
+      material: variantForm.material,
+      size: variantForm.size,
+      gender: variantForm.gender,
+      color: variantForm.color,
+      image: variantImage,
+    };
+
+    try {
+      const response = await axios.post(
+        `${API_URL}/product-variants`,
+        variantData
+      );
+      const data = response.data.data;
+      setLoading(false);
+      setVariants((prevVariants) => [...prevVariants, data]);
+      toast.success("Product variant added successfully!");
+      setVariantForm((prevForm) => ({
+        ...prevForm,
+        quantity: 0,
+        price: 0,
+        discount: 0,
+        material: "",
+        size: "",
+        gender: "",
+        color: "",
+      }));
+      setVariantImage(null);
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.message);
+      console.log(error);
+    }
+  };
+
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     const formData = {
       user: form.user,
+      productVariants: form.productVariants,
       video: form.video,
       name: form.productName,
       slug: form.productName.toLowerCase().split(" ").join("-"),
-      price: form.price,
-      discount: form.discount,
-      quantity: form.quantity,
       summary: form.summary,
       description: form.description,
       subCategory: selectedSubCategory,
@@ -112,6 +175,7 @@ const AddProducts = () => {
       brand: form.brand,
       warranty: form.warranty,
       coverPhoto: form.coverPhoto,
+      status: "approved",
       images: form.img.map((file) => `${file}`),
       specifications: {
         screenSize: form?.screenSize,
@@ -119,9 +183,6 @@ const AddProducts = () => {
         cameraResolution: form?.cameraResolution,
         storageCapacity: form?.storageCapacity,
         os: form?.os,
-        size: form?.size,
-        gender: form?.gender,
-        material: form?.material,
       },
       packaging: {
         weight: form?.packageWeight,
@@ -132,6 +193,7 @@ const AddProducts = () => {
     };
     try {
       await addProduct(formData);
+      setLoading(false);
     } catch (error) {
       toast.error(error.message);
       console.log(error);
@@ -146,9 +208,85 @@ const AddProducts = () => {
     })),
   }));
 
+  const handleEditVariant = (id) => {
+    const variantToEdit = variants.find((variant) => variant._id === id);
+    console.log(variantToEdit);
+    if (variantToEdit) {
+      setEditingVariant(variantToEdit);
+      setVariantForm({
+        price: variantToEdit.price,
+        discount: variantToEdit.discount,
+        quantity: variantToEdit.quantity,
+        color: variantToEdit.color,
+        size: variantToEdit.size,
+        gender: variantToEdit.gender,
+        material: variantToEdit.material,
+      });
+      if (variantToEdit?.image?.secure_url) {
+        const image1Url = `${SERVER}${variantToEdit?.image?.secure_url}`;
+        toDataURL(image1Url).then((base64) => {
+          setVariantImage(base64);
+          setVariantForm((prevForm) => ({
+            ...prevForm,
+            image: base64,
+          }));
+        });
+      }
+      setVariantImage(variantToEdit.image);
+    }
+  };
+  const handleUpdateVariant = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const updatedVariantData = {
+      user: user?._id,
+      price: variantForm.price,
+      discount: variantForm.discount,
+      quantity: variantForm.quantity,
+      color: variantForm.color,
+      size: variantForm.size,
+      image: variantImage,
+      gender: variantForm.gender,
+      material: variantForm.material,
+    };
+
+    try {
+      const response = await axios.patch(
+        `${API_URL}/product-variants/${editingVariant._id}`,
+        updatedVariantData
+      );
+      const updatedVariant = response.data.data;
+      setLoading(false);
+      setVariants((prevVariants) =>
+        prevVariants.map((variant) =>
+          variant._id === updatedVariant._id ? updatedVariant : variant
+        )
+      );
+      toast.success("Product variant updated successfully!");
+      setEditingVariant(null);
+      setVariantForm({
+        price: 0,
+        discount: 0,
+        quantity: 0,
+        color: "",
+        size: "",
+        image: null,
+        gender: "",
+        material: "",
+      });
+      setVariantImage(null);
+    } catch (error) {
+      setLoading(false);
+      toast.error(error.message);
+      console.log(error);
+    }
+  };
+
+  console.log(variantImage);
   return (
     <section className="mt-5 lg:grid grid-cols-5 relative">
-      <form className="col-span-4 w-11/12" onSubmit={handleSubmit}>
+      <section className="col-span-4 w-11/12">
         <div ref={formRefs.basicInfo}>
           <h1 className="text-2xl font-bold tracking-wider">
             Basic Information
@@ -254,46 +392,73 @@ const AddProducts = () => {
               Price & Variants
             </h1>
             <div className="grid grid-cols-3 gap-5 mt-5">
+              <FileUpload
+                label="Variant Image"
+                name="image"
+                setFile={setVariantImage}
+                file={variantImage}
+              />
+
               <InputField
                 label="Quantity"
                 type="number"
                 placeholder="Quantity"
-                value={form.quantity}
-                onChange={(e) => setForm({ ...form, quantity: e.target.value })}
+                value={variantForm.quantity}
+                onChange={(e) =>
+                  setVariantForm({ ...variantForm, quantity: e.target.value })
+                }
               />
               <InputField
                 label="Price"
                 type="number"
                 placeholder="Price"
-                value={form.price}
-                onChange={(e) => setForm({ ...form, price: e.target.value })}
+                value={variantForm.price}
+                onChange={(e) =>
+                  setVariantForm({ ...variantForm, price: e.target.value })
+                }
               />
               <InputField
-                label="Promo Price"
+                label="Discount"
                 type="number"
-                placeholder="Promo Price"
-                value={form.discount}
+                placeholder="Discount Price"
+                value={variantForm.discount}
                 onChange={(e) =>
-                  setForm({ ...form, discount: e.target.value })
+                  setVariantForm({ ...variantForm, discount: e.target.value })
                 }
               />
               <SelectField
                 label="Size"
                 placeholder="Size"
-                options={sizeOptions?.map((size) => ({
+                options={sizeOptions.map((size) => ({
                   key: size,
                   label: size,
                   value: size,
                 }))}
-                value={form.size}
-                onChange={(e) => setForm({ ...form, size: e.target.value })}
+                value={variantForm.size}
+                onChange={(e) =>
+                  setVariantForm({ ...variantForm, size: e.target.value })
+                }
+              />
+              <SelectField
+                label="Color"
+                placeholder="Color"
+                options={colorOptions?.map((color) => ({
+                  key: color,
+                  label: color,
+                  value: color,
+                }))}
+                value={variantForm.color}
+                onChange={(e) =>
+                  setVariantForm({ ...variantForm, color: e.target.value })
+                }
               />
               <InputField
                 label="Material"
                 placeholder="Material"
-                value={form.material}
-                on
-                Change={(e) => setForm({ ...form, material: e.target.value })}
+                value={variantForm.material}
+                onChange={(e) =>
+                  setVariantForm({ ...variantForm, material: e.target.value })
+                }
               />
               <SelectField
                 options={genderOption?.map((gender) => ({
@@ -303,10 +468,81 @@ const AddProducts = () => {
                 }))}
                 label="Gender"
                 placeholder="Gender"
-                value={form.gender}
-                onChange={(e) => setForm({ ...form, gender: e.target.value })}
+                value={variantForm.gender}
+                onChange={(e) =>
+                  setVariantForm({ ...variantForm, gender: e.target.value })
+                }
               />
             </div>
+            <div className="flex justify-end">
+              {editingVariant ? (
+                <button
+                  onClick={handleUpdateVariant}
+                  className="btn btn-primary text-white"
+                  disabled={loading}
+                >
+                  {loading ? "Updating..." : "Update Variant"}
+                </button>
+              ) : (
+                <button
+                  onClick={handleAddVariant}
+                  className="btn btn-primary text-white"
+                  disabled={loading}
+                >
+                  {loading ? "Adding..." : "Add Variant"}
+                </button>
+              )}
+            </div>
+            {variants.length > 0 && (
+              <section className="p-4 bg-white rounded-lg shadow-md mt-4">
+                <div className="mb-4">
+                  <h1 className="text-2xl font-bold text-gray-800">Variants</h1>
+                </div>
+                <div className="grid grid-cols-9 gap-4 font-semibold text-sm text-gray-600 border-b-2 pb-2">
+                  <h1 className="text-center">Image</h1>
+                  <h1 className="text-center">Size</h1>
+                  <h1 className="text-center">Color</h1>
+                  <h1 className="text-center">Quantity</h1>
+                  <h1 className="text-center">Price</h1>
+                  <h1 className="text-center">Discount</h1>
+                  <h1 className="text-center">Material</h1>
+                  <h1 className="text-center">Gender</h1>
+                  <h1 className="text-center">Action</h1>
+                </div>
+
+                {variants?.map((variant) => (
+                  <div
+                    key={variant._id}
+                    className="grid grid-cols-9 gap-4 items-center border-b py-4 hover:bg-gray-50 transition-colors capitalize"
+                  >
+                    <img
+                      className="w-14 h-14 object-cover rounded-lg mx-auto"
+                      src={`${SERVER}${variant?.image?.secure_url}`}
+                      alt={variant?.size}
+                    />
+                    <p className="text-center">{variant?.size}</p>
+                    <p className="text-center">{variant?.color}</p>
+                    <p className="text-center">{variant?.quantity}</p>
+                    <p className="text-center flex items-center">
+                      <FaBangladeshiTakaSign />
+                      {variant?.price}
+                    </p>
+                    <p className="text-center text-green-600">
+                      {variant?.discount}%
+                    </p>
+                    <p className="text-center">{variant?.material}</p>
+                    <p className="text-center">{variant?.gender}</p>
+                    <button
+                      onClick={() => handleEditVariant(variant?._id)}
+                      className="btn btn-error text-white px-3 py-1 rounded-md"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                ))}
+              </section>
+            )}
+
             <h1 className="my-4 font-semibold text-lg">
               Electronics Product Specification
             </h1>
@@ -417,10 +653,14 @@ const AddProducts = () => {
             </div>
           </section>
           <div className="my-10">
-            <PrimaryButton value="Submit" onClick={handleSubmit} />
+            <PrimaryButton
+              value={loading ? "Submiting..." : "submit"}
+              disabled={loading}
+              onClick={handleSubmit}
+            />
           </div>
         </div>
-      </form>
+      </section>
       <section className="sticky top-24 h-72 cursor-pointer hidden lg:block">
         <ul className="steps steps-vertical">
           <li
