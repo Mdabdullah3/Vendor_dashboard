@@ -4,8 +4,7 @@ import { Link } from "react-router-dom";
 import InputSearch from "../../components/common/InputSearch";
 import useProductStore from "../../store/ProductStore";
 import { SERVER } from "../../config";
-import useAuthStore from "../../store/AuthStore";
-const ProductAdminPanel = () => {
+import useAuthStore from "../../store/AuthStore";const ProductAdminPanel = () => {
   const { user, fetchUser } = useAuthStore();
   const {
     products,
