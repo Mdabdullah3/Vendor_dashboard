@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import axios from 'axios';
 import { API_URL } from '../config';
 import { toast } from 'react-toastify';
@@ -24,7 +24,7 @@ const useCategoryStore = create((set) => ({
     fetchSubCategories: async () => {
         set({ loading: true, error: null });
         try {
-            const response = await axios.get(`${API_URL}/sub-categories`);
+            const response = await axios.get(`${API_URL}/sub-categories?_limit=100`);
             set({ subCategories: response.data.data, loading: false });
         } catch (error) {
             set({ error: error.message, loading: false });
@@ -52,7 +52,7 @@ const useCategoryStore = create((set) => ({
         }
     },
 
-    addCategory: async (categoryData, navigate) => {
+    addCategory: async (categoryData) => {
         set({ loading: true, error: null });
         try {
             const response = await axios.post(`${API_URL}/categories`, categoryData);
@@ -60,13 +60,13 @@ const useCategoryStore = create((set) => ({
                 categories: [...state.categories, response.data.data],
                 loading: false,
             }));
-            navigate("/admin/categories");
             toast.success('Category added successfully!');
         } catch (error) {
             set({ error: error.message, loading: false });
             toast.error(error.message);
         }
     },
+
 
     addSubCategory: async (subCategoryData) => {
         set({ loading: true, error: null });
