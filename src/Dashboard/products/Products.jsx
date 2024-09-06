@@ -5,7 +5,6 @@ import InputSearch from "../../components/common/InputSearch";
 import useProductStore from "../../store/ProductStore";
 import { SERVER } from "../../config";
 import useUserStore from "../../store/AuthStore";
-
 const ProductAdminPanel = () => {
   const { user, fetchUser } = useUserStore();
   const {

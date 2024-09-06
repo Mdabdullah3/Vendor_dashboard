@@ -4,7 +4,6 @@ import InputField from "../../components/common/InputField";
 import SelectField from "../../components/common/SelectField";
 import { toast } from "react-toastify";
 import useProductStore from "../../store/ProductStore";
-import useCategoryStore from "../../store/categoryStore";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import PrimaryButton from "../../components/common/PrimaryButton";
@@ -12,6 +11,7 @@ import useUserStore from "../../store/AuthStore";
 import Select from "react-select";
 import { FaBangladeshiTakaSign, FaTrash } from "react-icons/fa6";
 import { BiEdit } from "react-icons/bi";
+import useCategoryStore from "../../store/categoryStore";
 const AddProducts = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [video, setVideo] = useState(null);

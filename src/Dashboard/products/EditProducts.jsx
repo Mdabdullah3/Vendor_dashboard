@@ -4,7 +4,6 @@ import InputField from "../../components/common/InputField";
 import SelectField from "../../components/common/SelectField";
 import { toast } from "react-toastify";
 import useProductStore from "../../store/ProductStore";
-import useCategoryStore from "../../store/categoryStore";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import PrimaryButton from "../../components/common/PrimaryButton";
@@ -13,6 +12,7 @@ import { SERVER } from "../../config";
 import { toDataURL } from "../../utils/DataUrl";
 import { FaBangladeshiTakaSign, FaTrash } from "react-icons/fa6";
 import { BiEdit } from "react-icons/bi";
+import useCategoryStore from "../../store/categoryStore";
 
 const EditProducts = () => {
   const { id } = useParams();
@@ -24,9 +24,8 @@ const EditProducts = () => {
   const [coverImage, setCoverImage] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [subCategories, setSubCategories] = useState([]);
-  const { updateProduct, product, fetchProductByIdOrSlug } =
-    useProductStore();
-    const [loading, setLoading] = useState(false)
+  const { updateProduct, product, fetchProductByIdOrSlug } = useProductStore();
+  const [loading, setLoading] = useState(false);
   const [variantImage, setVariantImage] = useState(null);
   const [editingVariant, setEditingVariant] = useState(null);
   const [variants, setVariants] = useState(product?.productVariants);
@@ -205,7 +204,7 @@ const EditProducts = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     const formData = {
       vendorId: product.customId,
       user: product.user?._id,
@@ -254,7 +253,7 @@ const EditProducts = () => {
     try {
       await updateProduct(id, formData);
       fetchProductByIdOrSlug(id);
-      setLoading(false)
+      setLoading(false);
     } catch (error) {
       toast.error(error.message);
     }
