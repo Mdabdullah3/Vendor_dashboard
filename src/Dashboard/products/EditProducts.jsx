@@ -24,8 +24,9 @@ const EditProducts = () => {
   const [coverImage, setCoverImage] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [subCategories, setSubCategories] = useState([]);
-  const { updateProduct, loading, product, fetchProductByIdOrSlug } =
+  const { updateProduct, product, fetchProductByIdOrSlug } =
     useProductStore();
+    const [loading, setLoading] = useState(false)
   const [variantImage, setVariantImage] = useState(null);
   const [editingVariant, setEditingVariant] = useState(null);
   const [variants, setVariants] = useState(product?.productVariants);
@@ -204,6 +205,7 @@ const EditProducts = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true)
     const formData = {
       vendorId: product.customId,
       user: product.user?._id,
@@ -249,10 +251,10 @@ const EditProducts = () => {
         dimension: form?.dimension,
       },
     };
-    console.log(formData);
     try {
       await updateProduct(id, formData);
       fetchProductByIdOrSlug(id);
+      setLoading(false)
     } catch (error) {
       toast.error(error.message);
     }
@@ -274,7 +276,14 @@ const EditProducts = () => {
         material: variantToEdit.material,
       });
     }
-    setVariantImage(variantToEdit.image);
+    if (variantToEdit?.image?.secure_url) {
+      const imageUrl = `${SERVER}${variantToEdit?.image?.secure_url}`;
+      toDataURL(imageUrl).then((base64) => {
+        setVariantImage(base64);
+      });
+    } else {
+      setVariantImage(variantToEdit?.image);
+    }
     scrollToSection(formRefs.variants);
   };
   const handleUpdateVariant = async (e) => {
@@ -743,7 +752,8 @@ const EditProducts = () => {
           </section>
           <div className="my-10">
             <PrimaryButton
-              value={`${loading}` ? "Submit" : "Submiting..."}
+              value={loading ? "Submitting.." : "Submit"}
+              disabled={loading}
               onClick={handleSubmit}
             />
           </div>

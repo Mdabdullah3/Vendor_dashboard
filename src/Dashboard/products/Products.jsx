@@ -91,17 +91,22 @@ const ProductAdminPanel = () => {
                       </td>
                       <td className="px-4 py-2">{product?.name}</td>
                       <td className="px-4 py-2">
-                        {product?.productVariants[0]?.quantity}
+                        {product?.productVariants
+                          ? product?.productVariants[0]?.quantity
+                          : 0}
                       </td>
                       <td className="px-4 py-2">{product?.status}</td>
                       <td className="px-4 py-2">
-                      BDT{product?.productVariants[0]?.price}
+                        BDT{" "}
+                        {product?.productVariants
+                          ? product?.productVariants[0]?.price
+                          : 0}
                       </td>
                       <td className="px-4 py-2">
                         {formatDate(product?.createdAt)}
                       </td>
                       <td className="px-4 py-2 ">
-                        <Link to={`/admin/edit-product/${product._id}`}>
+                        <Link to={`/admin/edit-product/${product?._id}`}>
                           <div className="flex items-center space-x-2 cursor-pointer">
                             <button className="text-yellow-500">
                               <FiEdit />

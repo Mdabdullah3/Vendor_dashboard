@@ -20,7 +20,7 @@ const SingleVendor = () => {
     return <div>Loading...</div>;
   }
 
-  if (!user || user.role !== "admin") {
+  if (!user) {
     return <Navigate to="/" replace />;
   }
   return (
