@@ -11,7 +11,7 @@ import useUserStore from "../../store/AuthStore";
 import Select from "react-select";
 import { FaBangladeshiTakaSign, FaTrash } from "react-icons/fa6";
 import { BiEdit } from "react-icons/bi";
-import useCategoryStore from "../../store/categoryStore";
+import useCategoryStore from "../../store/CategoryStore";
 const AddProducts = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [video, setVideo] = useState(null);
