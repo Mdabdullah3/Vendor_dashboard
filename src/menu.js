@@ -3,13 +3,13 @@ import { BiSupport } from "react-icons/bi";
 import { FaCartFlatbed, FaMoneyCheck, FaRocketchat, FaUser } from "react-icons/fa6";
 import { CiShoppingBasket } from "react-icons/ci";
 import { IoIosRocket } from "react-icons/io";
-import { BsFillHandIndexFill, BsTicketDetailed } from "react-icons/bs";
+import { BsFillHandIndexFill } from "react-icons/bs";
 import SingleVendor from "./Dashboard/vendor/SingleVendor";
 import Products from "./Dashboard/products/Products"
 import OrderReview from "./Dashboard/Order/OrderReview";
 import Finance from "./Dashboard/Finance/index";
 import AdManager from "./Dashboard/AdManager/AdManager";
-import VoucherAdminPanel from "./Dashboard/Voucher/index";
+// import VoucherAdminPanel from "./Dashboard/Voucher/index";
 // import AddNewVoucher from "./Dashboard/Voucher/AddVoucher";
 import EditVoucher from "./Dashboard/Voucher/EditVoucher";
 import GetPlan from "./Dashboard/AdManager/GetPlan";
@@ -86,14 +86,14 @@ const menu = [
         path: "ads-manager/:id",
         component: <GetPlan />
     },
-    {
-        name: "Vouchers",
-        layout: "/admin",
-        path: "vouchers",
-        navMenu: true,
-        icon: <BsTicketDetailed className="h-6 w-6" />,
-        component: <VoucherAdminPanel />
-    },
+    // {
+    //     name: "Vouchers",
+    //     layout: "/admin",
+    //     path: "vouchers",
+    //     navMenu: true,
+    //     icon: <BsTicketDetailed className="h-6 w-6" />,
+    //     component: <VoucherAdminPanel />
+    // },
     // {
     //     name: "Create Voucher",
     //     layout: "/admin",

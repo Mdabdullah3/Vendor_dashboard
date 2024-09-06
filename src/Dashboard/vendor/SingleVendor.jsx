@@ -1,13 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import useUserStore from "../../store/AuthStore";
 import { SERVER } from "../../config";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 const SingleVendor = () => {
   const { user, fetchUser } = useUserStore();
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    fetchUser();
+    const loadUser = async () => {
+      await fetchUser();
+      setLoading(false);
+    };
+
+    loadUser();
   }, [fetchUser]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!user || user.role !== "admin") {
+    return <Navigate to="/" replace />;
+  }
   return (
     <section className="w-11/12 mx-auto my-6">
       <div className="flex items-center justify-between mb-4">
@@ -73,17 +88,13 @@ const SingleVendor = () => {
                 </p>
 
                 <div className=" space-y-3">
-                  <h1 className=" font-semibold">
-                    ID Card Front Side Image
-                  </h1>
+                  <h1 className=" font-semibold">ID Card Front Side Image</h1>
                   <img
                     src={`${SERVER}${user?.idCardFrontPageImage?.secure_url}`}
                     alt="ID Card Front"
                     className="w-32 h-20 object-cover border border-gray-300 rounded"
                   />
-                  <h1 className="font-semibold">
-                    ID Card Back Side Image
-                  </h1>
+                  <h1 className="font-semibold">ID Card Back Side Image</h1>
                   <img
                     src={`${SERVER}${user?.idCardBackPageImage?.secure_url}`}
                     alt="ID Card Back"
@@ -115,9 +126,7 @@ const SingleVendor = () => {
                   <span className="font-semibold">Bank Branch:</span>{" "}
                   {user?.bankBranch}
                 </p>
-                <h1 className="font-semibold my-2">
-                  Bank Statement Image
-                </h1>
+                <h1 className="font-semibold my-2">Bank Statement Image</h1>
                 <img
                   src={`${SERVER}${user?.bankStatementImage?.secure_url}`}
                   alt="Bank Statement"

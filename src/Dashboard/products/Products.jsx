@@ -4,33 +4,30 @@ import { Link } from "react-router-dom";
 import InputSearch from "../../components/common/InputSearch";
 import useProductStore from "../../store/ProductStore";
 import { SERVER } from "../../config";
-import useAuthStore from "../../store/AuthStore";const ProductAdminPanel = () => {
-  const { user, fetchUser } = useAuthStore();
+import useUserStore from "../../store/AuthStore";
+
+const ProductAdminPanel = () => {
+  const { user, fetchUser } = useUserStore();
   const {
     products,
     fetchProductByIdForUser,
-    totalProducts,
-    page,
+    totalPages,
     limit,
     searchTerm,
-    setPage,
     setSearchTerm,
-    setSort,
+    page,
+    setPage,
   } = useProductStore();
 
   useEffect(() => {
     fetchUser();
-    fetchProductByIdForUser(user?._id);
-  }, [
-    page,
-    limit,
-    searchTerm,
-    setSort,
-    fetchProductByIdForUser,
-    user?._id,
-    fetchUser,
-  ]);
 
+    if (user?._id) {
+      fetchProductByIdForUser(user._id, page, limit, searchTerm);
+    }
+  }, [user?._id, fetchUser, page, limit, searchTerm, fetchProductByIdForUser]);
+
+  console.log(products, user);
   const handleSearch = (value) => {
     setSearchTerm(value);
   };
@@ -42,9 +39,11 @@ import useAuthStore from "../../store/AuthStore";const ProductAdminPanel = () =>
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
-  // if (loading) return <h1>Loading...</h1>;
-
-  console.log(user);
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+    }
+  };
   return (
     <section>
       <div className="flex">
@@ -73,7 +72,7 @@ import useAuthStore from "../../store/AuthStore";const ProductAdminPanel = () =>
                   <th className="px-4 py-2">Image</th>
                   <th className="px-4 py-2">Name</th>
                   <th className="px-4 py-2">Quantity</th>
-                  <th className="px-4 py-2">SKU</th>
+                  <th className="px-4 py-2">Status</th>
                   <th className="px-4 py-2">Price</th>
                   <th className="px-4 py-2">Date</th>
                   <th className="px-4 py-2">Actions</th>
@@ -86,19 +85,23 @@ import useAuthStore from "../../store/AuthStore";const ProductAdminPanel = () =>
                       <td className="px-4 py-2">
                         <img
                           src={`${SERVER}${product?.coverPhoto?.secure_url}`}
-                          alt={product.name}
+                          alt={product?.name}
                           className="w-12 h-12 rounded"
                         />
                       </td>
                       <td className="px-4 py-2">{product?.name}</td>
-                      <td className="px-4 py-2">{product?.quantity}</td>
-                      <td className="px-4 py-2">{product?.vendorId}</td>
-                      <td className="px-4 py-2">${product?.price}</td>
+                      <td className="px-4 py-2">
+                        {product?.productVariants[0]?.quantity}
+                      </td>
+                      <td className="px-4 py-2">{product?.status}</td>
+                      <td className="px-4 py-2">
+                      BDT{product?.productVariants[0]?.price}
+                      </td>
                       <td className="px-4 py-2">
                         {formatDate(product?.createdAt)}
                       </td>
                       <td className="px-4 py-2 ">
-                        <Link to={`/admin/edit-product/${product?._id}`}>
+                        <Link to={`/admin/edit-product/${product._id}`}>
                           <div className="flex items-center space-x-2 cursor-pointer">
                             <button className="text-yellow-500">
                               <FiEdit />
@@ -113,35 +116,52 @@ import useAuthStore from "../../store/AuthStore";const ProductAdminPanel = () =>
                   <tr>
                     <td
                       colSpan={7}
-                      className="text-center text-xl font-semibold text-red-600 py-4"
+                      className="px-4 py-2 text-center my-3 text-semibold text-red-500"
                     >
-                      No products found
+                      No Products Found
                     </td>
                   </tr>
                 )}
               </tbody>
             </table>
           </div>
-          <div className="mt-8 flex justify-center">
-            <div>
-              <button
-                onClick={() => setPage(page - 1)}
-                disabled={page === 1}
-                className="bg-gray-300 px-4 py-2 rounded"
-              >
-                Previous
-              </button>
-              <span className="mx-2 px-4 py-2 border-gray-400 border rounded-lg ">
-                {page}
-              </span>
-              <button
-                onClick={() => setPage(page + 1)}
-                disabled={page * limit >= totalProducts}
-                className="bg-gray-300 px-4 py-2 rounded"
-              >
-                Next
-              </button>
-            </div>
+          <div className="flex justify-center items-center mt-12">
+            {/* Previous Button */}
+            <button
+              className="px-4 py-2 mx-1 text-sm bg-primary rounded hover:bg-primary/70 text-white"
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page <= 1}
+            >
+              Previous
+            </button>
+
+            {/* Page Numbers */}
+            {Array.from({ length: totalPages }, (_, index) => {
+              const pageNumber = index + 1;
+              return (
+                <button
+                  key={pageNumber}
+                  className={`px-4 py-2 mx-1 text-sm rounded ${
+                    pageNumber === page
+                      ? "bg-primary text-white"
+                      : "bg-gray-300 hover:bg-gray-400"
+                  }`}
+                  onClick={() => handlePageChange(pageNumber)}
+                  disabled={pageNumber === page} // Disable the active page button
+                >
+                  {pageNumber}
+                </button>
+              );
+            })}
+
+            {/* Next Button */}
+            <button
+              className="px-4 py-2 mx-1 text-sm bg-primary rounded hover:bg-primary/70 text-white"
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page >= totalPages}
+            >
+              Next
+            </button>
           </div>
         </main>
       </div>

@@ -2,22 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import useProductStore from "../../store/ProductStore";
 import useUserStore from "../../store/AuthStore";
+import usePackageStore from "../../store/PackageStore";
+import { toast } from "react-toastify";
 
 const GetPlan = () => {
-  const packageData = [
-    {
-      id: 1,
-      packageName: "Basic",
-      duration: "1 Month",
-      price: "432",
-      image: "",
-      maxProduct: "10",
-      status: "active",
-    },
-  ];
-
-  const [packageDetails, setPackageDetails] = useState(packageData[0]);
   const { id } = useParams();
+  const { singlePackage, fetchPackageById } = usePackageStore();
+
+  useEffect(() => {
+    fetchPackageById(id);
+  }, [fetchPackageById, id]);
 
   const { user } = useUserStore();
   const { products, fetchProducts } = useProductStore();
@@ -28,7 +22,13 @@ const GetPlan = () => {
   }, [fetchProducts, user?._id]);
 
   const handleSelectProduct = (product) => {
-    setSelectedProducts((prev) => [...prev, product]);
+    if (selectedProducts?.length < singlePackage?.maxProduct) {
+      setSelectedProducts((prev) => [...prev, product]);
+    } else {
+      toast.error(
+        `You can only select up to ${singlePackage?.maxProduct} products.`
+      );
+    }
   };
 
   const handleRemoveProduct = (productId) => {
@@ -45,24 +45,24 @@ const GetPlan = () => {
         <div className="mb-10">
           <h1 className="text-3xl font-bold mb-4">Package Details</h1>
           <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
-            <h2 className="text-xl font-semibold mb-3">
-              {packageDetails.packageName}
+            <h2 className="text-xl font-semibold mb-3 capitalize">
+              {singlePackage?.name}
             </h2>
             <p>
               <span className="font-medium mb-2">Duration:</span>{" "}
-              {packageDetails.duration}
+              {singlePackage?.duration}
             </p>
             <p>
-              <span className="font-medium mb-2">Price:</span> $
-              {packageDetails.price}
+              <span className="font-medium mb-2">Price:</span> BDT
+              {singlePackage?.price}
             </p>
             <p>
               <span className="font-medium">Max Products:</span>{" "}
-              {packageDetails.maxProduct}
+              {singlePackage?.maxProduct}
             </p>
             <p>
               <span className="font-medium">Status:</span>{" "}
-              {packageDetails.status}
+              {singlePackage?.status}
             </p>
           </div>
         </div>

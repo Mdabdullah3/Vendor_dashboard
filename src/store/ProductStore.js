@@ -9,29 +9,57 @@ const useProductStore = create((set) => ({
     loading: false,
     error: null,
     page: 1,
-    limit: 10,
+    limit: 20,
     searchTerm: '',
     sort: '-createdAt,price',
 
     fetchProducts: async () => {
         set({ loading: true });
-        const { page, limit, searchTerm, sort } = useProductStore.getState();
+        const { page, limit, searchTerm } = useProductStore.getState();
         try {
             const response = await axios.get(`${API_URL}/products`, {
                 params: {
                     _page: page,
                     _limit: limit,
                     _search: searchTerm ? `${searchTerm},name,slug,summary,description` : '',
-                    _sort: sort,
+
                 },
             });
-            set({ products: response.data.data, totalProducts: response.data.total, loading: false });
+            set({
+                products: response.data.data,
+                totalProducts: response.data.total,
+                totalPages: Math.ceil(response.data.total / limit),
+                loading: false,
+            });
         } catch (error) {
             set({ error: error.response?.data?.message || error.message, loading: false });
         }
     },
 
 
+    fetchProductByIdForUser: async (userId, page = 1, limit = 20, searchTerm = '') => {
+        set({ loading: true });
+        try {
+            const response = await axios.get(`${API_URL}/users/${userId}/products`, {
+                params: {
+                    _page: page,
+                    _limit: limit,
+                    _search: searchTerm ? `${searchTerm},name,slug,summary,description` : '',
+                },
+            });
+            set({
+                products: response.data.data,
+                totalProducts: response.data.total,
+                totalPages: Math.ceil(response.data.total / limit),
+                loading: false,
+                page,
+                limit,
+                searchTerm,
+            });
+        } catch (error) {
+            set({ error: error.response?.data?.message || error.message, loading: false });
+        }
+    },
 
     fetchProductByIdOrSlug: async (idOrSlug) => {
         set({ loading: true });
@@ -49,7 +77,7 @@ const useProductStore = create((set) => ({
             const response = await axios.post(`${API_URL}/products`, productData, {
                 withCredentials: true,
             });
-            toast.success("Product added successfully");
+            toast.success("Product added Successfully");
             console.log(response.data.data);
             set((state) => ({
                 products: [...state.products, response.data.data],
@@ -60,6 +88,7 @@ const useProductStore = create((set) => ({
                 error: error.response?.data?.message || error.message,
                 loading: false,
             });
+            toast.error(error.response?.data?.message || error.message);
         }
     },
 
@@ -67,32 +96,15 @@ const useProductStore = create((set) => ({
     updateProduct: async (idOrSlug, productData) => {
         set({ loading: true });
         try {
-            const response = await axios.patch(`${API_URL}/products/${idOrSlug}`, productData);
-            set((state) => ({
-                products: state.products.map((product) =>
-                    product._id === idOrSlug || product.slug === idOrSlug ? response.data.data : product),
-                loading: false,
-            }));
+            const response = await axios.patch(`${API_URL}/products/${idOrSlug}`, productData, {
+                withCredentials: true,
+            });
+            toast.success("Product Updated Successfully");
             console.log(response);
         } catch (error) {
             set({ error: error.response?.data?.message || error.message, loading: false });
-        }
-    },
-    fetchProductByIdForUser: async (userId) => {
-        set({ loading: true });
-        const { page, limit, searchTerm, sort } = useProductStore.getState();
-        try {
-            const response = await axios.get(`${API_URL}/users/${userId}/products`, {
-                params: {
-                    _page: page,
-                    _limit: limit,
-                    _search: searchTerm ? `${searchTerm},name,slug,summary,description` : '',
-                    _sort: sort,
-                },
-            });
-            set({ products: response.data.data, totalProducts: response.data.total, loading: false });
-        } catch (error) {
-            set({ error: error.response?.data?.message || error.message, loading: false });
+            toast.error(error.response?.data?.message || error.message);
+            console.log(error.response);
         }
     },
 
@@ -117,11 +129,9 @@ const useProductStore = create((set) => ({
             set({ error: error.response?.data?.message || error.message, loading: false });
         }
     },
-
+    setSearchTerm: (searchTerm) => set({ searchTerm }),
     setPage: (page) => set({ page }),
     setLimit: (limit) => set({ limit }),
-    setSearchTerm: (searchTerm) => set({ searchTerm }),
-    setSort: (sort) => set({ sort }),
 }));
 
 export default useProductStore;

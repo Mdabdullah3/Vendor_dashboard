@@ -1,26 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import usePackageStore from "../../store/PackageStore";
 const AdManager = () => {
-  const AdManager = [
-    {
-      id: 1,
-      packageName: "Basic",
-      duration: "1 Month",
-      price: "432",
-      image: "",
-      maxProduct: "10",
-      status: "active",
-    },
-    {
-      id: 1,
-      packageName: "Basic",
-      duration: "1 Month",
-      price: "432",
-      image: "",
-      maxProduct: "10",
-      status: "active",
-    },
-  ];
+  const { fetchPackages, packages } = usePackageStore();
+  useEffect(() => {
+    fetchPackages();
+  }, [fetchPackages]);
 
   const header = [
     "Package Name",
@@ -30,6 +15,7 @@ const AdManager = () => {
     "Status",
     "Action",
   ];
+  console.log(packages);
 
   const navigate = useNavigate();
   const handleEditPackage = (id) => {
@@ -57,23 +43,31 @@ const AdManager = () => {
             </tr>
           </thead>
           <tbody>
-            {AdManager?.map((ad) => (
-              <tr key={ad.id} className="border-b border-gray-200">
-                <td className="py-4 px-6">{ad.packageName}</td>
-                <td className="py-4 px-6">{ad.duration}</td>
-                <td className="py-4 px-6">{ad.price}</td>
-                <td className="py-4 px-6">{ad.maxProduct}</td>
-                <td className="py-4 px-6">{ad.status}</td>
-                <td className="py-4 px-6 flex space-x-2">
-                  <button
-                    onClick={() => handleEditPackage(ad.id)}
-                    className=" px-3 py-1 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
-                  >
-                    Plan
-                  </button>
+            {packages?.length > 0 ? (
+              packages?.map((pack) => (
+                <tr key={pack._id} className="border-b border-gray-200">
+                  <td className="py-4 px-6 capitalize">{pack.name}</td>
+                  <td className="py-4 px-6">{pack.duration}</td>
+                  <td className="py-4 px-6">BDT{pack.price}</td>
+                  <td className="py-4 px-6">{pack.maxProduct}</td>
+                  <td className="py-4 px-6">{pack.status}</td>
+                  <td className="py-4 px-6">
+                    <button
+                      onClick={() => handleEditPackage(pack._id)}
+                      className="bg-green-600 text-white px-4 py-2 rounded"
+                    >
+                      Plan
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6" className="py-4 px-6 text-center text-red-500">
+                  No Packages Found
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
