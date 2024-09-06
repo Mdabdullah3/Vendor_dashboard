@@ -12,7 +12,7 @@ import { SERVER } from "../../config";
 import { toDataURL } from "../../utils/DataUrl";
 import { FaBangladeshiTakaSign, FaTrash } from "react-icons/fa6";
 import { BiEdit } from "react-icons/bi";
-import useCategoryStore from "../../store/CategoryStore";
+import useCategoryStore from "../../store/catgoryStores";
 
 const EditProducts = () => {
   const { id } = useParams();

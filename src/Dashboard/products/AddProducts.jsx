@@ -9,9 +9,9 @@ import "react-quill/dist/quill.snow.css";
 import PrimaryButton from "../../components/common/PrimaryButton";
 import useUserStore from "../../store/AuthStore";
 import Select from "react-select";
+import useCategoryStore from "../../store/catgoryStores";
 import { FaBangladeshiTakaSign, FaTrash } from "react-icons/fa6";
 import { BiEdit } from "react-icons/bi";
-import useCategoryStore from "../../store/CategoryStore";
 const AddProducts = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [video, setVideo] = useState(null);
