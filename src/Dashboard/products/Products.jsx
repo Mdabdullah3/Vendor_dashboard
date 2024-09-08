@@ -17,10 +17,8 @@ const ProductAdminPanel = () => {
     page,
     setPage,
   } = useProductStore();
-
   useEffect(() => {
     fetchUser();
-
     if (user?._id) {
       fetchProductByIdForUser(user._id, page, limit, searchTerm);
     }
