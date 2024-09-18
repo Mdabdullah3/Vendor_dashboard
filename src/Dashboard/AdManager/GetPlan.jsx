@@ -4,22 +4,21 @@ import useProductStore from "../../store/ProductStore";
 import useUserStore from "../../store/AuthStore";
 import usePackageStore from "../../store/PackageStore";
 import { toast } from "react-toastify";
+import { SERVER } from "../../config";
 
 const GetPlan = () => {
   const { id } = useParams();
   const { singlePackage, fetchPackageById } = usePackageStore();
 
-  useEffect(() => {
-    fetchPackageById(id);
-  }, [fetchPackageById, id]);
-
-  const { user } = useUserStore();
-  const { products, fetchProducts } = useProductStore();
+  const { user, fetchUser } = useUserStore();
+  const { products, fetchProductByIdOrSlug } = useProductStore();
   const [selectedProducts, setSelectedProducts] = useState([]);
 
   useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts, user?._id]);
+    fetchUser();
+    fetchProductByIdOrSlug(user?._id);
+    fetchPackageById(id);
+  }, [fetchProductByIdOrSlug, fetchUser, fetchPackageById, id, user?._id]);
 
   const handleSelectProduct = (product) => {
     if (selectedProducts?.length < singlePackage?.maxProduct) {
@@ -40,7 +39,7 @@ const GetPlan = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex capitalize">
       <div className="flex-1 p-10">
         <div className="mb-10">
           <h1 className="text-3xl font-bold mb-4">Package Details</h1>
@@ -89,7 +88,7 @@ const ProductList = ({ products, selectedProducts, onSelectProduct }) => {
   };
 
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
+    <div className="bg-white shadow-lg rounded-lg p-6 border capitalize border-gray-200">
       <h2 className="text-2xl font-semibold mb-4">Available Products</h2>
       <ul>
         {products.map((product) => (
@@ -97,7 +96,12 @@ const ProductList = ({ products, selectedProducts, onSelectProduct }) => {
             key={product.id}
             className="flex justify-between items-center py-2 border-b border-gray-200"
           >
-            <span className="capitalize">{product.name}</span>
+            <img
+              src={`${SERVER}${product?.coverPhoto?.secure_url}`}
+              alt=""
+              className="w-12 h-12 rounded"
+            />
+            <span className="capitalize">{product?.name.slice(0, 20)}</span>
             <button
               className={`px-4 py-2 ${
                 isProductSelected(product.id) ? "bg-gray-400" : "bg-blue-500"
@@ -122,7 +126,7 @@ const ProductList = ({ products, selectedProducts, onSelectProduct }) => {
 
 const SelectedProducts = ({ selectedProducts, onRemoveProduct, onPayment }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
+    <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200 capitalize">
       <h2 className="text-2xl font-semibold mb-4">Selected Products</h2>
       <ul>
         {selectedProducts.map((product) => (
@@ -130,7 +134,12 @@ const SelectedProducts = ({ selectedProducts, onRemoveProduct, onPayment }) => {
             key={product.id}
             className="flex justify-between items-center py-2 border-b border-gray-200 capitalize"
           >
-            <span>{product.name}</span>
+            <img
+              src={`${SERVER}${product?.coverPhoto?.secure_url}`}
+              alt=""
+              className="w-12 h-12 rounded"
+            />
+            <span>{product.name.slice(0, 20)}</span>
             <button
               className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
               onClick={() => onRemoveProduct(product.id)}

@@ -4,12 +4,11 @@ import PrimaryButton from "../common/PrimaryButton";
 import useUserStore from "../../store/AuthStore";
 import { toast } from "react-toastify";
 
-const UpdatePassword = ({
-  handleNextStep,
-}) => {
+const UpdatePassword = ({ handleNextStep }) => {
   const userItem = localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user"))
     : null;
+  console.log(userItem);
   const { updatePassword } = useUserStore();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);

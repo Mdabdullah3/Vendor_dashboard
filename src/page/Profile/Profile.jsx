@@ -11,9 +11,9 @@ import PersonalDetails from "../../components/Profile/PersonalDetails";
 import useAuthStore from "../../store/AuthStore";
 import { SERVER } from "../../config";
 import UpdatePassword from "../../components/Profile/UpdatePassword";
+import { toDataURL } from "../../utils/DataUrl";
 const Profile = () => {
   const { user, fetchUser } = useAuthStore();
-  console.log(user);
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
@@ -46,7 +46,6 @@ const Profile = () => {
         name: user?.name,
         email: user?.email,
         phone: user?.phone,
-        avatar: `${SERVER}${user?.avatar?.secure_url}`,
         // coverPhoto: userData.coverPhoto,
         selectedDistrict: user?.location.state,
         selectedCity: user?.location.city,
@@ -62,9 +61,17 @@ const Profile = () => {
         bankStatementImage: user?.bankStatementImage,
       });
     }
+    // if (user?.avatar?.secure_url) {
+    //   const coverImageUrl = `${SERVER}${user?.avatar?.secure_url}`;
+    //   toDataURL(coverImageUrl).then((base64) => {
+    //     setFormData((prevForm) => ({
+    //       ...prevForm,
+    //       avatar: base64,
+    //     }));
+    //   });
+    // }
   }, [user]);
 
-  console.log(formData);
   const menu = [
     { label: "Password", icon: <RiLockPasswordFill /> },
     { label: "Profile", icon: <CgProfile /> },
@@ -85,7 +92,6 @@ const Profile = () => {
       [field]: value,
     }));
   };
-  console.log(formData);
 
   return (
     <section className="">

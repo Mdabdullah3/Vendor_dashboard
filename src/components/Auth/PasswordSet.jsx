@@ -13,7 +13,6 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
   const inputRefs = useRef([]);
   const navigate = useNavigate();
 
-  console.log(hash);
   const handleChange = (e, index) => {
     const { value } = e.target;
     if (isNaN(value)) return;
@@ -51,6 +50,7 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
         {
           phone,
           otp,
+          role: "vendor",
           hash,
         },
         { withCredentials: true }

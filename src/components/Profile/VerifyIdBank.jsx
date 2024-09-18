@@ -2,25 +2,28 @@ import React, { useEffect, useState } from "react";
 import InputFileUpload from "../common/InputFileUpload";
 import InputField from "../common/InputField";
 import PrimaryButton from "../common/PrimaryButton";
-import axios from "axios";
-import { API_URL } from "../../config";
 import { toast } from "react-toastify";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
+import useUserStore from "../../store/AuthStore";
 
 const VerifyIdBank = ({ formData, handleChange }) => {
+  const { user, fetchUser, updateUser } = useUserStore();
   const [selectedBank, setSelectedBank] = useState(null);
   const [bankOption, setBankOption] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
+    fetchUser();
     const fetchBanks = async () => {
       const response = await fetch("bankData.json");
       const data = await response.json();
       setBankOption(data);
     };
     fetchBanks();
-  }, []);
+  }, [fetchUser]);
+  console.log(user);
+
   const getImagePreviewUrl = (file) => {
     if (file && (file instanceof File || file instanceof Blob)) {
       return URL.createObjectURL(file);
@@ -43,6 +46,10 @@ const VerifyIdBank = ({ formData, handleChange }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (formData.avatar === null || undefined) {
+      toast.error("Please Upload Your Brand Image");
+      return;
+    }
     setLoading(true);
     try {
       const idCardFrontBase64 = formData.idCardFrontPageImage
@@ -71,13 +78,7 @@ const VerifyIdBank = ({ formData, handleChange }) => {
         avatar: avatarBase64,
       };
 
-      const response = await axios.patch(`${API_URL}/users/me`, payload, {
-        withCredentials: true,
-      });
-      if (response.status === 200) {
-        navigate("/admin");
-        toast.success("Profile Update Successfully");
-      }
+      updateUser(payload, navigate);
       setLoading(false);
     } catch (error) {
       toast.error(error.message || "An error occurred while uploading files.");

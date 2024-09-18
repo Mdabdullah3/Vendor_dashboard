@@ -7,7 +7,6 @@ import FileUpload from "../../components/common/FileUpload";
 import { toDataURL } from "../../utils/DataUrl";
 import InputField from "../../components/common/InputField";
 import PrimaryButton from "../../components/common/PrimaryButton";
-
 const ProfileUpdate = () => {
   const { user, fetchUser, updateUser } = useAuthStore();
   const [bdDistricts, setBdDistricts] = useState([]);
@@ -38,6 +37,7 @@ const ProfileUpdate = () => {
     fetchUser();
   }, [fetchUser]);
 
+  console.log(user);
   useEffect(() => {
     if (user) {
       setFormData({
@@ -157,7 +157,6 @@ const ProfileUpdate = () => {
     updateUser(payload);
     console.log(payload);
   };
-  console.log(formData);
   return (
     <div className="container mx-auto p-4">
       <div className="flex items-center space-x-4 mb-6">

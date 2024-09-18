@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useState, useEffect } from "react";
 import FileUpload from "../../components/common/FileUpload";
 import InputField from "../../components/common/InputField";
@@ -9,9 +10,9 @@ import "react-quill/dist/quill.snow.css";
 import PrimaryButton from "../../components/common/PrimaryButton";
 import useUserStore from "../../store/AuthStore";
 import Select from "react-select";
-import useCategoryStore from "../../store/catgoryStores";
 import { FaBangladeshiTakaSign, FaTrash } from "react-icons/fa6";
 import { BiEdit } from "react-icons/bi";
+import useCategoryStore from "../../store/catgoryStores";
 const AddProducts = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [video, setVideo] = useState(null);
@@ -32,7 +33,6 @@ const AddProducts = () => {
   const [loading, setLoading] = useState(false);
   const [editingVariant, setEditingVariant] = useState(null);
 
-  console.log(user);
   useEffect(() => {
     fetchCategories();
     fetchUser();
@@ -114,6 +114,45 @@ const AddProducts = () => {
     sectionRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.5,
+    };
+
+    const handleIntersection = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (entry.target.id === "basicInfo") {
+            setActiveStep(0);
+          } else if (entry.target.id === "description") {
+            setActiveStep(1);
+          } else if (entry.target.id === "variants") {
+            setActiveStep(2);
+          } else if (entry.target.id === "serviceWarranty") {
+            setActiveStep(3);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, options);
+
+    // Observe each section
+    Object.keys(formRefs).forEach((key) => {
+      const section = formRefs[key].current;
+      if (section) observer.observe(section);
+    });
+
+    return () => {
+      Object.keys(formRefs).forEach((key) => {
+        const section = formRefs[key].current;
+        if (section) observer.unobserve(section);
+      });
+    };
+  }, [formRefs]);
+
   const handleAddVariant = async (e) => {
     e.preventDefault();
     const variantData = {
@@ -148,19 +187,28 @@ const AddProducts = () => {
   const handleSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
+    if (!user) {
+      toast.error("Please login first");
+      return;
+    }
     const formData = {
       user: form.user,
-      productVariants: form.productVariants.map((variant) => ({
-        name: variant.name,
-        price: variant.price,
-        discount: variant.discount,
-        quantity: variant.quantity,
-        gender: variant.gender,
-        color: variant.color,
-        material: variant.material,
-        size: variant.size,
-        image: variant.image,
-      })),
+      productVariants: form?.productVariants?.map((variant) => {
+        const variantData = {
+          name: variant.name,
+          price: variant.price,
+          discount: variant.discount,
+          quantity: variant.quantity,
+          gender: variant.gender,
+          color: variant.color,
+          material: variant.material,
+          size: variant.size,
+        };
+        if (variant.image !== null) {
+          variantData.image = `${variant.image}`;
+        }
+        return variantData;
+      }),
       video: form.video,
       name: form.productName,
       slug: form.productName.toLowerCase().split(" ").join("-"),
@@ -171,7 +219,7 @@ const AddProducts = () => {
       brand: form.brand,
       warranty: form.warranty,
       coverPhoto: form.coverPhoto,
-      status: user?.status === "approved" ? "approved" : "pending",
+      status: "approved",
       images: form.img.map((file) => `${file}`),
       specifications: {
         screenSize: form?.screenSize,
@@ -264,98 +312,101 @@ const AddProducts = () => {
       prevVariants.filter((variant) => variant.id !== id)
     );
   };
+
   return (
     <section className="mt-5 lg:grid grid-cols-5 relative">
       <section className="col-span-4 w-11/12">
-        <div ref={formRefs.basicInfo}>
-          <h1 className="text-2xl font-bold tracking-wider">
-            Basic Information
-          </h1>
-          <div className="mt-5">
-            <h1 className="text-xl text-primary">Product Image</h1>
-            <p className="text-gray-500">
-              Your product image is the first thing customers will see.
-            </p>
-            <div className="my-4 flex">
-              <FileUpload
-                label="Cover Photo "
-                name="coverPhoto"
-                setFile={setCoverImage}
-              />
-            </div>
-            <div className="flex space-x-4">
-              <FileUpload label="Image1" name="img1" setFile={setImage1} />
-              <FileUpload label="Image2" name="img2" setFile={setImage2} />
-              <FileUpload label="Image3" name="img3" setFile={setImage3} />
-            </div>
-            <h1 className="text-xl mt-5">Video</h1>
-            <p className="text-[13px] text-primary">Video Size Max 100 MB </p>
-            <div className="flex items-center gap-10 mt-2">
-              <FileUpload
-                label="Product Video"
-                acceptType="video"
-                name="video"
-                setFile={setVideo}
-              />
-            </div>
-          </div>
-          <section className="mt-10">
-            <h1 className="text-2xl font-bold tracking-wide">
-              Product Information
+        <div>
+          <section id="basicInfo" ref={formRefs.basicInfo}>
+            <h1 className="text-2xl font-bold tracking-wider">
+              Basic Information
             </h1>
-            <p className="text-sm text-gray-500 mt-2">
-              Enter the basic details about your product
-            </p>
-            <div className="mt-2">
-              <InputField
-                label="Product Name"
-                placeholder="Product Name"
-                value={form.productName}
-                onChange={(e) =>
-                  setForm({ ...form, productName: e.target.value })
-                }
-              />
-              <h1 className="my-2">Product Category</h1>
-              <div className="grid grid-cols-2 gap-4 mt-2">
-                <Select
-                  options={categoryOptions}
-                  placeholder="Select Category"
-                  onChange={(selectedOption) => {
-                    setForm({ ...form, category: selectedOption.label });
-                    setSelectedCategory(selectedOption.value);
-                    setSelectedSubCategory(null);
-                  }}
+            <div className="mt-5">
+              <h1 className="text-xl text-primary">Product Image</h1>
+              <p className="text-gray-500">
+                Your product image is the first thing customers will see.
+              </p>
+              <div className="my-4 flex">
+                <FileUpload
+                  label="Cover Photo "
+                  name="coverPhoto"
+                  setFile={setCoverImage}
                 />
-                {selectedCategory && (
+              </div>
+              <div className="flex flex-wrap gap-4">
+                <FileUpload label="Image1" name="img1" setFile={setImage1} />
+                <FileUpload label="Image2" name="img2" setFile={setImage2} />
+                <FileUpload label="Image3" name="img3" setFile={setImage3} />
+              </div>
+              <h1 className="text-xl mt-5">Video</h1>
+              <p className="text-[13px] text-primary">Video Size Max 100 MB </p>
+              <div className="flex items-center gap-10 mt-2">
+                <FileUpload
+                  label="Product Video"
+                  acceptType="video"
+                  name="video"
+                  setFile={setVideo}
+                />
+              </div>
+            </div>
+            <section className="mt-10">
+              <h1 className="text-2xl font-bold tracking-wide">
+                Product Information
+              </h1>
+              <p className="text-sm text-gray-500 mt-2">
+                Enter the basic details about your product
+              </p>
+              <div className="mt-2">
+                <InputField
+                  label="Product Name"
+                  placeholder="Product Name"
+                  value={form.productName}
+                  onChange={(e) =>
+                    setForm({ ...form, productName: e.target.value })
+                  }
+                />
+                <h1 className="my-2">Product Category</h1>
+                <div className="md:grid grid-cols-2 gap-4 mt-2">
                   <Select
-                    options={
-                      categoryOptions.find(
-                        (category) => category.value === selectedCategory
-                      ).subCategories
-                    }
-                    placeholder="Select Subcategory"
+                    options={categoryOptions}
+                    placeholder="Select Category"
                     onChange={(selectedOption) => {
-                      setForm({ ...form, subCategory: selectedOption.label });
-                      setSelectedSubCategory(selectedOption.value);
+                      setForm({ ...form, category: selectedOption.label });
+                      setSelectedCategory(selectedOption.value);
+                      setSelectedSubCategory(null);
                     }}
                   />
-                )}
+                  {selectedCategory && (
+                    <Select
+                      options={
+                        categoryOptions.find(
+                          (category) => category.value === selectedCategory
+                        ).subCategories
+                      }
+                      placeholder="Select Subcategory"
+                      onChange={(selectedOption) => {
+                        setForm({ ...form, subCategory: selectedOption.label });
+                        setSelectedSubCategory(selectedOption.value);
+                      }}
+                    />
+                  )}
+                </div>
+                <InputField
+                  label="Brand"
+                  placeholder="Brand"
+                  value={form.brand}
+                  onChange={(e) => setForm({ ...form, brand: e.target.value })}
+                />
               </div>
               <InputField
-                label="Brand"
-                placeholder="Brand"
-                value={form.brand}
-                onChange={(e) => setForm({ ...form, brand: e.target.value })}
+                label="Product Summary"
+                placeholder="Product Summary"
+                value={form.summary}
+                onChange={(e) => setForm({ ...form, summary: e.target.value })}
               />
-            </div>
-            <InputField
-              label="Product Summary"
-              placeholder="Product Summary"
-              value={form.summary}
-              onChange={(e) => setForm({ ...form, summary: e.target.value })}
-            />
+            </section>
           </section>
-          <section ref={formRefs.description}>
+          <section id="description" ref={formRefs.description}>
             <h1 className="text-2xl font-bold tracking-wider mt-10">
               Description
             </h1>
@@ -367,11 +418,11 @@ const AddProducts = () => {
               className="mt-4 mb-8 h-60"
             />
           </section>
-          <section ref={formRefs.variants}>
+          <section id="variants" ref={formRefs.variants}>
             <h1 className="text-2xl font-bold tracking-wider pt-10">
               Price & Variants
             </h1>
-            <div className="grid grid-cols-3 gap-5 mt-5">
+            <div className="md:grid grid-cols-3 gap-5 mt-5">
               <FileUpload
                 label="Variant Image"
                 name="image"
@@ -588,7 +639,7 @@ const AddProducts = () => {
               />
             </div>
           </section>
-          <section ref={formRefs.serviceWarranty}>
+          <section id="serviceWarranty" ref={formRefs.serviceWarranty}>
             <h1 className="text-2xl font-bold tracking-wider mt-10">
               Service & Warranty
             </h1>
@@ -604,7 +655,7 @@ const AddProducts = () => {
                 onChange={(e) => setForm({ ...form, warranty: e.target.value })}
               />
             </div>
-            <div className="grid grid-cols-3 gap-5">
+            <div className="grid md:grid-cols-3 gap-5">
               <InputField
                 label="Package Weight"
                 placeholder="Package Weight"

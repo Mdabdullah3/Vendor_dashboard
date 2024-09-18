@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useRef, useState, useEffect } from "react";
 import FileUpload from "../../components/common/FileUpload";
 import InputField from "../../components/common/InputField";
@@ -13,6 +14,7 @@ import { toDataURL } from "../../utils/DataUrl";
 import { FaBangladeshiTakaSign, FaTrash } from "react-icons/fa6";
 import { BiEdit } from "react-icons/bi";
 import useCategoryStore from "../../store/catgoryStores";
+
 const EditProducts = () => {
   const { id } = useParams();
   const [activeStep, setActiveStep] = useState(0);
@@ -23,12 +25,11 @@ const EditProducts = () => {
   const [coverImage, setCoverImage] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [subCategories, setSubCategories] = useState([]);
-  const { updateProduct, product, fetchProductByIdOrSlug } = useProductStore();
-  const [loading, setLoading] = useState(false);
+  const { updateProduct, loading, product, fetchProductByIdOrSlug } =
+    useProductStore();
   const [variantImage, setVariantImage] = useState(null);
   const [editingVariant, setEditingVariant] = useState(null);
   const [variants, setVariants] = useState(product?.productVariants);
-  const uniqueId = Math.random().toString(36).substring(2);
 
   const { categories, fetchCategories } = useCategoryStore();
   const genderOption = ["men", "women", "baby", "unisex"];
@@ -191,19 +192,60 @@ const EditProducts = () => {
     { id: 3, label: "No Warranty", value: "No Warranty" },
   ];
 
+  const uniqueId = Math.random().toString(36).substring(2);
+
   const formRefs = {
     basicInfo: useRef(null),
     description: useRef(null),
     variants: useRef(null),
     serviceWarranty: useRef(null),
   };
+
   const scrollToSection = (sectionRef) => {
     sectionRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: "0px",
+      threshold: 0.5,
+    };
+
+    const handleIntersection = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          if (entry.target.id === "basicInfo") {
+            setActiveStep(0);
+          } else if (entry.target.id === "description") {
+            setActiveStep(1);
+          } else if (entry.target.id === "variants") {
+            setActiveStep(2);
+          } else if (entry.target.id === "serviceWarranty") {
+            setActiveStep(3);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, options);
+
+    // Observe each section
+    Object.keys(formRefs).forEach((key) => {
+      const section = formRefs[key].current;
+      if (section) observer.observe(section);
+    });
+
+    return () => {
+      Object.keys(formRefs).forEach((key) => {
+        const section = formRefs[key].current;
+        if (section) observer.unobserve(section);
+      });
+    };
+  }, [formRefs]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     const formData = {
       vendorId: product.customId,
       user: product.user?._id,
@@ -249,10 +291,10 @@ const EditProducts = () => {
         dimension: form?.dimension,
       },
     };
+    console.log(formData);
     try {
       await updateProduct(id, formData);
       fetchProductByIdOrSlug(id);
-      setLoading(false);
     } catch (error) {
       toast.error(error.message);
     }
@@ -357,113 +399,120 @@ const EditProducts = () => {
   return (
     <section className="mt-5 lg:grid grid-cols-5 relative">
       <section className="col-span-4 w-11/12">
-        <div ref={formRefs.basicInfo}>
-          <h1 className="text-2xl font-bold tracking-wider">
-            Basic Information
-          </h1>
-          <div className="mt-5">
-            <h1 className="text-xl text-primary">Product Image</h1>
-            <p className="text-gray-500">
-              Your product image is the first thing customers will see.
-            </p>
-            <div className="my-4 flex">
-              <FileUpload
-                file={coverImage}
-                label="Cover Photo"
-                name="coverPhoto"
-                setFile={setCoverImage}
-              />
-            </div>
-            <div className="flex space-x-4">
-              <FileUpload
-                file={image1}
-                label="Image1"
-                name="img1"
-                setFile={setImage1}
-              />
-              <FileUpload
-                label="Image2"
-                file={image2}
-                name="img2"
-                setFile={setImage2}
-              />
-              <FileUpload
-                label="Image3"
-                file={image3}
-                name="img3"
-                setFile={setImage3}
-              />
-            </div>
-            <h1 className="text-xl mt-5">Video</h1>
-            <p className="text-[13px] text-primary">Video Size Max 100 MB </p>
-            <div className="flex items-center gap-10 mt-2">
-              <FileUpload
-                file={video}
-                label="Product Video"
-                acceptType="video"
-                name="video"
-                setFile={setVideo}
-              />
-            </div>
-          </div>
-          <section className="mt-10">
-            <h1 className="text-2xl font-bold tracking-wide">
-              Product Information
+        <div>
+          <section ref={formRefs.basicInfo} id="basicInfo">
+            <h1 className="text-2xl font-bold tracking-wider">
+              Basic Information
             </h1>
-            <p className="text-sm text-gray-500 mt-2">
-              Enter the basic details about your product
-            </p>
-            <div className="mt-2">
-              <InputField
-                label="Product Name"
-                placeholder="Product Name"
-                value={form.productName}
-                onChange={(e) =>
-                  setForm({ ...form, productName: e.target.value })
-                }
-              />
-              <div className="grid grid-cols-2 gap-4 mt-2">
-                <SelectField
-                  label="Category"
-                  options={categories.map((cat) => ({
-                    id: cat._id,
-                    label: cat.name,
-                    value: cat._id,
-                  }))}
-                  value={form.category}
-                  onChange={(e) => {
-                    setForm({ ...form, category: e.target.value });
-                    setSelectedCategory(e.target.value);
-                  }}
-                />
-                <SelectField
-                  label="Sub-Category"
-                  options={subCategories.map((sub) => ({
-                    key: sub._id,
-                    label: sub.name,
-                    value: sub._id,
-                  }))}
-                  value={form.subCategory}
-                  onChange={(e) =>
-                    setForm({ ...form, subCategory: e.target.value })
-                  }
-                />
-                <InputField
-                  label="Brand"
-                  placeholder="Brand"
-                  value={form.brand}
-                  onChange={(e) => setForm({ ...form, brand: e.target.value })}
+            <div className="mt-5">
+              <h1 className="text-xl text-primary">Product Image</h1>
+              <p className="text-gray-500">
+                Your product image is the first thing customers will see.
+              </p>
+              <div className="my-4 flex">
+                <FileUpload
+                  file={coverImage}
+                  label="Cover Photo"
+                  name="coverPhoto"
+                  setFile={setCoverImage}
                 />
               </div>
-              <InputField
-                label="Product Summary"
-                placeholder="Product Summary"
-                value={form.summary}
-                onChange={(e) => setForm({ ...form, summary: e.target.value })}
-              />
+              <div className="flex space-x-4">
+                <FileUpload
+                  file={image1}
+                  label="Image1"
+                  name="img1"
+                  setFile={setImage1}
+                />
+                <FileUpload
+                  label="Image2"
+                  file={image2}
+                  name="img2"
+                  setFile={setImage2}
+                />
+                <FileUpload
+                  label="Image3"
+                  file={image3}
+                  name="img3"
+                  setFile={setImage3}
+                />
+              </div>
+              <h1 className="text-xl mt-5">Video</h1>
+              <p className="text-[13px] text-primary">Video Size Max 100 MB </p>
+              <div className="flex items-center gap-10 mt-2">
+                <FileUpload
+                  file={video}
+                  label="Product Video"
+                  acceptType="video"
+                  name="video"
+                  setFile={setVideo}
+                />
+              </div>
             </div>
+            <section className="mt-10">
+              <h1 className="text-2xl font-bold tracking-wide">
+                Product Information
+              </h1>
+              <p className="text-sm text-gray-500 mt-2">
+                Enter the basic details about your product
+              </p>
+              <div className="mt-2">
+                <InputField
+                  label="Product Name"
+                  placeholder="Product Name"
+                  value={form.productName}
+                  onChange={(e) =>
+                    setForm({ ...form, productName: e.target.value })
+                  }
+                />
+                <div className="grid grid-cols-2 gap-4 mt-2">
+                  <SelectField
+                    label="Category"
+                    options={categories.map((cat) => ({
+                      id: cat._id,
+                      label: cat.name,
+                      value: cat._id,
+                    }))}
+                    value={form.category}
+                    onChange={(e) => {
+                      setForm({ ...form, category: e.target.value });
+                      setSelectedCategory(e.target.value);
+                    }}
+                  />
+                  <SelectField
+                    label="Sub-Category"
+                    options={subCategories.map((sub) => ({
+                      key: sub._id,
+                      label: sub.name,
+                      value: sub._id,
+                    }))}
+                    value={form.subCategory}
+                    onChange={(e) =>
+                      setForm({ ...form, subCategory: e.target.value })
+                    }
+                  />
+                  <InputField
+                    label="Brand"
+                    placeholder="Brand"
+                    value={form.brand}
+                    onChange={(e) =>
+                      setForm({ ...form, brand: e.target.value })
+                    }
+                  />
+                </div>
+                <InputField
+                  label="Product Summary"
+                  placeholder="Product Summary"
+                  value={form.summary}
+                  onChange={(e) =>
+                    setForm({ ...form, summary: e.target.value })
+                  }
+                />
+              </div>
+            </section>
           </section>
-          <section ref={formRefs.description}>
+
+          <section ref={formRefs.description} id="description">
             <h1 className="text-2xl font-bold tracking-wider mt-10">
               Description
             </h1>
@@ -475,7 +524,7 @@ const EditProducts = () => {
               className="mt-4 mb-8 h-60"
             />
           </section>
-          <section ref={formRefs.variants}>
+          <section ref={formRefs.variants} id="variants">
             <h1 className="text-2xl font-bold tracking-wider pt-10">
               Price & Variants
             </h1>
@@ -703,7 +752,7 @@ const EditProducts = () => {
               />
             </div>
           </section>
-          <section ref={formRefs.serviceWarranty}>
+          <section ref={formRefs.serviceWarranty} id="serviceWarranty">
             <h1 className="text-2xl font-bold tracking-wider mt-10">
               Service & Warranty
             </h1>
@@ -751,7 +800,6 @@ const EditProducts = () => {
           <div className="my-10">
             <PrimaryButton
               value={loading ? "Submitting.." : "Submit"}
-              disabled={loading}
               onClick={handleSubmit}
             />
           </div>

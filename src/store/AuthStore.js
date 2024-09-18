@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { API_URL } from '../config';
@@ -47,13 +47,14 @@ const useUserStore = create((set, get) => ({
             set({ loading: false });
         }
     },
-    updateUser: async (userData) => {
+    updateUser: async (userData, navigate) => {
         set({ loading: true, error: null });
         try {
             const response = await axios.patch(`${API_URL}/users/me`, userData, {
                 withCredentials: true,
             });
             toast.success("Profile Update Successfully")
+            navigate('/admin');
             set({ user: response.data.data, loading: false });
         } catch (error) {
             set({ error: error.message, loading: false });

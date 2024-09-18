@@ -19,6 +19,7 @@ import EventManager from "./Dashboard/Events/RecentEvent";
 import JoinEvents from "./Dashboard/Events/JoinEvents";
 import ProfileUpdate from "./page/Profile/ProfileUpdate";
 import Supports from "./Dashboard/Support/Supports";
+import MessageCenter from "./Dashboard/MessageCenter/MessageCenter";
 const menu = [
     {
         name: "Profile",
@@ -126,6 +127,7 @@ const menu = [
         icon: <FaRocketchat className="h-6 w-6" />,
         path: "message-center",
         navMenu: true,
+        component: <MessageCenter />
     },
     {
         name: "Support",
