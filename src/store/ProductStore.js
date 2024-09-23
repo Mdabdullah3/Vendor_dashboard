@@ -49,8 +49,8 @@ const useProductStore = create((set) => ({
             });
             set({
                 products: response.data.data,
-                totalProducts: response.data.total,
-                totalPages: Math.ceil(response.data.total / limit),
+                totalProducts: response.data.length,
+                totalPages: Math.ceil(response.data.length / limit),
                 loading: false,
                 page,
                 limit,
