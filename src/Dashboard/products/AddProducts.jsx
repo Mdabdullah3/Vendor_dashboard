@@ -219,7 +219,7 @@ const AddProducts = () => {
       brand: form.brand,
       warranty: form.warranty,
       coverPhoto: form.coverPhoto,
-      status: "approved",
+      status: user?.status,
       images: form.img.map((file) => `${file}`),
       specifications: {
         screenSize: form?.screenSize,
