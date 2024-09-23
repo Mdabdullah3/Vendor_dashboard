@@ -4,7 +4,8 @@ import useProductStore from "../../store/ProductStore";
 import useUserStore from "../../store/AuthStore";
 import usePackageStore from "../../store/PackageStore";
 import { toast } from "react-toastify";
-import { SERVER } from "../../config";
+import { API_URL, SERVER } from "../../config";
+import axios from "axios";
 
 const GetPlan = () => {
   const { id } = useParams();
@@ -34,8 +35,30 @@ const GetPlan = () => {
     setSelectedProducts((prev) => prev.filter((p) => p.id !== productId));
   };
 
-  const handlePayment = () => {
-    // Implement payment logic
+  const handleAddProductsToEvent = async () => {
+    try {
+      const eventProducts = selectedProducts.map((product) => ({
+        product: product._id,
+        user: user._id,
+        package: id,
+      }));
+      const response = await axios.post(
+        `${API_URL}/package-products`,
+        eventProducts
+      );
+      console.log(response);
+      if (response.status === 201) {
+        toast.success("Products added to the Package successfully!");
+      }
+    } catch (error) {
+      toast.error("Failed to add products to the event.");
+    }
+  };
+  const onPaymentProcess = () => {};
+  const isProductInEvent = (productId) => {
+    return singlePackage?.packageProducts?.some(
+      (pack) => pack.product === productId
+    );
   };
 
   return (
@@ -70,11 +93,14 @@ const GetPlan = () => {
             products={products}
             selectedProducts={selectedProducts}
             onSelectProduct={handleSelectProduct}
+            isProductInEvent={isProductInEvent}
           />
           <SelectedProducts
+            singlePackage={singlePackage}
+            onPayment={onPaymentProcess}
             selectedProducts={selectedProducts}
             onRemoveProduct={handleRemoveProduct}
-            onPayment={handlePayment}
+            handleAddProductsToEvent={handleAddProductsToEvent}
           />
         </div>
       </div>
@@ -82,11 +108,15 @@ const GetPlan = () => {
   );
 };
 
-const ProductList = ({ products, selectedProducts, onSelectProduct }) => {
+const ProductList = ({
+  products,
+  selectedProducts,
+  onSelectProduct,
+  isProductInEvent,
+}) => {
   const isProductSelected = (productId) => {
     return selectedProducts.some((product) => product.id === productId);
   };
-
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 border capitalize border-gray-200">
       <h2 className="text-2xl font-semibold mb-4">Available Products</h2>
@@ -104,18 +134,28 @@ const ProductList = ({ products, selectedProducts, onSelectProduct }) => {
             <span className="capitalize">{product?.name.slice(0, 20)}</span>
             <button
               className={`px-4 py-2 ${
-                isProductSelected(product.id) ? "bg-gray-400" : "bg-blue-500"
+                isProductInEvent(product.id) || isProductSelected(product.id)
+                  ? "bg-gray-400"
+                  : "bg-blue-500"
               } text-white rounded-lg ${
-                isProductSelected(product.id)
+                isProductInEvent(product.id)
                   ? "cursor-not-allowed"
                   : "hover:bg-blue-600"
               }`}
               onClick={() =>
-                !isProductSelected(product.id) && onSelectProduct(product)
+                !isProductInEvent(product.id) &&
+                !isProductSelected(product.id) &&
+                onSelectProduct(product)
               }
-              disabled={isProductSelected(product.id)}
+              disabled={
+                isProductInEvent(product.id) || isProductSelected(product.id)
+              }
             >
-              {isProductSelected(product.id) ? "Selected" : "Select"}
+              {isProductInEvent(product.id)
+                ? "Already in Event"
+                : isProductSelected(product.id)
+                ? "Selected"
+                : "Select"}
             </button>
           </li>
         ))}
@@ -124,7 +164,13 @@ const ProductList = ({ products, selectedProducts, onSelectProduct }) => {
   );
 };
 
-const SelectedProducts = ({ selectedProducts, onRemoveProduct, onPayment }) => {
+const SelectedProducts = ({
+  selectedProducts,
+  onPaymentProcess,
+  onRemoveProduct,
+  handleAddProductsToEvent,
+  singlePackage,
+}) => {
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200 capitalize">
       <h2 className="text-2xl font-semibold mb-4">Selected Products</h2>
@@ -150,12 +196,21 @@ const SelectedProducts = ({ selectedProducts, onRemoveProduct, onPayment }) => {
         ))}
       </ul>
       <div className="mt-6">
-        <button
-          className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-          onClick={onPayment}
-        >
-          Proceed to Payment
-        </button>
+        {singlePackage?.price > 0 ? (
+          <button
+            className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+            onClick={onPaymentProcess}
+          >
+            Buy Now
+          </button>
+        ) : (
+          <button
+            className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+            onClick={handleAddProductsToEvent}
+          >
+            Add Products
+          </button>
+        )}
       </div>
     </div>
   );

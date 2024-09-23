@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import useUserStore from "../../store/AuthStore";
 import { toast } from "react-toastify";
-import useEventStore from "../../store/EventStore";
 import useProductStore from "../../store/ProductStore";
-import { SERVER } from "../../config";
+import axios from "axios";
+import { API_URL, SERVER } from "../../config";
+import useEventStore from "../../store/EventStore";
 
 const JoinEvents = () => {
   const { id } = useParams();
@@ -13,7 +14,6 @@ const JoinEvents = () => {
   const { products, fetchProductByIdForUser } = useProductStore();
   const [selectedProducts, setSelectedProducts] = useState([]);
 
-  // Fetch event details based on event ID
   useEffect(() => {
     fetchUser();
     fetchEventById(id);
@@ -24,13 +24,11 @@ const JoinEvents = () => {
     const currentDate = new Date();
     const eventEndDate = new Date(event?.endDate);
 
-    // Check if the event end date has already passed
     if (eventEndDate < currentDate) {
       toast.error("Cannot add products, the event has already ended!");
       return;
     }
 
-    // Add product if not already selected
     setSelectedProducts((prev) => [...prev, product]);
   };
 
@@ -38,10 +36,30 @@ const JoinEvents = () => {
     setSelectedProducts((prev) => prev.filter((p) => p.id !== productId));
   };
 
-  const handlePayment = () => {
-    // Implement payment logic
+  const handleAddProductsToEvent = async () => {
+    try {
+      const eventProducts = selectedProducts.map((product) => ({
+        product: product._id,
+        user: user._id,
+        event: id,
+      }));
+      const response = await axios.post(
+        `${API_URL}/event-products`,
+        eventProducts
+      );
+      if (response.status === 201) {
+        toast.success("Products added to the event successfully!");
+      }
+    } catch (error) {
+      toast.error("Failed to add products to the event.");
+    }
   };
-
+  const isProductInEvent = (productId) => {
+    return event?.eventProducts?.some(
+      (eventProduct) => eventProduct.product === productId
+    );
+  };
+  const onPaymentProcess = () => {};
   return (
     <div className="flex h-screen">
       <div className="flex-1 p-10">
@@ -67,14 +85,17 @@ const JoinEvents = () => {
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ProductList
+            isProductInEvent={isProductInEvent}
             products={products}
             selectedProducts={selectedProducts}
             onSelectProduct={handleSelectProduct}
           />
           <SelectedProducts
+            event={event}
             selectedProducts={selectedProducts}
             onRemoveProduct={handleRemoveProduct}
-            onPayment={handlePayment}
+            onPayment={handleAddProductsToEvent}
+            onPaymentProcess={onPaymentProcess}
           />
         </div>
       </div>
@@ -82,7 +103,12 @@ const JoinEvents = () => {
   );
 };
 
-const ProductList = ({ products, selectedProducts, onSelectProduct }) => {
+const ProductList = ({
+  products,
+  selectedProducts,
+  isProductInEvent,
+  onSelectProduct,
+}) => {
   const isProductSelected = (productId) => {
     return selectedProducts.some((product) => product.id === productId);
   };
@@ -104,18 +130,28 @@ const ProductList = ({ products, selectedProducts, onSelectProduct }) => {
             <span className="capitalize">{product?.name?.slice(0, 20)}</span>
             <button
               className={`px-4 py-2 ${
-                isProductSelected(product.id) ? "bg-gray-400" : "bg-blue-500"
+                isProductInEvent(product.id) || isProductSelected(product.id)
+                  ? "bg-gray-400"
+                  : "bg-blue-500"
               } text-white rounded-lg ${
-                isProductSelected(product.id)
+                isProductInEvent(product.id)
                   ? "cursor-not-allowed"
                   : "hover:bg-blue-600"
               }`}
               onClick={() =>
-                !isProductSelected(product.id) && onSelectProduct(product)
+                !isProductInEvent(product.id) &&
+                !isProductSelected(product.id) &&
+                onSelectProduct(product)
               }
-              disabled={isProductSelected(product.id)}
+              disabled={
+                isProductInEvent(product.id) || isProductSelected(product.id)
+              }
             >
-              {isProductSelected(product.id) ? "Selected" : "Select"}
+              {isProductInEvent(product.id)
+                ? "Already in Event"
+                : isProductSelected(product.id)
+                ? "Selected"
+                : "Select"}
             </button>
           </li>
         ))}
@@ -124,7 +160,13 @@ const ProductList = ({ products, selectedProducts, onSelectProduct }) => {
   );
 };
 
-const SelectedProducts = ({ selectedProducts, onRemoveProduct, onPayment }) => {
+const SelectedProducts = ({
+  selectedProducts,
+  event,
+  onRemoveProduct,
+  onPayment,
+  onPaymentProcess,
+}) => {
   return (
     <div className="bg-white shadow-lg rounded-lg p-6 border border-gray-200">
       <h2 className="text-2xl font-semibold mb-4">Selected Products</h2>
@@ -150,12 +192,21 @@ const SelectedProducts = ({ selectedProducts, onRemoveProduct, onPayment }) => {
         ))}
       </ul>
       <div className="mt-6">
-        <button
-          className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-          onClick={onPayment}
-        >
-          Proceed to Payment
-        </button>
+        {event?.price > 0 ? (
+          <button
+            className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+            onClick={onPaymentProcess}
+          >
+            Buy Now
+          </button>
+        ) : (
+          <button
+            className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+            onClick={onPayment}
+          >
+            Add Products
+          </button>
+        )}
       </div>
     </div>
   );
