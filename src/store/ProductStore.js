@@ -35,8 +35,6 @@ const useProductStore = create((set) => ({
             set({ error: error.response?.data?.message || error.message, loading: false });
         }
     },
-
-
     fetchProductByIdForUser: async (userId, page = 1, limit = 20, searchTerm = '') => {
         set({ loading: true });
         try {
