@@ -6,6 +6,7 @@ import { API_URL } from '../config';
 const useUserStore = create((set, get) => ({
     user: null,
     loading: false,
+    users: [],
     error: null,
     fetchUser: async () => {
         set({ loading: true, error: null });
@@ -76,8 +77,21 @@ const useUserStore = create((set, get) => ({
             toast.error(error.response?.data?.message);
             set({ error: error.message, loading: false });
         }
-    }
+    },
+    fetchAdminUser: async () => {
+        set({ loading: true, error: null, });
+        try {
+            const response = await axios.get(`${API_URL}/users?_filter[role]=admin`, {
+                withCredentials: true
+            });
+            set({
+                users: response.data.data,
+            });
+        } catch (error) {
+            set({ error: error.message, loading: false });
 
+        }
+    },
 }));
 
 export default useUserStore;
