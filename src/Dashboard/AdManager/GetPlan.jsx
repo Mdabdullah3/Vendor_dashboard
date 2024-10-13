@@ -57,7 +57,7 @@ const GetPlan = () => {
   const onPaymentProcess = () => {};
   const isProductInEvent = (productId) => {
     return singlePackage?.packageProducts?.some(
-      (pack) => pack.product === productId
+      (pack) => pack?.product?._id === productId
     );
   };
 
@@ -71,8 +71,8 @@ const GetPlan = () => {
               {singlePackage?.name}
             </h2>
             <p>
-              <span className="font-medium mb-2">Duration:</span>{" "}
-              {singlePackage?.duration}
+              <span className="font-medium mb-2">Duration:</span>
+              {singlePackage?.duration} Hours
             </p>
             <p>
               <span className="font-medium mb-2">Price:</span> BDT

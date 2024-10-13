@@ -56,7 +56,7 @@ const JoinEvents = () => {
   };
   const isProductInEvent = (productId) => {
     return event?.eventProducts?.some(
-      (eventProduct) => eventProduct.product === productId
+      (eventProduct) => eventProduct?.product?._id === productId
     );
   };
   const onPaymentProcess = () => {};
