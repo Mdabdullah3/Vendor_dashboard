@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 
 const usePackageStore = create((set) => ({
     packages: [],
+    packageProduts: [],
     singlePackage: null,
     loading: false,
     error: false,
@@ -14,6 +15,16 @@ const usePackageStore = create((set) => ({
         try {
             const response = await axios.get(`${API_URL}/packages`, { withCredentials: true });
             set({ packages: response.data.data, loading: false })
+        }
+        catch (error) {
+            set({ error: error.response?.data?.message || "An error occurred", loading: false });
+        }
+    },
+    fetchPackageProducts: async () => {
+        set({ loading: true })
+        try {
+            const response = await axios.get(`${API_URL}/package-products`, { withCredentials: true });
+            set({ packageProduts: response.data.data, loading: false })
         }
         catch (error) {
             set({ error: error.response?.data?.message || "An error occurred", loading: false });
@@ -49,6 +60,19 @@ const usePackageStore = create((set) => ({
         set({ loading: true })
         try {
             const response = await axios.patch(`${API_URL}/packages/${id}`, formData, {
+                withCredentials: true
+            })
+            toast.success(response.data.message)
+        }
+        catch (error) {
+            set({ error: error.response?.data.message || "An Error Occurred", loading: false })
+            toast.error(error.response.data.message)
+        }
+    },
+    deletePackage: async (id) => {
+        set({ loading: true })
+        try {
+            const response = await axios.delete(`${API_URL}/packages/${id}`, {
                 withCredentials: true
             })
             toast.success(response.data.message)

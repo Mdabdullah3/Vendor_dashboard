@@ -6,20 +6,64 @@ import usePackageStore from "../../store/PackageStore";
 import { toast } from "react-toastify";
 import { API_URL, SERVER } from "../../config";
 import axios from "axios";
-
+import dayjs from "dayjs"; // for time handling
 const GetPlan = () => {
   const { id } = useParams();
   const { singlePackage, fetchPackageById } = usePackageStore();
-
   const { user, fetchUser } = useUserStore();
   const { products, fetchProductByIdOrSlug } = useProductStore();
   const [selectedProducts, setSelectedProducts] = useState([]);
-
+  const [expiredProducts, setExpiredProducts] = useState([]);
   useEffect(() => {
     fetchUser();
     fetchProductByIdOrSlug(user?._id);
     fetchPackageById(id);
-  }, [fetchProductByIdOrSlug, fetchUser, fetchPackageById, id, user?._id]);
+
+    const intervalId = setInterval(() => {
+      if (singlePackage) {
+        checkEventExpiration();
+      }
+    }, 60000); // Check every minute
+
+    return () => clearInterval(intervalId);
+  }, [
+    fetchProductByIdOrSlug,
+    fetchUser,
+    fetchPackageById,
+    id,
+    user?._id,
+    singlePackage,
+  ]);
+
+  const checkEventExpiration = () => {
+    const eventCreationDate = dayjs(singlePackage?.createdAt);
+    const eventDurationHours = singlePackage?.duration; // duration in hours
+    const eventEndTime = eventCreationDate.add(eventDurationHours, "hour");
+    const now = dayjs();
+
+    if (now.isAfter(eventEndTime)) {
+      deleteExpiredEventProducts();
+    }
+  };
+
+  const deleteExpiredEventProducts = async () => {
+    try {
+      const expiredProductIds = singlePackage?.packageProducts?.map(
+        (pkgProduct) => pkgProduct.product._id
+      );
+
+      if (expiredProductIds.length > 0) {
+        await axios.post(
+          `${API_URL}/package-products/${id}`,
+          { id: expiredProductIds },
+          { withCredentials: true }
+        );
+        toast.success("Expired products have been removed from the package.");
+      }
+    } catch (error) {
+      toast.error("Failed to remove expired products.");
+    }
+  };
 
   const handleSelectProduct = (product) => {
     if (selectedProducts?.length < singlePackage?.maxProduct) {
@@ -42,11 +86,11 @@ const GetPlan = () => {
         user: user._id,
         package: id,
       }));
+
       const response = await axios.post(
         `${API_URL}/package-products`,
         eventProducts
       );
-      console.log(response);
       if (response.status === 201) {
         toast.success("Products added to the Package successfully!");
       }
@@ -54,6 +98,7 @@ const GetPlan = () => {
       toast.error("Failed to add products to the event.");
     }
   };
+
   const onPaymentProcess = () => {};
   const isProductInEvent = (productId) => {
     return singlePackage?.packageProducts?.some(
