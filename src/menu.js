@@ -20,6 +20,7 @@ import JoinEvents from "./Dashboard/Events/JoinEvents";
 import ProfileUpdate from "./page/Profile/ProfileUpdate";
 import Supports from "./Dashboard/Support/Supports";
 import MessageCenter from "./Dashboard/MessageCenter/MessageCenter";
+import VendorChatView from "./Dashboard/Support/SuportDetails";
 const menu = [
     {
         name: "Profile",
@@ -137,6 +138,12 @@ const menu = [
         navMenu: true,
         component: <Supports />
     },
+    {
+        name: "chat-center",
+        layout: "/admin",
+        path: "chat-center/:id",
+        component: <VendorChatView />
+    }
 
 ];
 export default menu;

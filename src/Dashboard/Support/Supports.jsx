@@ -1,14 +1,16 @@
 import React, { useEffect } from "react";
-import useChatStore from "../../store/ChatStore";
 import useUserStore from "../../store/AuthStore";
+import { useNavigate } from "react-router-dom";
 
 const ChatCenterAdminView = () => {
   const { users, fetchAdminUser } = useUserStore();
-  const { setSelectedUser } = useChatStore();
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetchAdminUser();
   }, [fetchAdminUser]);
+  const handleViewChat = (id) => {
+    navigate(`/admin/chat-center/${id}`);
+  };
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold">Vendor Chat Center</h1>
@@ -21,7 +23,7 @@ const ChatCenterAdminView = () => {
             <span>{chat?.name}</span>
             <button
               className="text-blue-500"
-              onClick={() => setSelectedUser(chat.user)}
+              onClick={() => handleViewChat(chat?._id)}
             >
               View Chat
             </button>
