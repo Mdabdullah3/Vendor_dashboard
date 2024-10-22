@@ -8,7 +8,7 @@ const useReportStore = create((set, get) => ({
     report: null,
     loading: false,
     error: null,
-
+    chats: [],
     fetchReports: async () => {
         set({ loading: true, error: null });
         try {
@@ -64,6 +64,19 @@ const useReportStore = create((set, get) => ({
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to delete report');
             set({ loading: false });
+        }
+    },
+    // &chatsOnly=true
+    loadUserChats: async (id, replyToId) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await axios.get(`${API_URL}/users/${id}/reports?_filter[replyTo]=${replyToId}`, {
+                withCredentials: true,
+            });
+            const chatsData = response.data.data;
+            set({ chats: chatsData });
+        } catch (error) {
+            set({ error: error.response?.data?.message || "An error occurred", loading: false });
         }
     },
 }));

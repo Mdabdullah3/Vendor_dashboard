@@ -20,7 +20,9 @@ const ChatCenterAdminView = () => {
             key={chat?._id}
             className="flex items-center justify-between p-4 border-b"
           >
-            <span>{chat?.name}</span>
+            <span className=" capitalize text-md font-semibold">
+              {chat?.name}
+            </span>
             <button
               className="text-blue-500"
               onClick={() => handleViewChat(chat?._id)}
