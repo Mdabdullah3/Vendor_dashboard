@@ -2,28 +2,32 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useOrderStore from "../../store/OrderStore";
 import InputSearch from "../../components/common/InputSearch";
-import Loading from "../../components/common/Loading";
 import TableHead from "../../components/common/TableHead";
+import useUserStore from "../../store/AuthStore";
 
-const CustomerOrders = ({ id }) => {
+const CustomerOrders = () => {
+  const { user, fetchUser } = useUserStore();
   const [activeMenu, setActiveMenu] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
 
   const {
     userOrders,
-    fetchUserOrders,
+    fetchAllVendorOrders,
     updateOrderStatus,
     totalPages,
-    loading,
     page,
     setPage,
   } = useOrderStore();
 
   console.log(userOrders);
   useEffect(() => {
-    const status = activeMenu === "all" ? "" : activeMenu;
-    fetchUserOrders(id, { status, page });
-  }, [activeMenu, page, fetchUserOrders, id]);
+    fetchUser();
+    const id = user?._id;
+    if (id) {
+      const status = activeMenu === "all" ? "" : activeMenu;
+      fetchAllVendorOrders(id, { status, page });
+    }
+  }, [activeMenu, page, fetchAllVendorOrders, fetchUser, user]);
 
   const handleMenuClick = (value) => {
     setActiveMenu(value);
@@ -82,9 +86,7 @@ const CustomerOrders = ({ id }) => {
         ))}
       </div>
 
-      {loading ? (
-        <Loading />
-      ) : filteredOrders.length === 0 ? (
+      {filteredOrders.length === 0 ? (
         <h1 className="text-center text-red-600 py-4 text-2xl">
           No Orders Found
         </h1>
@@ -107,20 +109,33 @@ const CustomerOrders = ({ id }) => {
                   <td className="text-center text-dark font-medium py-5">
                     {item?.price}
                   </td>
-                  <td className="text-center text-dark font-medium py-5 capitalize">
-                    <select
-                      value={item?.status}
-                      onChange={(e) =>
-                        handleStatusChange(item?._id, e.target.value)
-                      }
-                      className="border border-gray-300 p-2 rounded"
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="shipped">Shipped</option>
-                      <option value="completed">Delivered</option>
-                      <option value="cancelled">Cancelled</option>
-                    </select>
+                  <td>
+                    {item?.status === "pending" ? (
+                      <div>
+                        <button
+                          onClick={() =>
+                            handleStatusChange(item?._id, "cancelled")
+                          }
+                          className="mr-2 bg-primary text-white btn"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() =>
+                            handleStatusChange(item?._id, "approved")
+                          }
+                          className="btn bg-blue-500 text-white "
+                        >
+                          Approve
+                        </button>
+                      </div>
+                    ) : (
+                      <p className="text-center capitalize font-semibold">
+                        {item?.status}
+                      </p>
+                    )}
                   </td>
+
                   <td className="text-center text-dark font-medium py-5">
                     <Link to={`/admin/order-details/${item?._id}`}>
                       <button className="bg-primary text-white px-5 py-1.5 rounded-lg">

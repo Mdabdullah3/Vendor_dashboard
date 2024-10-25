@@ -21,6 +21,7 @@ import ProfileUpdate from "./page/Profile/ProfileUpdate";
 import Supports from "./Dashboard/Support/Supports";
 import MessageCenter from "./Dashboard/MessageCenter/MessageCenter";
 import VendorChatView from "./Dashboard/Support/SuportDetails";
+import OrderDetails from "./Dashboard/Order/OrderDetails";
 const menu = [
     {
         name: "Profile",
@@ -65,6 +66,12 @@ const menu = [
         navMenu: true,
         icon: <CiShoppingBasket className="h-6 w-6" />,
         component: <OrderReview />
+    },
+    {
+        name: "Order Details",
+        layout: "/admin",
+        path: "order-details/:id",
+        component: <OrderDetails />
     },
     {
         name: "Finance",

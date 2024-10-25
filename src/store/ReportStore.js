@@ -70,7 +70,7 @@ const useReportStore = create((set, get) => ({
     loadUserChats: async (id, replyToId) => {
         set({ loading: true, error: null });
         try {
-            const response = await axios.get(`${API_URL}/users/${id}/reports?_filter[replyTo]=${replyToId}`, {
+            const response = await axios.get(`${API_URL}/users/${id}/reports?_filter[replyTo]=${replyToId}&_limit=1000`, {
                 withCredentials: true,
             });
             const chatsData = response.data.data;

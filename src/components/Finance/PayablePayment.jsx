@@ -1,29 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import useOrderStore from "../../store/OrderStore";
 import Loading from "../common/Loading";
+import useUserStore from "../../store/AuthStore";
 
 const PayablePayment = () => {
-  const { id } = useParams();
-  const [loading, setLoading] = useState(false);
+  const { user, fetchUser } = useUserStore();
   const { userOrders, fetchAllVendorOrders, updateOrderStatus } =
     useOrderStore();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true);
-    const loadOrdersForAllUsers = async () => {
-      await fetchAllVendorOrders(id);
+    const loadUserAndOrders = async () => {
+      setLoading(true);
+      await fetchUser();
       setLoading(false);
     };
-    loadOrdersForAllUsers();
-  }, [fetchAllVendorOrders, id, userOrders]);
+    loadUserAndOrders();
+  }, [fetchUser]);
 
-  console.log(loading);
+  useEffect(() => {
+    if (user?._id) {
+      const loadOrdersForUser = async () => {
+        setLoading(true);
+        await fetchAllVendorOrders(user?._id, {
+          status: "",
+          page: 1,
+          limit: 20,
+        });
+        setLoading(false);
+      };
+      loadOrdersForUser();
+    }
+  }, [user, fetchAllVendorOrders]);
+
   const header = [
     "No",
     "Order Cost",
-    // "Name",
-    // "Phone",
     "Vat",
     "Commission",
     "Transaction Fee",
@@ -32,16 +44,15 @@ const PayablePayment = () => {
     "Status",
     "Action",
   ];
-  const activeOrders = userOrders?.filter(
-    (order) => order.status !== "cancelled"
-  );
+
   const handlePay = async (orderId) => {
-    // Update order status to paid
     await updateOrderStatus(orderId, { vendorPaid: "paid" });
   };
+
   if (loading) {
     return <Loading />;
   }
+
   return (
     <div>
       <table className="min-w-full bg-white border border-gray-200 mt-10">
@@ -59,15 +70,13 @@ const PayablePayment = () => {
         </thead>
         <tbody>
           {userOrders?.length > 0 ? (
-            activeOrders?.map((finance, index) => (
+            userOrders?.map((finance, index) => (
               <tr
-                key={finance._id}
+                key={finance?._id}
                 className="border-b border-gray-200 capitalize"
               >
-                <td className="py-4 px-6">{index}</td>
-                <td className="py-4 px-6">{finance.price}</td>
-                {/* <td className="py-4 px-6">{finance?.shippingInfo?.name}</td>
-                <td className="py-4 px-6">{finance?.shippingInfo?.phone}</td> */}
+                <td className="py-4 px-6">{index + 1}</td>
+                <td className="py-4 px-6">{finance?.price}</td>
                 <td className="py-4 px-6">{finance?.vat}</td>
                 <td className="py-4 px-6">{finance?.commission}</td>
                 <td className="py-4 px-6">{finance?.transactionCost}</td>
@@ -76,25 +85,32 @@ const PayablePayment = () => {
                   {finance?.profit ? Number(finance.profit).toFixed(2) : "0.00"}
                 </td>
                 <td className="py-4 px-6">{finance?.status}</td>
-                {finance?.vendorPaid === "unpaid" ? (
-                  <td className="py-4 px-6">
-                    <button
-                      onClick={() => handlePay(finance?._id)}
-                      className="btn bg-green-500 hover:bg-green-600 text-white"
-                    >
-                      Pay
+                <td className="py-4 px-6">
+                  {finance?.status === "cancelled" ? (
+                    <button className="cursor-not-allowed bg-primary text-white btn">
+                      Cancel
                     </button>
-                  </td>
-                ) : (
-                  <td className="py-4 px-6">
-                    <button className="btn bg-primary text-white ">Paid</button>
-                  </td>
-                )}
+                  ) : finance.vendorPaid === "unpaid" ? (
+                    <button
+                      className="bg-green-500 text-white btn"
+                      onClick={() => handlePay(finance?._id)}
+                    >
+                      pay
+                    </button>
+                  ) : (
+                    <button className="bg-primary text-white btn cursor-not-allowed">
+                      paid
+                    </button>
+                  )}
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={8} className="text-center text-xl py-6 text-primary">
+              <td
+                colSpan={header.length}
+                className="text-center text-xl py-6 text-primary"
+              >
                 No Data Found
               </td>
             </tr>
