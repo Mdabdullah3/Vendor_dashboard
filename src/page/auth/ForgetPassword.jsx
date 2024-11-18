@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../config";
 import InputField from "../../components/common/InputField";
 import Navbar from "../../layout/Navbar";
-
 const ForgetPassword = () => {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
