@@ -19,7 +19,7 @@ const SuportDetails = () => {
     const fetchChats = async () => {
       try {
         const response = await axios.get(
-          `https://baburhaatbd.com/api/users/${user?._id}/reports?_filter[replyTo]=${id}&chatsOnly=true&_limit=1000`,
+          `https://readyhow.com/api/users/${user?._id}/reports?_filter[replyTo]=${id}&chatsOnly=true&_limit=1000`,
           {
             withCredentials: true,
           }

@@ -36,7 +36,7 @@ const MessageCenter = () => {
   }, [fetchUser, fetchProductByIdForUser, user?._id, products]);
 
   const handleReply = (productId) => {
-    const url = `https://baburhaatbd.com/products/${productId}`;
+    const url = `https://readyhow.com/products/${productId}`;
     window.open(url, "_blank");
   };
 
