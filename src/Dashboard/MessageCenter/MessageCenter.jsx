@@ -3,7 +3,6 @@ import { formatDistanceToNow } from "date-fns";
 import useUserStore from "../../store/AuthStore";
 import useProductStore from "../../store/ProductStore";
 import { SERVER } from "../../config";
-
 const MessageCenter = () => {
   const { user, fetchUser } = useUserStore();
   const { products, fetchProductByIdForUser } = useProductStore();
