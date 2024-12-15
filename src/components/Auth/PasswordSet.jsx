@@ -45,7 +45,8 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
   const handleSubmit = async () => {
     const otp = code.join("");
     try {
-      const response = await axios.post(
+      // Step 1: Verify OTP
+      const otpResponse = await axios.post(
         `${API_URL}/auth/verify-otp`,
         {
           phone,
@@ -55,11 +56,29 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
         },
         { withCredentials: true }
       );
-      localStorage.setItem("user", JSON.stringify(response.data.data));
-      toast.success(response.data.message);
+      // Save user data from OTP verification
+      localStorage.setItem("user", JSON.stringify(otpResponse.data.data));
+      toast.success(otpResponse.data.message);
+
+      // Step 2: Login the user
+      const registerFields = {
+        email: otpResponse.data.data.phone,
+        password: otpResponse.data.data.password,
+      };
+
+      const registerResponse = await axios.post(
+        `${API_URL}/auth/login`,
+        registerFields,
+      );
       navigate("/profile");
     } catch (error) {
-      toast.error(error.response.data.message);
+      // Handle errors from either request
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+      console.error(error);
     }
   };
 
