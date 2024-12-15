@@ -65,7 +65,6 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
         email: otpResponse.data.data.phone,
         password: otpResponse.data.data.password,
       };
-
       const registerResponse = await axios.post(
         `${API_URL}/auth/login`,
         registerFields
