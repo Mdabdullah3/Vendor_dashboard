@@ -68,8 +68,9 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
 
       const registerResponse = await axios.post(
         `${API_URL}/auth/login`,
-        registerFields,
+        registerFields
       );
+      console.log(registerResponse);
       navigate("/profile");
     } catch (error) {
       // Handle errors from either request
