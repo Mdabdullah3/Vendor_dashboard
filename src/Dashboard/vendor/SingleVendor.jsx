@@ -53,7 +53,7 @@ const SingleVendor = () => {
                 {/* <PrimaryButton value="Deactivate" className="mt-4" /> */}
               </div>
             </div>
-            <Link to="/admin/update-profile">
+            <Link to="/profile">
               <button className="bg-blue-500 hover:bg-blue-500/70 text-white font-bold py-2 px-4 rounded-lg mt-2">
                 Update Profile
               </button>
