@@ -3,21 +3,24 @@ import InputField from "../common/InputField";
 import PrimaryButton from "../common/PrimaryButton";
 import useUserStore from "../../store/AuthStore";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
-const UpdatePassword = ({ handleNextStep }) => {
+const UpdatePassword = () => {
   const userItem = localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user"))
     : null;
-  console.log(userItem);
   const { updatePassword } = useUserStore();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     currentPassword: userItem?.password,
     password: "",
     confirmPassword: "",
   });
+
+
 
   const handleChange = (key, value) => {
     setFormData((prevState) => ({
@@ -40,7 +43,8 @@ const UpdatePassword = ({ handleNextStep }) => {
         formData.password,
         formData.confirmPassword
       );
-      handleNextStep();
+      navigate("/");
+      // handleNextStep();
     } catch (error) {
       console.log(error);
     }

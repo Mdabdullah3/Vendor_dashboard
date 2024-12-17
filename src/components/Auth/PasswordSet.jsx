@@ -57,8 +57,6 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
         { withCredentials: true }
       );
       // Save user data from OTP verification
-      localStorage.setItem("user", JSON.stringify(otpResponse.data.data));
-      toast.success(otpResponse.data.message);
 
       // Step 2: Login the user
       const registerFields = {
@@ -69,8 +67,10 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
         `${API_URL}/auth/login`,
         registerFields
       );
-      console.log(registerResponse);
-      navigate("/profile");
+      console.log(registerResponse, "registerResponse", registerFields);
+      navigate("/password-set");
+      localStorage.setItem("user", JSON.stringify(otpResponse.data.data));
+      toast.success(otpResponse.data.message);
     } catch (error) {
       // Handle errors from either request
       if (error.response?.data?.message) {

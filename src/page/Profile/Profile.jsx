@@ -2,16 +2,14 @@ import React, { useEffect, useState } from "react";
 import { FaRegAddressCard } from "react-icons/fa";
 import { MdArrowBackIos } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
-import { RiBankCardLine, RiLockPasswordFill } from "react-icons/ri";
+import { RiBankCardLine } from "react-icons/ri";
 import Addresset from "../../components/Profile/Addresset";
 import VerifyIdBank from "../../components/Profile/VerifyIdBank";
 // import ProductSet from "../../components/Profile/ProductSet";
 import Navbar from "../../layout/Navbar";
 import PersonalDetails from "../../components/Profile/PersonalDetails";
 import useAuthStore from "../../store/AuthStore";
-import { SERVER } from "../../config";
-import UpdatePassword from "../../components/Profile/UpdatePassword";
-import { toDataURL } from "../../utils/DataUrl";
+// import UpdatePassword from "../../components/Profile/UpdatePassword";
 const Profile = () => {
   const { user, fetchUser } = useAuthStore();
   useEffect(() => {
@@ -73,7 +71,7 @@ const Profile = () => {
   }, [user]);
 
   const menu = [
-    { label: "Password", icon: <RiLockPasswordFill /> },
+    // { label: "Password", icon: <RiLockPasswordFill /> },
     { label: "Profile", icon: <CgProfile /> },
     { label: "Address", icon: <FaRegAddressCard /> },
     { label: "Verify ID & Bank", icon: <RiBankCardLine /> },
@@ -152,24 +150,24 @@ const Profile = () => {
           </h1> */}
         </div>
         <section className="mt-6">
-          {activeStep === 0 && (
+          {/* {activeStep === 0 && (
             <UpdatePassword handleNextStep={handleNextStep} />
-          )}
-          {activeStep === 1 && (
+          )} */}
+          {activeStep === 0 && (
             <PersonalDetails
               formData={formData}
               handleChange={handleChange}
               handleNextStep={handleNextStep}
             />
           )}
-          {activeStep === 2 && (
+          {activeStep === 1 && (
             <Addresset
               formData={formData}
               handleChange={handleChange}
               handleNextStep={handleNextStep}
             />
           )}
-          {activeStep === 3 && (
+          {activeStep === 2 && (
             <VerifyIdBank
               formData={formData}
               handleChange={handleChange}

@@ -61,6 +61,24 @@ const useUserStore = create((set, get) => ({
             set({ error: error.message, loading: false });
         }
     },
+    updateSingleUser: async (userData, id) => {
+        set({ loading: true, error: null });
+        try {
+            const response = await axios.patch(`${API_URL}/users/${id}`, userData, {
+                withCredentials: true,
+            });
+            set((state) => ({
+                users: state.users.map(user =>
+                    user._id === id ? { ...user, ...response.data.data } : user
+                ),
+                loading: false
+            }));
+            console.log(response);
+            toast.success('Updated successfully!');
+        } catch (error) {
+            set({ error: error.message, loading: false });
+        }
+    },
     updatePassword: async (currentPassword, password, confirmPassword) => {
         set({ loading: true, error: null });
         try {
@@ -71,7 +89,7 @@ const useUserStore = create((set, get) => ({
                     withCredentials: true,
                 }
             );
-            toast.success("Password Updated Successfully, Please Complete Your Profile");
+            toast.success("Password Successfully, Please Login First!");
             set({ user: response.data.data, loading: false });
         } catch (error) {
             toast.error(error.response?.data?.message);

@@ -9,11 +9,13 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ForgetPassword from './page/auth/ForgetPassword';
 import ResetPassword from './page/auth/ResetPassword';
+import UpdatePassword from './components/Profile/UpdatePassword';
 const App = () => {
   return (
     <div>
       <Routes>
         <Route path="/register" element={<Register />} />
+        <Route path="/password-set" element={<UpdatePassword />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/" element={<Login />} />

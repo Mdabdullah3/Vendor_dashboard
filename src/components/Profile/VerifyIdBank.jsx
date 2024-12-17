@@ -90,9 +90,9 @@ const VerifyIdBank = ({ formData, handleChange }) => {
     setSelectedBank(bank);
     handleChange("bankName", bank.label);
   };
-  const handleSkip = () => {
-    navigate("/admin");
-  };
+  // const handleSkip = () => {
+  //   navigate("/admin");
+  // };
   return (
     <section>
       <h1 className="text-xl font-semibold my-2">Verify ID & Bank Details</h1>
@@ -160,7 +160,7 @@ const VerifyIdBank = ({ formData, handleChange }) => {
           disabled={loading}
           onClick={handleSubmit}
         />
-        <PrimaryButton value="Skip" onClick={handleSkip} />
+        {/* <PrimaryButton value="Skip" onClick={handleSkip} /> */}
       </div>
     </section>
   );
