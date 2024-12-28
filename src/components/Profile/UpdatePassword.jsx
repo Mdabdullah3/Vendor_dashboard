@@ -45,7 +45,6 @@ const UpdatePassword = () => {
       navigate("/");
       // handleNextStep();
     } catch (error) {
-      console.log(error);
     }
   };
 

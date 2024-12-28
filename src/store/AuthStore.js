@@ -73,7 +73,6 @@ const useUserStore = create((set, get) => ({
                 ),
                 loading: false
             }));
-            console.log(response);
             toast.success('Updated successfully!');
         } catch (error) {
             set({ error: error.message, loading: false });

@@ -22,7 +22,6 @@ const VerifyIdBank = ({ formData, handleChange }) => {
     };
     fetchBanks();
   }, [fetchUser]);
-  console.log(user);
 
   const getImagePreviewUrl = (file) => {
     if (file && (file instanceof File || file instanceof Blob)) {
@@ -82,7 +81,6 @@ const VerifyIdBank = ({ formData, handleChange }) => {
       setLoading(false);
     } catch (error) {
       toast.error(error.message || "An error occurred while uploading files.");
-      console.log(error);
     }
   };
 

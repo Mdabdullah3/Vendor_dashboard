@@ -31,7 +31,6 @@ const Register = () => {
         { phone },
         { withCredentials: true }
       );
-      console.log(response.data.data.message);
       toast.success(response.data.data.message);
       setOtpResponse(response.data);
       handleNextStep();

@@ -48,7 +48,6 @@ const usePackageStore = create((set) => ({
             const response = await axios.post(`${API_URL}/packages`, formData, {
                 withCredentials: true
             })
-            console.log(response);
             toast.success(response.data.message || "Package Created Successfully")
         }
         catch (error) {

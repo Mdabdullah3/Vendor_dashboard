@@ -83,11 +83,9 @@ const useReviewStore = create((set) => ({
                     loading: false,
                 }));
             }
-            console.log(response);
         } catch (error) {
             set({ error: error.message, loading: false });
             toast.error(error.message);
-            console.log(error);
         }
     },
 

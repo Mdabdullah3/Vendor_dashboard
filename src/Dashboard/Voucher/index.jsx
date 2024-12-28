@@ -8,7 +8,6 @@ const VoucherAdminPanel = () => {
   useEffect(() => {
     fetchVoucherMe();
   }, [fetchVoucherMe]);
-  console.log(vouchers);
   const header = [
     "Code",
     "Discount",

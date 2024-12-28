@@ -37,7 +37,6 @@ const ProfileUpdate = () => {
     fetchUser();
   }, [fetchUser]);
 
-  console.log(user);
   useEffect(() => {
     if (user) {
       setFormData({

@@ -24,7 +24,6 @@ const SuportDetails = () => {
             withCredentials: true,
           }
         );
-        console.log(response.data.data);
         if (response?.data?.data) {
           const fetchedChats = response?.data?.data;
 
@@ -92,7 +91,6 @@ const SuportDetails = () => {
           ...prevMessages,
           { ...response.data.data, createdAt: new Date() },
         ]);
-        console.log(response.data.data);
         setMessage(""); // Clear input after sending
       } else {
         toast.error("Failed to send message");

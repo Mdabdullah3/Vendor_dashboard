@@ -76,7 +76,6 @@ const useProductStore = create((set) => ({
                 withCredentials: true,
             });
             toast.success("Product added Successfully");
-            console.log(response.data.data);
             set((state) => ({
                 products: [...state.products, response.data.data],
                 loading: false,
@@ -98,11 +97,9 @@ const useProductStore = create((set) => ({
                 withCredentials: true,
             });
             toast.success("Product Updated Successfully");
-            console.log(response);
         } catch (error) {
             set({ error: error.response?.data?.message || error.message, loading: false });
             toast.error(error.response?.data?.message || error.message);
-            console.log(error.response);
         }
     },
 

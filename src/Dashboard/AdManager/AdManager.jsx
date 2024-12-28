@@ -15,7 +15,6 @@ const AdManager = () => {
     "Status",
     "Action",
   ];
-  console.log(packages);
 
   const navigate = useNavigate();
   const handleEditPackage = (id) => {

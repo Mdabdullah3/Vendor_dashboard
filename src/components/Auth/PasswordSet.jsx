@@ -67,7 +67,6 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
         `${API_URL}/auth/login`,
         registerFields
       );
-      console.log(registerResponse, "registerResponse", registerFields);
       navigate("/password-set");
       localStorage.setItem("user", JSON.stringify(otpResponse.data.data));
       toast.success(otpResponse.data.message);
@@ -90,7 +89,6 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
         { withCredentials: true }
       );
       toast.success("OTP resent successfully!");
-      console.log(response.data);
       setHash(response?.data?.data?.hash);
     } catch (error) {
       toast.error("Failed to resend OTP. Please try again.");

@@ -291,7 +291,6 @@ const EditProducts = () => {
         dimension: form?.dimension,
       },
     };
-    console.log(formData);
     try {
       await updateProduct(id, formData);
       fetchProductByIdOrSlug(id);
@@ -302,7 +301,6 @@ const EditProducts = () => {
 
   const handleEditVariant = (id) => {
     const variantToEdit = variants.find((variant) => variant.id === id);
-    console.log(variantToEdit);
     if (variantToEdit) {
       setEditingVariant(variantToEdit);
       setVariantForm({

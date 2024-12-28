@@ -168,7 +168,6 @@ const useOrderStore = create((set) => ({
                 loading: false
             }));
             toast.success('Order status updated successfully');
-            console.log(response);
         } catch (error) {
             set({
                 error: error.response?.data?.message || 'Error updating order status',

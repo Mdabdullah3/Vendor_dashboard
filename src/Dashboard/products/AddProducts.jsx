@@ -235,13 +235,11 @@ const AddProducts = () => {
         dimension: form?.packageDimensionLength,
       },
     };
-    console.log(formData);
     try {
       await addProduct(formData);
       setLoading(false);
     } catch (error) {
       toast.error(error.message);
-      console.log(error);
     }
   };
   const categoryOptions = categories.map((category) => ({
@@ -255,7 +253,6 @@ const AddProducts = () => {
 
   const handleEditVariant = (id) => {
     const variantToEdit = variants.find((variant) => variant.id === id);
-    console.log(variantToEdit);
     if (variantToEdit) {
       setEditingVariant(variantToEdit);
       setVariantForm({

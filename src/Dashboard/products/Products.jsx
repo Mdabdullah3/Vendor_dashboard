@@ -24,7 +24,6 @@ const ProductAdminPanel = () => {
     }
   }, [user?._id, fetchUser, page, limit, searchTerm, fetchProductByIdForUser]);
 
-  console.log(products, user);
   const handleSearch = (value) => {
     setSearchTerm(value);
   };

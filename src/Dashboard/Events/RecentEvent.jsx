@@ -16,8 +16,6 @@ const EventManager = () => {
   const isExpired = (endDate) => {
     const end = new Date(endDate).setHours(0, 0, 0, 0);
     const today = new Date().setHours(0, 0, 0, 0);
-    console.log(end, today);
-
     return end > today;
   };
 

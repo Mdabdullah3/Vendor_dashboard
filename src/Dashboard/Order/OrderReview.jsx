@@ -19,7 +19,6 @@ const CustomerOrders = () => {
     setPage,
   } = useOrderStore();
 
-  console.log(userOrders);
   useEffect(() => {
     fetchUser();
     const id = user?._id;
