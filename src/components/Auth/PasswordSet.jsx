@@ -57,7 +57,7 @@ const PasswordSet = ({ phone, onNext, otpData }) => {
         { withCredentials: true }
       );
       // Save user data from OTP verification
-
+    
       // Step 2: Login the user
       const registerFields = {
         email: otpResponse.data.data.phone,

@@ -89,7 +89,7 @@ const useUserStore = create((set, get) => ({
                     withCredentials: true,
                 }
             );
-            toast.success("Password Successfully, Please Login First!");
+            toast.success("Password Set Successfully, Please Login First!");
             set({ user: response.data.data, loading: false });
         } catch (error) {
             toast.error(error.response?.data?.message);
