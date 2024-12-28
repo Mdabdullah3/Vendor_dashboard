@@ -40,7 +40,7 @@ const SingleVendor = () => {
               <div className="flex flex-col">
                 <h1 className="text-2xl font-bold">{user?.name}</h1>
                 <div className="mt-2">
-                  {user?.status === "approved" ? (
+                  {user?.isActive === true ? (
                     <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-sm font-semibold">
                       Verified
                     </span>
@@ -53,7 +53,7 @@ const SingleVendor = () => {
                 {/* <PrimaryButton value="Deactivate" className="mt-4" /> */}
               </div>
             </div>
-            <Link to="/profile">
+            <Link to="/admin/update-profile">
               <button className="bg-blue-500 hover:bg-blue-500/70 text-white font-bold py-2 px-4 rounded-lg mt-2">
                 Update Profile
               </button>
