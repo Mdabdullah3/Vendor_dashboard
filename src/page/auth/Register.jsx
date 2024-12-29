@@ -63,7 +63,7 @@ const Register = () => {
                 {step === 1 && (
                   <div>
                     <h1 className="text-xl font-semibold">
-                      Sign up at Babur Hut
+                      Sign up at Ready How
                     </h1>
                     <p className="text-gray-600 text-[14px]">
                       Sign up in 2 steps

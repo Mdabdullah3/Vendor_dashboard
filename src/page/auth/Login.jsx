@@ -33,10 +33,10 @@ const Login = () => {
           <div className="flex justify-between items-start">
             <div className="hidden lg:block">
               <h1 className="text-3xl font-bold pt-10">
-                Sell on Babur Hut Marketplace
+                Sell on Ready How Marketplace
               </h1>
               <h2 className="text-lg font-medium">
-                Create a Babur Hut seller account in 5 minutes and reach
+                Create a Ready How seller account in 5 minutes and reach
                 millions of customers today!
               </h2>
               <img src={shopImg} alt="" />
