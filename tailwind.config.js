@@ -4,8 +4,8 @@ module.exports = {
     themes: [
       {
         light: {
-          primary: "#FD384F",
-          secondary: "#141618",
+          primary: "#ec2027",
+          secondary: "#231f20",
           neutral: "#F3F4F6",
           "base-100": "#ffff",
           info: "#F5F5F5",
