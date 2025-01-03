@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.bed6c95b.css",
+    "main.js": "/static/js/main.76c5ea55.js",
+    "static/js/453.ee3d9661.chunk.js": "/static/js/453.ee3d9661.chunk.js",
+    "static/media/shop.avif": "/static/media/shop.c15d3a31e6b652751541.avif",
+    "static/media/Flag-Bangladesh.webp": "/static/media/Flag-Bangladesh.dcf582d99e29127c48ea.webp",
+    "index.html": "/index.html",
+    "main.bed6c95b.css.map": "/static/css/main.bed6c95b.css.map",
+    "main.76c5ea55.js.map": "/static/js/main.76c5ea55.js.map",
+    "453.ee3d9661.chunk.js.map": "/static/js/453.ee3d9661.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.bed6c95b.css",
+    "static/js/main.76c5ea55.js"
+  ]
+}
