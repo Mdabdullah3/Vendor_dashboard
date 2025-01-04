@@ -170,18 +170,21 @@ const ProfileUpdate = () => {
               label="Name"
               name="name"
               value={formData.name}
+              placeholder="Enter your name"
               onChange={handleInputChange}
             />
             <InputField
               label="Email"
               name="email"
               type="email"
+              placeholder="Enter your email"
               value={formData.email}
               onChange={handleInputChange}
             />
             <InputField
               label="Phone"
               name="phone"
+              placeholder="Enter your phone number"
               value={formData.phone}
               onChange={handleInputChange}
             />
@@ -249,6 +252,7 @@ const ProfileUpdate = () => {
               name="idCardBackPageImage"
             />
             <InputField
+              placeholder="Enter Your ID Card Number"
               label="ID Card Number"
               name="idCardNumber"
               value={formData.idCardNumber}
@@ -263,30 +267,35 @@ const ProfileUpdate = () => {
               name="bankStatementImage"
             />
             <InputField
+              placeholder="Enter Account Holder Name"
               label="Account Holder Name"
               name="accountHolderName"
               value={formData.accountHolderName}
               onChange={handleInputChange}
             />
             <InputField
+              placeholder="Enter Account Number"
               label="Account Number"
               name="accountNumber"
               value={formData.accountNumber}
               onChange={handleInputChange}
             />
             <InputField
+              placeholder="Enter Routing Number"
               label="Routing Number"
               name="routingNumber"
               value={formData.routingNumber}
               onChange={handleInputChange}
             />
             <InputField
+              placeholder="Enter Bank Name"
               label="Bank Name"
               name="bankName"
               value={formData.bankName}
               onChange={handleInputChange}
             />
             <InputField
+              placeholder="Enter Bank Branch"
               label="Bank Branch"
               name="bankBranch"
               value={formData.bankBranch}
