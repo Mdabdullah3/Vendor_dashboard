@@ -7,6 +7,7 @@ import FileUpload from "../../components/common/FileUpload";
 import { toDataURL } from "../../utils/DataUrl";
 import InputField from "../../components/common/InputField";
 import PrimaryButton from "../../components/common/PrimaryButton";
+import { useNavigate } from "react-router-dom";
 const ProfileUpdate = () => {
   const { user, fetchUser, updateUser } = useAuthStore();
   const [bdDistricts, setBdDistricts] = useState([]);
@@ -36,7 +37,7 @@ const ProfileUpdate = () => {
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (user) {
       setFormData({
@@ -153,7 +154,7 @@ const ProfileUpdate = () => {
         address1: formData.detailAddress,
       },
     };
-    updateUser(payload);
+    updateUser(payload, navigate);
   };
   return (
     <div className="container mx-auto p-4">
