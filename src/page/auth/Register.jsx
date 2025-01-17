@@ -47,14 +47,14 @@ const Register = () => {
       <Navbar />
       <div className="bg-primary text-white">
         <div className="lg:w-10/12 w-[95%] mx-auto h-screen">
-          <div className="lg:grid grid-cols-5 items-start gap-5">
+          <div className="lg:grid grid-cols-5 items-center gap-5">
             <div className="hidden lg:block col-span-3">
               <h1 className="text-3xl font-bold pt-10">
-                Sign up as a seller and Win!
+                Join as a Seller on Ready How!
               </h1>
               <h2 className="text-lg font-medium">
-                Enter our competition and you could win US$5,000 cash, and
-                US$5,000 shipping & marketing credits.
+                Showcase your brand, reach new customers, and grow your sales
+                with Ready How’s thriving e-commerce platform.
               </h2>
               <img src={shopImg} alt="Shop" />
             </div>

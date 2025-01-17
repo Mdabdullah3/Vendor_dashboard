@@ -33,7 +33,7 @@ const SingleVendor = () => {
           <div className="flex items-center justify-between bg-white shadow-md p-6 rounded-lg">
             <div className="flex items-center gap-4 ">
               <img
-                src={`${SERVER}${user?.avatar?.secure_url}`}
+                src={`${SERVER}{user?.avatar?.secure_url}`}
                 alt="vendor"
                 className="w-40 h-40 object-cover rounded-full border-4 border-gray-200"
               />

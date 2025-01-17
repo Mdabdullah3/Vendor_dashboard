@@ -30,14 +30,14 @@ const Login = () => {
       <Navbar />
       <div className="bg-primary text-white">
         <div className="w-10/12 mx-auto h-screen">
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between items-center">
             <div className="hidden lg:block">
               <h1 className="text-3xl font-bold pt-10">
-                Sell on Ready How Marketplace
+                Join as a Seller on Ready How!
               </h1>
               <h2 className="text-lg font-medium">
-                Create a Ready How seller account in 5 minutes and reach
-                millions of customers today!
+                Showcase your brand, reach new customers, and grow your sales
+                with Ready How’s thriving e-commerce platform.
               </h2>
               <img src={shopImg} alt="" />
             </div>
