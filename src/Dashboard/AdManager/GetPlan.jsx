@@ -99,7 +99,9 @@ const GetPlan = () => {
     }
   };
 
-  const onPaymentProcess = () => {};
+  const onPaymentProcess = () => {
+    toast.error("This Package is available for purchase!");
+  };
   const isProductInEvent = (productId) => {
     return singlePackage?.packageProducts?.some(
       (pack) => pack?.product?._id === productId
@@ -142,7 +144,7 @@ const GetPlan = () => {
           />
           <SelectedProducts
             singlePackage={singlePackage}
-            onPayment={onPaymentProcess}
+            onPaymentProcess={onPaymentProcess}
             selectedProducts={selectedProducts}
             onRemoveProduct={handleRemoveProduct}
             handleAddProductsToEvent={handleAddProductsToEvent}
@@ -197,7 +199,7 @@ const ProductList = ({
               }
             >
               {isProductInEvent(product.id)
-                ? "Already in Event"
+                ? "Already in Package"
                 : isProductSelected(product.id)
                 ? "Selected"
                 : "Select"}
