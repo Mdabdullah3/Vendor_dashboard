@@ -122,7 +122,7 @@ const GetPlan = () => {
               {singlePackage?.duration} Hours
             </p>
             <p>
-              <span className="font-medium mb-2">Price:</span> BDT
+              <span className="font-medium mb-2">Price:</span> ৳
               {singlePackage?.price}
             </p>
             <p>

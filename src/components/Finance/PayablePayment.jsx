@@ -76,13 +76,13 @@ const PayablePayment = () => {
                 className="border-b border-gray-200 capitalize"
               >
                 <td className="py-4 px-6">{index + 1}</td>
-                <td className="py-4 px-6">{finance?.price}</td>
-                <td className="py-4 px-6">{finance?.vat}</td>
-                <td className="py-4 px-6">{finance?.commission}</td>
-                <td className="py-4 px-6">{finance?.transactionCost}</td>
-                <td className="py-4 px-6">{finance?.shippingCharge}</td>
+                <td className="py-4 px-6">৳{finance?.price}</td>
+                <td className="py-4 px-6">৳{finance?.vat}</td>
+                <td className="py-4 px-6">৳{finance?.commission}</td>
+                <td className="py-4 px-6">৳{finance?.transactionCost}</td>
+                <td className="py-4 px-6">৳{finance?.shippingCharge}</td>
                 <td className="py-4 px-6">
-                  {finance?.profit ? Number(finance.profit).toFixed(2) : "0.00"}
+                ৳{finance?.profit ? Number(finance.profit).toFixed(2) : "0.00"}
                 </td>
                 <td className="py-4 px-6">{finance?.status}</td>
                 <td className="py-4 px-6">

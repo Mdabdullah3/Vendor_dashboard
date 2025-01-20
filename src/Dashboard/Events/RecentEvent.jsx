@@ -68,7 +68,7 @@ const EventManager = () => {
                     "No Image"
                   )}
                 </td>
-                <td>{event?.price || 0}</td>
+                <td>৳{event?.price || 0}</td>
                 <td className="py-4 px-6">
                   {event?.eventProducts?.length || 0}
                 </td>

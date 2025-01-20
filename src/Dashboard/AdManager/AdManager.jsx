@@ -47,7 +47,7 @@ const AdManager = () => {
                 <tr key={pack._id} className="border-b border-gray-200">
                   <td className="py-4 px-6 capitalize">{pack.name}</td>
                   <td className="py-4 px-6">{pack.duration}</td>
-                  <td className="py-4 px-6">Bdt {pack.price}</td>
+                  <td className="py-4 px-6">৳{pack.price}</td>
                   <td className="py-4 px-6">{pack.maxProduct}</td>
                   <td className="py-4 px-6">{pack.status}</td>
                   <td className="py-4 px-6">

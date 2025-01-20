@@ -48,7 +48,7 @@ const ProductAdminPanel = () => {
             <h1 className="lg:text-3xl text-xl font-bold mb-6">Products</h1>
             <Link
               to="/admin/add-product"
-              className="bg-blue-600 text-white px-4 py-2 rounded mb-6 flex items-center"
+              className="bg-primary text-white px-4 py-2 rounded mb-6 flex items-center"
             >
               <FiPlus className="mr-2" />
               Add Product
@@ -93,7 +93,7 @@ const ProductAdminPanel = () => {
                       </td>
                       <td className="px-4 py-2">{product?.status}</td>
                       <td className="px-4 py-2">
-                        BDT{" "}
+                        ৳
                         {product?.productVariants
                           ? product?.productVariants[0]?.price
                           : 0}

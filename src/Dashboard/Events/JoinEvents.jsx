@@ -59,7 +59,9 @@ const JoinEvents = () => {
       (eventProduct) => eventProduct?.product?._id === productId
     );
   };
-  const onPaymentProcess = () => {};
+  const onPaymentProcess = () => {
+    toast.error("This Events is available for purchase!");
+  };
   return (
     <div className="flex h-screen">
       <div className="flex-1 p-10">
@@ -75,7 +77,7 @@ const JoinEvents = () => {
               {new Date(event?.endDate).toLocaleDateString()}
             </p>
             <p>
-              <span className="font-medium mb-2">Price:</span> BDT{" "}
+              <span className="font-medium mb-2">Price:</span> ৳
               {event?.price}
             </p>
             <p>

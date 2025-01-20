@@ -61,7 +61,13 @@ const CustomerOrders = () => {
     { id: 4, name: "Delivered", value: "completed" },
     { id: 5, name: "Cancelled", value: "cancelled" },
   ];
-
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
   return (
     <section className="py-5">
       <InputSearch
@@ -100,13 +106,13 @@ const CustomerOrders = () => {
                     {item?._id}
                   </td>
                   <td className="text-center text-dark font-medium py-5">
-                    {item?.date}
+                    {formatDate(item?.createdAt)}
                   </td>
                   <td className="text-center text-dark font-medium py-5">
                     {item?.paymentType}
                   </td>
                   <td className="text-center text-dark font-medium py-5">
-                    {item?.price}
+                    ৳{item?.price}
                   </td>
                   <td>
                     {item?.status === "pending" ? (
